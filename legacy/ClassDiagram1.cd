@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Dcb::LayoutElement" Collapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="Dcb::LayoutElement::ExtraDataBase" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DynamicConstant.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Layout">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAIAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RawLayout">
+    <Position X="0.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookedLayout">
+    <Position X="2.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAACAAAAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ConstElementRef" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Class Name="ConstElementRef::Ptr" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DynamicConstant.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ElementRef" Collapsed="true">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Class Name="ElementRef::Ptr" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DynamicConstant.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Buffer" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEgAAAAAAIAAEAAAAAAAAAAgAAAAAAAACQAA=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Dcb::Map&lt;type&gt;" Collapsed="true">
+    <Position X="7" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Dcb::Map&lt;Float&gt;" Collapsed="true">
+    <Position X="8.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAAQ=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Dcb::Map&lt;Float2&gt;" Collapsed="true">
+    <Position X="10.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAAQ=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Dcb::Map&lt;Float3&gt;" Collapsed="true">
+    <Position X="5.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAAQ=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Dcb::Map&lt;Float4&gt;" Collapsed="true">
+    <Position X="7" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAAQ=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Dcb::Map&lt;Matrix&gt;" Collapsed="true">
+    <Position X="8.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAAQ=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Dcb::Map&lt;Bool&gt;" Collapsed="true">
+    <Position X="10.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAAQ=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Dcb::Map&lt;Integer&gt;" Collapsed="true">
+    <Position X="5.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAAQ=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Dcb::ReverseMap&lt;T&gt;" Collapsed="true">
+    <Position X="7" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Dcb::ExtraData" Collapsed="true">
+    <Position X="5.25" Y="1.75" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="Dcb::ExtraData::Struct" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DynamicConstant.cpp</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Dcb::ExtraData::Array" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DynamicConstant.cpp</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DynamicConstant.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="Dcb::Type" Collapsed="true">
+    <Position X="5.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DynamicConstant.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Rgph::RenderGraph">
+    <Position X="26" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAARABBEAAABAAAQAAAAAIgACEAIAAFAEAJAA=</HashCode>
+      <FileName>RenderGraph.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bind::IndexBuffer">
+    <Position X="22.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAiAAAACAQAEABAAAEBAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IndexBuffer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bind::VertexBuffer">
+    <Position X="29.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAiAAAACAAAEAAAAAABAAAAAAAAAIAAEACAAAEAA=</HashCode>
+      <FileName>VertexBuffer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bind::Topology">
+    <Position X="27.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAACAAAEAAAAAABAAAAABAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Topology.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bind::InputLayout">
+    <Position X="24.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAoAAAACAAAEAAAAAABAEAAAAAAAIAAAACgAAAAA=</HashCode>
+      <FileName>InputLayout.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Drawable">
+    <Position X="20.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IIAAAAAAAECAAAAABAAABAAAAAAAAAAAgAAEEYAAAAA=</HashCode>
+      <FileName>Drawable.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
