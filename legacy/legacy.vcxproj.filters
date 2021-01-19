@@ -70,6 +70,9 @@
     <Filter Include="Header Files\Jobber\Passlib\Base">
       <UniqueIdentifier>{4e11c64f-ba48-46ac-823c-6ef765552a6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{974c7834-bfbe-4abd-9019-3cbe0329fde7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -316,6 +319,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AdapterData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -668,6 +674,9 @@
     <ClInclude Include="AdapterData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="legacy.rc">
@@ -716,9 +725,6 @@
     <None Include="PShadow.hlsli">
       <Filter>Shader\Common</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
-    <None Include="Shader.dgsl" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PhongDifMskSpcNrm_PS.hlsl">

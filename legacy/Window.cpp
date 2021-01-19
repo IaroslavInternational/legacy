@@ -175,6 +175,16 @@ Graphics& Window::Gfx()
 	return *pGfx;
 }
 
+Keyboard& Window::Kbd()
+{
+	return kbd;
+}
+
+Mouse& Window::Ms()
+{
+	return mouse;
+}
+
 void Window::ConfineCursor() noexcept
 {
 	RECT rect; 
