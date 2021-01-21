@@ -1,13 +1,7 @@
 #include "App.h"
-#include <algorithm>
-#include "EngineMath.h"
+
 #include "imgui/imgui.h"
 #include "EngineUtil.h"
-#include "Testing.h"
-#include "PerfLog.h"
-#include "TestModelProbe.h"
-#include "Testing.h"
-#include "Camera.h"
 #include "Channels.h"
 
 namespace dx = DirectX;
@@ -15,19 +9,40 @@ namespace dx = DirectX;
 App::App(const std::string& commandLine)
 	:
 	commandLine(commandLine),
-	wnd(std::make_shared <Window>(1280, 720, "Legacy")),
-	scriptCommander(TokenizeQuoted(commandLine)),
-	EnterScene("Scene 1", "1", wnd)
-{}
+	wnd(std::make_shared<Window>(1280, 720, "Legacy")),
+	scriptCommander(TokenizeQuoted(commandLine))
+{
+	scenes.emplace(std::make_unique<Scene>("Scene 1", "1", wnd), true);
+	scenes.emplace(std::make_unique<Scene>("Scene 2", "2", wnd), false);
+	scenes.emplace(std::make_unique<Scene>("Scene 3", "3", wnd), false);
+	//scenes.emplace(std::make_unique<Scene>("Scene 4", "4", wnd), false);
+	//scenes.emplace(std::make_unique<Scene>("Scene 5", "5", wnd), false);
+	//scenes.emplace(std::make_unique<Scene>("Scene 6", "6", wnd), false);
+	//scenes.emplace(std::make_unique<Scene>("Scene 7", "7", wnd), false);
+	//scenes.emplace(std::make_unique<Scene>("Scene 8", "8", wnd), false);
+	//scenes.emplace(std::make_unique<Scene>("Scene 9", "9", wnd), false);
+}
 
 void App::HandleInput( float dt )
 {
-	EnterScene.ProcessInput(dt);
+	for (auto& s : scenes)
+	{
+		if (s.second)
+		{
+			s.first->ProcessInput(dt);
+		}
+	}
 }
 
 void App::DoFrame( float dt )
 {
-	EnterScene.Render();
+	for (auto& s : scenes)
+	{
+		if (s.second)
+		{
+			s.first->Render(dt);
+		}
+	}
 }
 
 App::~App()

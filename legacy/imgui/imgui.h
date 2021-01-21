@@ -25,6 +25,7 @@ Index of this file:
 */
 
 #pragma once
+#pragma execution_character_set("utf-8")
 
 // Configuration file with compile-time options (edit imconfig.h or define IMGUI_USER_CONFIG to your own filename)
 #ifdef IMGUI_USER_CONFIG

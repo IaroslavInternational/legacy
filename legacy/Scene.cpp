@@ -1,28 +1,36 @@
 #include "Scene.h"
+
 #include "EngineMath.h"
 #include "EngineUtil.h"
 #include "imgui/imgui.h"
 #include "Channels.h"
 #include "TestModelProbe.h"
-#include "PerfLog.h"
 #include "Camera.h"
 
-#include <algorithm>
-
-namespace dx = DirectX;
-
-Scene::Scene(std::string SceneName, std::string SceneID, std::shared_ptr<Window> _wnd)
+/***** /Сцена\ *****/
+Scene::Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window> _wnd)
 	:
 	wnd(_wnd),
-	light(wnd->Gfx(), { 10.0f, 5.0f, 0.0f })
+	light(wnd->Gfx(), { 10.0f, 5.0f, 0.0f }),
+	scNames({ "Сцена 2", "Сцена 3", "Сцена 9" }),
+	tr1(trs1),
+	tr2(trs2),
+	tr3(trs3),
+	scTriggers({ tr1, tr2, tr3 }),
+	strc(scNames, scTriggers),
+	plane(wnd->Gfx(), 19.5f, 12.5f, { 200.0f, 100.0f, 10.0f, 0.7f })
 {
 	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "A", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));
 	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "B", dx::XMFLOAT3{ -13.5f,28.8f,-6.4f }, PI / 180.0f * 13.0f, PI / 180.0f * 61.0f));
 	cameras.AddCamera(light.ShareCamera());
 
+	plane.SetPos({ 24.4f, 12.5f, 32.0f });
+	plane.SetRotation(0.0f, PI / 2.0f, 0.0f);
+
 	light.LinkTechniques(rg);
 	sponza.LinkTechniques(rg);
 	cameras.LinkTechniques(rg);
+	plane.LinkTechniques(rg);
 
 	rg.BindShadowCamera(*light.ShareCamera());
 
@@ -33,17 +41,37 @@ Scene::Scene(std::string SceneName, std::string SceneID, std::shared_ptr<Window>
 Scene::~Scene()
 {}
 
-void Scene::Render()
+void Scene::Render(float dt)
 {
 	wnd->Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
+	/*
+	if (CatchingTriggers)
+	{*/
+	auto info = IsOnTheTrigger();
+
+	if (info.second)
+	{
+		onTrigger = info.second;
+		triggerGoal = info.first;
+
+		CatchingTriggers = false;
+	}
+	else
+	{
+		onTrigger = false;
+	}
+	//}
+	
 	light.Bind(wnd->Gfx(), cameras->GetMatrix());
 	rg.BindMainCamera(cameras.GetActiveCamera());
 
 	light.Submit(Chan::main);
 	sponza.Submit(Chan::main);
 	cameras.Submit(Chan::main);
+	plane.Submit(Chan::main);
 
 	sponza.Submit(Chan::shadow);
+	plane.Submit(Chan::shadow);
 
 	rg.Execute(wnd->Gfx());
 
@@ -59,32 +87,16 @@ void Scene::Render()
 	sponzeProbe.SpawnWindow(sponza);
 	cameras.SpawnWindow(wnd->Gfx());
 	light.SpawnControlWindow();
+	plane.SpawnControlWindow(wnd->Gfx(), "Trigger 1");
 
 	rg.RenderWindows(wnd->Gfx());
 
-	ShowGUI(wnd->Gfx(), sceneName.c_str());
+	ShowGUI(sceneName);
+	ShowImguiDemoWindow();
 
 	// present
 	wnd->Gfx().EndFrame();
 	rg.Reset();
-}
-
-void Scene::ShowGUI(Graphics& Gfx, const char* name)
-{
-	if (ImGui::Begin(name))
-	{
-		ImGui::Text("Scene");
-
-		if (onTrigger)
-		{
-			ImGui::Text("You are on the Trigger");
-		}
-		else
-		{
-			ImGui::Text("You are not on the Trigger");
-		}
-	}
-	ImGui::End();
 }
 
 void Scene::ProcessInput(float dt)
@@ -154,22 +166,59 @@ void Scene::ProcessInput(float dt)
 			cameras->Rotate((float)delta->x, (float)delta->y);
 		}
 	}
-
-	dx::XMFLOAT3 trPos = { 20.0f, 5.0f, 20.0f };
-
-	if (cameras.GetActiveCamera().GetPos().x >= trPos.x)
-		if(cameras.GetActiveCamera().GetPos().y >= trPos.y)
-			if (cameras.GetActiveCamera().GetPos().z >= trPos.z)
-			{
-				onTrigger = true;
-			}
-	else
-	{
-		onTrigger = false;
-	}
 }
 
-std::string Scene::GetName()
+std::pair<const char*, bool> Scene::IsOnTheTrigger()
+{
+	dx::XMFLOAT3 camPos =
+	{
+		cameras.GetActiveCamera().GetPos().x,
+		cameras.GetActiveCamera().GetPos().y,
+		cameras.GetActiveCamera().GetPos().z
+	};
+
+	return strc.CheckTriggers(camPos);
+}
+
+void Scene::ShowGUI(const char* name)
+{
+	if (ImGui::Begin(name))
+	{
+		ImGui::Text("Сцена");
+
+		if (onTrigger)
+		{
+			ImGui::Text("Столкновение с триггером");
+			ImGui::Text("Триггер:");
+			ImGui::Text(triggerGoal);
+		}
+		else
+		{
+			onTrigger = false;
+			ImGui::Text("Не на триггере");
+		}
+
+		ImGui::Separator();
+		ImGui::Text("FPS");
+		ImGui::Text("%.3f мс/кадр (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+		ImGui::Separator();
+
+		if (ImGui::Button("Clear"))
+		{
+			ClearAll();
+		}
+	}
+	ImGui::End();
+}
+
+void Scene::ClearAll()
+{
+	/*sponza.~Model();
+	light.~PointLight();*/
+}
+
+const char* Scene::GetName() const
 {
 	return sceneName;
 }
@@ -181,3 +230,4 @@ void Scene::ShowImguiDemoWindow()
 		ImGui::ShowDemoWindow(&showDemoWindow);
 	}
 }
+/***** \Сцены/ *****/

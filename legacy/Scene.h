@@ -1,45 +1,94 @@
 #pragma once
 
 #include "Window.h"
-#include "EngineTimer.h"
 #include "ImguiManager.h"
 #include "CameraContainer.h"
 #include "PointLight.h"
-#include "TestCube.h"
 #include "Model.h"
-#include "ScriptCommander.h"
 #include "BlurOutlineRenderGraph.h"
+#include "EngineTimer.h"
+#include "SceneTriggersContainer.h"
+
+namespace dx = DirectX;
 
 class Scene
 {
 public:
-	Scene(std::string SceneName, std::string SceneID, std::shared_ptr<Window> _wnd);
+	Scene() = default;
+	Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window> _wnd);
 	~Scene();
 
-	void Render();
-	void ShowGUI(Graphics& Gfx, const char* name);
-	void ProcessInput(float dt);
-	std::string GetName();
+	/***** /Методы сцены\ *****/
 
+	// Отрисовка сцены
+	void Render(float dt);
+
+	// Обработка входных данных
+	void ProcessInput(float dt);
+
+	std::pair<const char*, bool> IsOnTheTrigger();
+
+	// Отрисовка интерфейса
+	void ShowGUI(const char* name);
+
+	// Удаление содердимого 
+	void ClearAll();
+	
+	// Добавление 3Д-модели
+	void LoadModel(const char* path, float scale);
+
+	// Геттер имени сцены
+	const char* GetName() const;
+
+	/***** \Методы сцены/ *****/
+
+	// Демо-интерфейс 
 	void ShowImguiDemoWindow();
 private:
 	// Идентификаторы сцены
-	std::string sceneName;
-	std::string ID;
+	const char* sceneName;
+	const char* ID;
 
-	// Указатель на следующую сцену
-	Scene* nextScenePtr;
-private:
-
-	CameraContainer cameras;
-	std::shared_ptr<Window> wnd;
-	Rgph::BlurOutlineRenderGraph rg{ wnd->Gfx() };
-
-	PointLight light;
-	Model sponza{ wnd->Gfx(), "Models\\sponza\\sponza.obj", 1.0f / 20.0f };
-
+	// Настройки
 	bool savingDepth = false;
 	bool showDemoWindow = false;
-	bool onTrigger = false;
+	bool onTrigger = false; const char* triggerGoal = nullptr;
 	bool cursorState = false;
+	bool CatchingTriggers = true;
+
+	std::vector<const char*> scNames;
+	
+	//dx::XMFLOAT3 tr1LT = 
+	
+	TriggerStruct trs1 = { {24.4f, 12.5f, 32.0f}, {24.4f, 12.5f, 17.2f}, {24.4f, 0.0f, 32.0f}, {24.4f, 0.0f, 17.2f} };
+	TriggerStruct trs2 = { {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} };
+	TriggerStruct trs3 = { {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} };
+
+	Trigger tr1;
+	Trigger tr2;
+	Trigger tr3;
+
+	std::vector<Trigger> scTriggers;
+	
+	SceneTriggersContainer strc;
+	//std::multimap<const char*, Trigger> trig_sc_container;
+private:
+	// Контейнер камер
+	CameraContainer cameras;
+
+	// Указатель на главное окно 
+	std::shared_ptr<Window> wnd;
+
+	//
+	Rgph::BlurOutlineRenderGraph rg{ wnd->Gfx() };
+
+	/***** -Модели и объекты- *****/
+
+	// Истоник света
+	PointLight light;
+
+	// Модель сцены
+	Model sponza{ wnd->Gfx(), "Models\\sponza\\sponza.obj", 1.0f / 20.0f };
+	Plate plane;
+	/******************************/
 };

@@ -68,8 +68,6 @@ public:
 	
 	static std::optional<int> ProcessMessages() noexcept;
 	Graphics& Gfx();
-	Keyboard& Kbd();
-	Mouse& Ms();
 private:
 	void ConfineCursor() noexcept;
 	void FreeCursor() noexcept;

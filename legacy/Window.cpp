@@ -89,6 +89,8 @@ Window::Window(int width, int height, const char* name)
 	// Инициализация ImGui Win32 Impl
 	ImGui_ImplWin32_Init( hWnd );
 
+	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.TTF", 14.0F, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
+
 	// Создание графического объекта
 	pGfx = std::make_unique<Graphics>(hWnd, width, height);
 
@@ -173,16 +175,6 @@ Graphics& Window::Gfx()
 	}
 
 	return *pGfx;
-}
-
-Keyboard& Window::Kbd()
-{
-	return kbd;
-}
-
-Mouse& Window::Ms()
-{
-	return mouse;
 }
 
 void Window::ConfineCursor() noexcept

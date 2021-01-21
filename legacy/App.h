@@ -3,15 +3,10 @@
 #include "Window.h"
 #include "EngineTimer.h"
 #include "ImguiManager.h"
-#include "CameraContainer.h"
-#include "PointLight.h"
-#include "TestCube.h"
-#include "Model.h"
 #include "ScriptCommander.h"
-#include "BlurOutlineRenderGraph.h"
-#include "EngineMath.h"
 
 #include "Scene.h"
+#include <map>
 
 class App
 {
@@ -26,11 +21,12 @@ private:
 private:
 	std::string commandLine;
 	ImguiManager imgui;
+
 	std::shared_ptr<Window> wnd;
 	ScriptCommander scriptCommander;
+	
 	EngineTimer timer;
 	float speed_factor = 1.0f;
 
-	Scene EnterScene;
-	//Scene SecondScene;
+	std::map<std::unique_ptr<Scene>, bool> scenes;
 };

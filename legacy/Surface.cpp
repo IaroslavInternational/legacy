@@ -180,7 +180,7 @@ Surface::Exception::Exception( int line,const char* file,std::string filename,st
 
 	if( hr )
 	{
-		note = "[Срока ошибки] " + Window::Exception::TranslateErrorCode( *hr ) + note;
+		note = "[Строка ошибки] " + Window::Exception::TranslateErrorCode( *hr ) + note;
 	}
 }
 
