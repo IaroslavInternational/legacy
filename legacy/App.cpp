@@ -9,12 +9,12 @@ namespace dx = DirectX;
 App::App(const std::string& commandLine)
 	:
 	commandLine(commandLine),
-	wnd(std::make_shared<Window>(1280, 720, "Legacy")),
+	wnd(std::make_shared<Window>("Legacy")),
 	scriptCommander(TokenizeQuoted(commandLine))
 {
-	scenes.emplace(std::make_unique<Scene>("Scene 1", "1", wnd), true);
-	scenes.emplace(std::make_unique<Scene>("Scene 2", "2", wnd), false);
-	scenes.emplace(std::make_unique<Scene>("Scene 3", "3", wnd), false);
+	scenes.emplace(std::make_unique<Scene>("—цена 1", "1", wnd), true);
+	scenes.emplace(std::make_unique<Scene>("—цена 2", "2", wnd), false);
+	scenes.emplace(std::make_unique<Scene>("—цена 3", "3", wnd), false);
 	//scenes.emplace(std::make_unique<Scene>("Scene 4", "4", wnd), false);
 	//scenes.emplace(std::make_unique<Scene>("Scene 5", "5", wnd), false);
 	//scenes.emplace(std::make_unique<Scene>("Scene 6", "6", wnd), false);

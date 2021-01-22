@@ -33,7 +33,7 @@ Plate::Plate(Graphics& gfx, float in_width, float in_height, DirectX::XMFLOAT4 c
 		{
 			Step only("lambertian");
 
-			only.AddBindable(Texture::Resolve(gfx, "Images\\Trigger.jpg"));
+			only.AddBindable(Texture::Resolve(gfx, "Images\\Triggers\\TriggerV6.jpg"));
 			only.AddBindable(Sampler::Resolve(gfx));
 
 			auto pvs = VertexShader::Resolve(gfx, "ShadowTest_VS.cso");

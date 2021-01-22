@@ -4,7 +4,6 @@
 #include "WindowsThrowMacros.h"
 #include "imgui/imgui_impl_win32.h"
 
-
 // Window Class stuff
 Window::WindowClass Window::WindowClass::wndClass;
 
@@ -52,29 +51,17 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 }
 
 // Window Stuff
-Window::Window(int width, int height, const char* name)
-	:
-	width(width),
-	height(height)
+Window::Window(const char* name)
 {
-	// Вычисление размера окна на основе экрана пользователя
-	RECT wr;
-	wr.left = 100;
-	wr.right = width + wr.left;
-	wr.top = 100;
-	wr.bottom = height + wr.top;
-	
-	if( AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,FALSE ) == 0)
-	{
-		throw ENGWND_LAST_EXCEPT();
-	}
+	width = GetDeviceCaps(CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL), HORZRES);
+	height = GetDeviceCaps(CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL), VERTRES);
 
 	// Создание окна
-	hWnd = CreateWindow(
-		WindowClass::GetName(), name, 
-		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
-		CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top, 
-		nullptr, nullptr, WindowClass::GetInstance(), this
+	hWnd = CreateWindowEx(
+		WS_EX_TOPMOST, WindowClass::GetName(), name,
+		WS_POPUP | WS_MAXIMIZE ,
+		CW_USEDEFAULT, CW_USEDEFAULT, width, height,
+		HWND_DESKTOP, NULL, WindowClass::GetInstance(), this
 	);
 
 	// Проверка успешности создания
@@ -84,13 +71,13 @@ Window::Window(int width, int height, const char* name)
 	}
 
 	// Созданное окно изначально спрятно, здесь его показываем
-	ShowWindow(hWnd, SW_SHOWDEFAULT);
+	ShowWindow(hWnd, SW_SHOWMAXIMIZED);
 
 	// Инициализация ImGui Win32 Impl
 	ImGui_ImplWin32_Init( hWnd );
 
-	ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.TTF", 14.0F, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
-
+	ImGui::GetIO().Fonts->AddFontFromFileTTF("Fonts\\Ubuntu-L.ttf", 14.0F, NULL,
+											ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
 	// Создание графического объекта
 	pGfx = std::make_unique<Graphics>(hWnd, width, height);
 

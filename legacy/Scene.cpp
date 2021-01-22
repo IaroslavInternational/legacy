@@ -7,7 +7,6 @@
 #include "TestModelProbe.h"
 #include "Camera.h"
 
-/***** /Сцена\ *****/
 Scene::Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window> _wnd)
 	:
 	wnd(_wnd),
@@ -18,7 +17,7 @@ Scene::Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window>
 	tr3(trs3),
 	scTriggers({ tr1, tr2, tr3 }),
 	strc(scNames, scTriggers),
-	plane(wnd->Gfx(), 19.5f, 12.5f, { 200.0f, 100.0f, 10.0f, 0.7f })
+	plane(wnd->Gfx(), 16.6f, 12.5f, { 200.0f, 100.0f, 10.0f, 0.7f })
 {
 	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "A", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));
 	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "B", dx::XMFLOAT3{ -13.5f,28.8f,-6.4f }, PI / 180.0f * 13.0f, PI / 180.0f * 61.0f));
@@ -47,7 +46,7 @@ void Scene::Render(float dt)
 	/*
 	if (CatchingTriggers)
 	{*/
-	auto info = IsOnTheTrigger();
+	auto info = IsOnTheSceneTrigger();
 
 	if (info.second)
 	{
@@ -92,6 +91,7 @@ void Scene::Render(float dt)
 	rg.RenderWindows(wnd->Gfx());
 
 	ShowGUI(sceneName);
+	ShowFPS();
 	ShowImguiDemoWindow();
 
 	// present
@@ -168,7 +168,7 @@ void Scene::ProcessInput(float dt)
 	}
 }
 
-std::pair<const char*, bool> Scene::IsOnTheTrigger()
+std::pair<const char*, bool> Scene::IsOnTheSceneTrigger()
 {
 	dx::XMFLOAT3 camPos =
 	{
@@ -198,15 +198,38 @@ void Scene::ShowGUI(const char* name)
 			ImGui::Text("Не на триггере");
 		}
 
-		ImGui::Separator();
-		ImGui::Text("FPS");
-		ImGui::Text("%.3f мс/кадр (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
-		ImGui::Separator();
-
 		if (ImGui::Button("Clear"))
 		{
 			ClearAll();
+		}
+	}
+	ImGui::End();
+}
+
+void Scene::ShowFPS()
+{
+	const float DISTANCE = 10.0f;
+	static int corner = 2;
+	ImGuiIO& io = ImGui::GetIO();
+	if (corner != -1)
+	{
+		ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y - DISTANCE : DISTANCE);
+		ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
+		ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
+	}
+	ImGui::SetNextWindowBgAlpha(0.3f); // Transparent background
+	if (ImGui::Begin("FPS", (bool*)(true), (corner != -1 ? ImGuiWindowFlags_NoMove : 0) | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
+	{
+		ImGui::Text("FPS");
+		ImGui::Text("%.3f мс/кадр (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		if (ImGui::BeginPopupContextWindow())
+		{
+			if (ImGui::MenuItem("Custom", NULL, corner == -1)) corner = -1;
+			if (ImGui::MenuItem("Top-left", NULL, corner == 0)) corner = 0;
+			if (ImGui::MenuItem("Top-right", NULL, corner == 1)) corner = 1;
+			if (ImGui::MenuItem("Bottom-left", NULL, corner == 2)) corner = 2;
+			if (ImGui::MenuItem("Bottom-right", NULL, corner == 3)) corner = 3;
+			ImGui::EndPopup();
 		}
 	}
 	ImGui::End();
@@ -230,4 +253,3 @@ void Scene::ShowImguiDemoWindow()
 		ImGui::ShowDemoWindow(&showDemoWindow);
 	}
 }
-/***** \Сцены/ *****/

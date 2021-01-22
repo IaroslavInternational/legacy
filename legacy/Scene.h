@@ -26,10 +26,16 @@ public:
 	// Обработка входных данных
 	void ProcessInput(float dt);
 
-	std::pair<const char*, bool> IsOnTheTrigger();
+	std::pair<const char*, bool> IsOnTheSceneTrigger();
+
+	/* Интерфейс */
 
 	// Отрисовка интерфейса
 	void ShowGUI(const char* name);
+
+	void ShowFPS();
+
+	/*************/
 
 	// Удаление содердимого 
 	void ClearAll();
@@ -51,7 +57,7 @@ private:
 
 	// Настройки
 	bool savingDepth = false;
-	bool showDemoWindow = false;
+	bool showDemoWindow = true;
 	bool onTrigger = false; const char* triggerGoal = nullptr;
 	bool cursorState = false;
 	bool CatchingTriggers = true;
@@ -60,7 +66,8 @@ private:
 	
 	//dx::XMFLOAT3 tr1LT = 
 	
-	TriggerStruct trs1 = { {24.4f, 12.5f, 32.0f}, {24.4f, 12.5f, 17.2f}, {24.4f, 0.0f, 32.0f}, {24.4f, 0.0f, 17.2f} };
+	TriggerStruct trs1 = { {24.4f, 12.5f, 32.0f}, {24.4f, 12.5f, 15.4f}, 
+						   {24.4f, 0.0f, 32.0f},  {24.4f, 0.0f, 15.4f} };
 	TriggerStruct trs2 = { {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} };
 	TriggerStruct trs3 = { {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} };
 
