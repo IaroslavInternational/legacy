@@ -8,6 +8,7 @@
 #include "BlurOutlineRenderGraph.h"
 #include "EngineTimer.h"
 #include "SceneTriggersContainer.h"
+#include "ModelData.h"
 
 namespace dx = DirectX;
 
@@ -15,7 +16,8 @@ class Scene
 {
 public:
 	Scene() = default;
-	Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window> _wnd);
+	Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window> _wnd, 
+		  const char* PathToModelData);
 	~Scene();
 
 	/***** /Методы сцены\ *****/
@@ -78,7 +80,6 @@ private:
 	std::vector<Trigger> scTriggers;
 	
 	SceneTriggersContainer strc;
-	//std::multimap<const char*, Trigger> trig_sc_container;
 private:
 	// Контейнер камер
 	CameraContainer cameras;
@@ -95,7 +96,7 @@ private:
 	PointLight light;
 
 	// Модель сцены
-	Model sponza{ wnd->Gfx(), "Models\\sponza\\sponza.obj", 1.0f / 20.0f };
+	ModelData md;
 	Plate plane;
 	/******************************/
 };

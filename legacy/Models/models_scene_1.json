@@ -1,0 +1,28 @@
+{
+  "sponza": [
+    {
+      "name": "main scene",
+      "path": "Models\\Sponza\\sponza.obj",
+      "scale": 0.05,
+      "pos-x": 0.0,
+      "pos-y": 0.0,
+      "pos-z": 0.0,
+      "roll": 0.0,
+      "pitch": 0.0,
+      "yaw": 0.0
+    }
+  ],
+  "nano-suit": [
+    {
+      "name": "nano",
+      "path": "Models\\nano_textured\\nanosuit.obj",
+      "scale": 1.0,
+      "pos-x": 27.0,
+      "pos-y": -0.56,
+      "pos-z": 1.7,
+      "roll": 0.0,
+      "pitch": 1.57,
+      "yaw": 0.0
+    }
+  ]
+}

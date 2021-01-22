@@ -7,7 +7,8 @@
 #include "TestModelProbe.h"
 #include "Camera.h"
 
-Scene::Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window> _wnd)
+Scene::Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window> _wnd,
+			 const char* PathToModelData)
 	:
 	wnd(_wnd),
 	light(wnd->Gfx(), { 10.0f, 5.0f, 0.0f }),
@@ -17,6 +18,7 @@ Scene::Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window>
 	tr3(trs3),
 	scTriggers({ tr1, tr2, tr3 }),
 	strc(scNames, scTriggers),
+	md(PathToModelData, wnd->Gfx()),
 	plane(wnd->Gfx(), 16.6f, 12.5f, { 200.0f, 100.0f, 10.0f, 0.7f })
 {
 	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "A", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));
@@ -27,9 +29,25 @@ Scene::Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window>
 	plane.SetRotation(0.0f, PI / 2.0f, 0.0f);
 
 	light.LinkTechniques(rg);
-	sponza.LinkTechniques(rg);
 	cameras.LinkTechniques(rg);
 	plane.LinkTechniques(rg);
+
+	for (auto& m : md.models)
+	{
+		m->LinkTechniques(rg);
+	}
+
+	for (int i = 0; i < md.models.size(); i++)
+	{
+		md.models[i]->LinkTechniques(rg);
+		md.models[i]->SetRootTransform
+		(
+			dx::XMMatrixRotationX(md.modelsOrien[i].x) *
+			dx::XMMatrixRotationY(md.modelsOrien[i].y) *
+			dx::XMMatrixRotationZ(md.modelsOrien[i].z) *
+			dx::XMMatrixTranslation(md.modelsPos[i].x, md.modelsPos[i].y, md.modelsPos[i].z)
+		);
+	}
 
 	rg.BindShadowCamera(*light.ShareCamera());
 
@@ -65,11 +83,15 @@ void Scene::Render(float dt)
 	rg.BindMainCamera(cameras.GetActiveCamera());
 
 	light.Submit(Chan::main);
-	sponza.Submit(Chan::main);
 	cameras.Submit(Chan::main);
 	plane.Submit(Chan::main);
 
-	sponza.Submit(Chan::shadow);
+	for (auto& m : md.models)
+	{
+		m->Submit(Chan::main);
+		m->Submit(Chan::shadow);
+	}
+
 	plane.Submit(Chan::shadow);
 
 	rg.Execute(wnd->Gfx());
@@ -81,12 +103,15 @@ void Scene::Render(float dt)
 	}
 
 	// imgui windows
-	static MP sponzeProbe{ "Sponza" };
-	
-	sponzeProbe.SpawnWindow(sponza);
 	cameras.SpawnWindow(wnd->Gfx());
 	light.SpawnControlWindow();
-	plane.SpawnControlWindow(wnd->Gfx(), "Trigger 1");
+	plane.SpawnControlWindow(wnd->Gfx(), "Триггер 1");
+	/*
+	for (auto& m : md.models)
+	{
+		static MP probe{ "" };
+		probe.SpawnWindow(*m);
+	}*/
 
 	rg.RenderWindows(wnd->Gfx());
 
