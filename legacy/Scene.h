@@ -37,6 +37,8 @@ public:
 
 	void ShowFPS();
 
+	void ShowTriggersInfo();
+
 	/*************/
 
 	// Удаление содердимого 

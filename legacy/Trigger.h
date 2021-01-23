@@ -21,6 +21,9 @@ public:
 
 	// Установка ширины триггера
 	void SetDeep(float TriggerDeep);
+
+	// Получение позиции триггера
+	const DirectX::XMFLOAT3* GetPosition() const;
 private:
 	// Глубина триггера по x
 	float deep = 1.0f;

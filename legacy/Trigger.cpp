@@ -73,3 +73,14 @@ void Trigger::SetDeep(float TriggerDeep)
 {
 	deep = TriggerDeep;
 }
+
+const DirectX::XMFLOAT3* Trigger::GetPosition() const
+{
+	DirectX::XMFLOAT3 arr[] = 
+	{ 
+		triggerPos.triggerPosTopLeft, triggerPos.triggerPosTopRight,
+		triggerPos.triggerPosBottomLeft, triggerPos.triggerPosBottomRight 
+	};
+
+	return arr;
+}

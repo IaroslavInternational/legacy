@@ -117,7 +117,8 @@ void Scene::Render(float dt)
 
 	ShowGUI(sceneName);
 	ShowFPS();
-	ShowImguiDemoWindow();
+	ShowTriggersInfo();
+	//ShowImguiDemoWindow();
 
 	// present
 	wnd->Gfx().EndFrame();
@@ -256,6 +257,81 @@ void Scene::ShowFPS()
 			if (ImGui::MenuItem("Bottom-right", NULL, corner == 3)) corner = 3;
 			ImGui::EndPopup();
 		}
+	}
+	ImGui::End();
+}
+
+void Scene::ShowTriggersInfo()
+{
+	ImGui::SetNextWindowSize(ImVec2(500, 440), ImGuiCond_FirstUseEver);
+	if (ImGui::Begin("Триггеры", (bool*)(true), ImGuiWindowFlags_MenuBar))
+	{
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Close")) 
+				{
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
+		// left
+		static const char* selected = "";
+		ImGui::BeginChild("left pane", ImVec2(150, 0), true);
+
+		auto dataTrig = strc.GetInfo();
+
+		for (auto it = dataTrig->begin(); it != dataTrig->end(); ++it)
+		{
+			char label[128];
+			sprintf_s(label, it->first, selected);
+			if (ImGui::Selectable(label, selected == it->first))
+				selected = it->first;
+		}
+		ImGui::EndChild();
+		ImGui::SameLine();
+
+		ImGui::BeginGroup();
+		ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()));
+		ImGui::Separator();
+		if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
+		{
+			if (ImGui::BeginTabItem("Информация"))
+			{
+				for (const auto& [key, value] : *dataTrig) {
+					if (key == selected)
+					{
+						auto pos = value.GetPosition();
+
+						ImGui::Text("Позиция");
+						ImGui::Text("Левый верхний угол: \n x = %.3f; y = %.3f; z = %.3f;",
+							pos[0].x, pos[0].y, pos[0].z);
+						ImGui::Text("Правый верхний угол: \n x = %.3f; y = %.3f; z = %.3f;",
+							pos[1].x, pos[1].y, pos[1].z);
+						ImGui::Text("Левый нижний угол: \n x = %.3f; y = %.3f; z = %.3f;",
+							pos[2].x, pos[2].y, pos[2].z);
+						ImGui::Text("Правый нижний угол: \n x = %.3f; y = %.3f; z = %.3f;",
+							pos[3].x, pos[3].y, pos[3].z);
+						ImGui::Separator();
+
+						ImGui::Text("Триггер указывает на: %s", selected);
+
+						break;
+					}
+				}
+				ImGui::EndTabItem();
+			}
+			ImGui::EndTabBar();
+		}
+		ImGui::EndChild();
+		if (ImGui::Button("Revert")) {}
+		ImGui::SameLine();
+		if (ImGui::Button("Save")) {}
+		ImGui::EndGroup();
 	}
 	ImGui::End();
 }

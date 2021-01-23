@@ -29,3 +29,8 @@ std::pair<const char*, bool> SceneTriggersContainer::CheckTriggers(dx::XMFLOAT3 
 		}
 	}
 }
+
+std::multimap<const char*, Trigger>* SceneTriggersContainer::GetInfo()
+{
+	return &trig_sc_container;
+}

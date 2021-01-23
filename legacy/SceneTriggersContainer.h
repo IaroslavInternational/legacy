@@ -14,8 +14,7 @@ public:
 	
 	std::pair<const char*, bool> CheckTriggers(dx::XMFLOAT3 pos);
 
-	// Проверка на триггер сцены через координаты
-	//bool Check(dx::XMFLOAT3 CameraPos);
+	std::multimap<const char*, Trigger>* GetInfo();
 private:
 	std::multimap<const char*, Trigger> trig_sc_container;
 };
