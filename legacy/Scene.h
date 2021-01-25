@@ -97,7 +97,7 @@ private:
 	// Истоник света
 	PointLight light;
 
-	// Модель сцены
+	// Модели сцены
 	ModelData md;
 	Plate plane;
 	/******************************/

@@ -61,23 +61,18 @@ Scene::~Scene()
 void Scene::Render(float dt)
 {
 	wnd->Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
-	/*
-	if (CatchingTriggers)
-	{*/
+
 	auto info = IsOnTheSceneTrigger();
 
 	if (info.second)
 	{
 		onTrigger = info.second;
 		triggerGoal = info.first;
-
-		CatchingTriggers = false;
 	}
 	else
 	{
 		onTrigger = false;
 	}
-	//}
 	
 	light.Bind(wnd->Gfx(), cameras->GetMatrix());
 	rg.BindMainCamera(cameras.GetActiveCamera());
@@ -103,21 +98,17 @@ void Scene::Render(float dt)
 	}
 
 	// imgui windows
-	cameras.SpawnWindow(wnd->Gfx());
-	light.SpawnControlWindow();
-	plane.SpawnControlWindow(wnd->Gfx(), "Триггер 1");
-	/*
-	for (auto& m : md.models)
-	{
-		static MP probe{ "" };
-		probe.SpawnWindow(*m);
-	}*/
+	//cameras.SpawnWindow(wnd->Gfx());
+	//light.SpawnControlWindow();
+	//plane.SpawnControlWindow(wnd->Gfx(), "Триггер 1");
 
 	rg.RenderWindows(wnd->Gfx());
 
-	ShowGUI(sceneName);
+	//ShowGUI(sceneName);
 	ShowFPS();
-	ShowTriggersInfo();
+	//ShowTriggersInfo();
+	md.ShowInterface();
+
 	//ShowImguiDemoWindow();
 
 	// present

@@ -13,7 +13,9 @@ public:
 	ModelData(const char* path, Graphics& gfx);
 	~ModelData();
 
-	std::vector<const char*> modelsName;
+	void ShowInterface();
+
+	std::vector<std::string> modelsName;
 	std::vector<std::unique_ptr<Model>> models;
 	std::vector<DirectX::XMFLOAT3> modelsPos;
 	std::vector<DirectX::XMFLOAT3> modelsOrien;

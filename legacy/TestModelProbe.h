@@ -118,6 +118,42 @@ public:
 		}
 		ImGui::End();
 	}
+
+	void SpawnChildWindow(Model& model)
+	{
+		ImGui::BeginChild(name.c_str());
+		ImGui::Columns(2, nullptr, true);
+		model.Accept(*this);
+
+		ImGui::NextColumn();
+		if (pSelectedNode != nullptr)
+		{
+			bool dirty = false;
+			const auto dcheck = [&dirty](bool changed) {dirty = dirty || changed; };
+			auto& tf = ResolveTransform();
+			ImGui::TextColored({ 0.4f,1.0f,0.6f,1.0f }, "Translation");
+			dcheck(ImGui::SliderFloat("X", &tf.x, -60.f, 60.f));
+			dcheck(ImGui::SliderFloat("Y", &tf.y, -60.f, 60.f));
+			dcheck(ImGui::SliderFloat("Z", &tf.z, -60.f, 60.f));
+			ImGui::TextColored({ 0.4f,1.0f,0.6f,1.0f }, "Orientation");
+			dcheck(ImGui::SliderAngle("X-rotation", &tf.xRot, -180.0f, 180.0f));
+			dcheck(ImGui::SliderAngle("Y-rotation", &tf.yRot, -180.0f, 180.0f));
+			dcheck(ImGui::SliderAngle("Z-rotation", &tf.zRot, -180.0f, 180.0f));
+			if (dirty)
+			{
+				pSelectedNode->SetAppliedTransform(
+					dx::XMMatrixRotationX(tf.xRot) *
+					dx::XMMatrixRotationY(tf.yRot) *
+					dx::XMMatrixRotationZ(tf.zRot) *
+					dx::XMMatrixTranslation(tf.x, tf.y, tf.z)
+				);
+			}
+
+			TP probe;
+			pSelectedNode->Accept(probe);
+		}
+		ImGui::End();
+	}
 protected:
 	bool PushNode( Node& node ) override
 	{

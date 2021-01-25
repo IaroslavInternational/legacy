@@ -26,7 +26,7 @@ private:
 	ScriptCommander scriptCommander;
 	
 	EngineTimer timer;
-	float speed_factor = 1.0f;
+	float speed_factor = 2.0f;
 
 	std::map<std::unique_ptr<Scene>, bool> scenes;
 };
