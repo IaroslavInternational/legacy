@@ -520,6 +520,8 @@ namespace ImGui
     IMGUI_API void          Value(const char* prefix, unsigned int v);
     IMGUI_API void          Value(const char* prefix, float v, const char* float_format = NULL);
 
+    float GetMenuHeight();
+
     // Widgets: Menus
     IMGUI_API bool          BeginMainMenuBar();                                                 // create and append to a full screen menu-bar.
     IMGUI_API void          EndMainMenuBar();                                                   // only call EndMainMenuBar() if BeginMainMenuBar() returns true!

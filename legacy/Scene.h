@@ -39,6 +39,8 @@ public:
 
 	void ShowTriggersInfo();
 
+	void ShowMenu();
+
 	/*************/
 
 	// Удаление содердимого 

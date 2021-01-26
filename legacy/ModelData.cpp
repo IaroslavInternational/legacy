@@ -69,21 +69,29 @@ ModelData::~ModelData()
 
 void ModelData::ShowInterface()
 {
+	ShowLeftSideInterface();
+	ShowRightSideInterface();
+}
+
+void ModelData::ShowLeftSideInterface()
+{
 	/* Левая сторона */
 
-	const float DISTANCE1 = 0.0f;
-	static int corner1 = 0;
+	const float DISTANCE = 0.0f;
+	static int corner = 0;
 
 	ImGuiIO& io = ImGui::GetIO();
-	ImVec2 window_pos = ImVec2((corner1 & 1) ? io.DisplaySize.x - DISTANCE1 : DISTANCE1, (corner1 & 2) ? io.DisplaySize.y - DISTANCE1 : DISTANCE1);
-	ImVec2 window_pos_pivot = ImVec2((corner1 & 1) ? 1.0f : 0.0f, (corner1 & 2) ? 1.0f : 0.0f);
-	ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
+	
+	ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y - ImGui::GetMenuHeight() : ImGui::GetMenuHeight());
+	ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
+	ImGui::SetNextWindowPos(window_pos, 0, window_pos_pivot);
 	ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x * 0.2f, io.DisplaySize.y * 0.75f), ImGuiCond_FirstUseEver);
-
-	static const char* selected = "";
-
-	if (ImGui::Begin("Объекты", (bool*)(true), ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize))
+	
+	if (ImGui::Begin("Объекты", (bool*)(true), 
+		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | 
+		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar))
 	{
+		ImGui::Text("Объекты");
 		for (auto& m_name : modelsName)
 		{
 			char label[128];
@@ -94,26 +102,31 @@ void ModelData::ShowInterface()
 				selected = m_name.c_str();
 			}
 		}
-
 	}
 	ImGui::End();
-
+	ImGui::GetStyle().DisplayWindowPadding = { 0, 0 };
+	ImGui::GetStyle().DisplaySafeAreaPadding = { 0, 0 };
 	/* Конец левой стороны */
+}
 
+void ModelData::ShowRightSideInterface()
+{
 	/* Правая сторона */
-	const float DISTANCE2 = 0.0f;
-	static int corner2 = 1;
+	const float DISTANCE = 0.0f;
+	static int corner = 1;
 
-	io = ImGui::GetIO();
-	window_pos = ImVec2((corner2 & 1) ? io.DisplaySize.x - DISTANCE2 : DISTANCE2, (corner2 & 2) ? io.DisplaySize.y - DISTANCE2 : DISTANCE2);
-	window_pos_pivot = ImVec2((corner2 & 1) ? 1.0f : 0.0f, (corner2 & 2) ? 1.0f : 0.0f);
-	ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
-	ImGui::SetWindowSize(ImVec2(io.DisplaySize.x * 0.2f, io.DisplaySize.y * 0.75f), ImGuiCond_FirstUseEver);
-
-	if (ImGui::Begin("Опции", (bool*)(true), ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize))
+	ImGuiIO& io = ImGui::GetIO();
+	ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y - ImGui::GetMenuHeight() : ImGui::GetMenuHeight());
+	ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
+	ImGui::SetNextWindowPos(window_pos, 0, window_pos_pivot);
+	ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x * 0.2f, io.DisplaySize.y * 0.75f), ImGuiCond_FirstUseEver);
+	
+	if (ImGui::Begin("Опции", (bool*)(true),
+		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar))
 	{
-		//if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
-		//{
+		if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
+		{
 			if (ImGui::BeginChild("Положение"))
 			{
 				for (int k = 0; k < modelsName.size(); k++)
@@ -129,12 +142,12 @@ void ModelData::ShowInterface()
 				ImGui::EndChild();
 			}
 
-			/*if (ImGui::BeginTabItem("Информация"))
+			if (ImGui::BeginTabItem("Информация"))
 			{
 				ImGui::EndTabItem();
 			}
-			ImGui::EndTabBar();*/
-		//}
+			ImGui::EndTabBar();
+		}
 	}
 	ImGui::End();
 

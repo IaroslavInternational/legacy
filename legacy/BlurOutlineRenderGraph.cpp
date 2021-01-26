@@ -158,13 +158,13 @@ namespace Rgph
 
 	void BlurOutlineRenderGraph::RenderKernelWindow( Graphics& gfx )
 	{
-		if( ImGui::Begin( "Kernel" ) )
+		if( ImGui::Begin( "Ядро" ) )
 		{
 			bool filterChanged = false;
 			{
-				const char* items[] = { "Gauss","Box" };
+				const char* items[] = { "Гаусс","Коробка" };
 				static const char* curItem = items[0];
-				if( ImGui::BeginCombo( "Filter Type",curItem ) )
+				if( ImGui::BeginCombo( "Тип фильтра",curItem ) )
 				{
 					for( int n = 0; n < std::size( items ); n++ )
 					{
@@ -191,8 +191,8 @@ namespace Rgph
 				}
 			}
 
-			bool radChange = ImGui::SliderInt( "Radius",&radius,0,maxRadius );
-			bool sigChange = ImGui::SliderFloat( "Sigma",&sigma,0.1f,10.0f );
+			bool radChange = ImGui::SliderInt( "Радиус",&radius,0,maxRadius );
+			bool sigChange = ImGui::SliderFloat( "Сигма",&sigma,0.1f,10.0f );
 			if( radChange || sigChange || filterChanged )
 			{
 				if( kernelType == KernelType::Gauss )
@@ -210,7 +210,7 @@ namespace Rgph
 
 	void Rgph::BlurOutlineRenderGraph::RenderShadowWindow( Graphics& gfx )
 	{
-		if( ImGui::Begin( "Shadow" ) )
+		if( ImGui::Begin( "Тень" ) )
 		{
 			if( ImGui::Button( "Dump Cubemap" ) )
 			{

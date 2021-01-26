@@ -40,39 +40,39 @@ public:
 
 		if( auto v = buf["scale"]; v.Exists() )
 		{
-			dcheck( ImGui::SliderFloat( tag( "Scale" ),&v,1.0f,2.0f,"%.3f",3.5f ) );
+			dcheck( ImGui::SliderFloat( tag( "Размер" ),&v,1.0f,2.0f,"%.3f",3.5f ) );
 		}
 		if( auto v = buf["offset"]; v.Exists() )
 		{
-			dcheck( ImGui::SliderFloat( tag( "offset" ),&v,0.0f,1.0f,"%.3f",2.5f ) );
+			dcheck( ImGui::SliderFloat( tag( "Отступ" ),&v,0.0f,1.0f,"%.3f",2.5f ) );
 		}
 		if( auto v = buf["materialColor"]; v.Exists() )
 		{
-			dcheck( ImGui::ColorPicker3( tag( "Color" ),reinterpret_cast<float*>(&static_cast<dx::XMFLOAT3&>(v)) ) );
+			dcheck( ImGui::ColorPicker3( tag( "Цвет" ),reinterpret_cast<float*>(&static_cast<dx::XMFLOAT3&>(v)) ) );
 		}
 		if( auto v = buf["specularColor"]; v.Exists() )
 		{
-			dcheck( ImGui::ColorPicker3( tag( "Spec. Color" ),reinterpret_cast<float*>(&static_cast<dx::XMFLOAT3&>(v)) ) );
+			dcheck( ImGui::ColorPicker3( tag( "Зерк., цвет" ),reinterpret_cast<float*>(&static_cast<dx::XMFLOAT3&>(v)) ) );
 		}
 		if( auto v = buf["specularGloss"]; v.Exists() )
 		{
-			dcheck( ImGui::SliderFloat( tag( "Glossiness" ),&v,1.0f,100.0f,"%.1f",1.5f ) );
+			dcheck( ImGui::SliderFloat( tag( "Глянец" ),&v,1.0f,100.0f,"%.1f",1.5f ) );
 		}
 		if( auto v = buf["specularWeight"]; v.Exists() )
 		{
-			dcheck( ImGui::SliderFloat( tag( "Spec. Weight" ),&v,0.0f,2.0f ) );
+			dcheck( ImGui::SliderFloat( tag( "Зерк., вес" ),&v,0.0f,2.0f ) );
 		}
 		if( auto v = buf["useSpecularMap"]; v.Exists() )
 		{
-			dcheck( ImGui::Checkbox( tag( "Spec. Map Enable" ),&v ) );
+			dcheck( ImGui::Checkbox( tag( "Зерк., карта" ),&v ) );
 		}
 		if( auto v = buf["useNormalMap"]; v.Exists() )
 		{
-			dcheck( ImGui::Checkbox( tag( "Normal Map Enable" ),&v ) );
+			dcheck( ImGui::Checkbox( tag( "Карта норм.," ),&v ) );
 		}
 		if( auto v = buf["normalMapWeight"]; v.Exists() )
 		{
-			dcheck( ImGui::SliderFloat( tag( "Normal Map Weight" ),&v,0.0f,2.0f ) );
+			dcheck( ImGui::SliderFloat( tag( "Вес карты норм." ),&v,0.0f,2.0f ) );
 		}
 		return dirty;
 	}
@@ -95,14 +95,14 @@ public:
 			bool dirty = false;
 			const auto dcheck = [&dirty]( bool changed ) {dirty = dirty || changed; };
 			auto& tf = ResolveTransform();
-			ImGui::TextColored( { 0.4f,1.0f,0.6f,1.0f },"Translation" );
+			ImGui::TextColored( { 0.4f,1.0f,0.6f,1.0f },"Позиция" );
 			dcheck( ImGui::SliderFloat( "X",&tf.x,-60.f,60.f ) );
 			dcheck( ImGui::SliderFloat( "Y",&tf.y,-60.f,60.f ) );
 			dcheck( ImGui::SliderFloat( "Z",&tf.z,-60.f,60.f ) );
-			ImGui::TextColored( { 0.4f,1.0f,0.6f,1.0f },"Orientation" );
-			dcheck( ImGui::SliderAngle( "X-rotation",&tf.xRot,-180.0f,180.0f ) );
-			dcheck( ImGui::SliderAngle( "Y-rotation",&tf.yRot,-180.0f,180.0f ) );
-			dcheck( ImGui::SliderAngle( "Z-rotation",&tf.zRot,-180.0f,180.0f ) );
+			ImGui::TextColored( { 0.4f,1.0f,0.6f,1.0f },"Ориентация" );
+			dcheck( ImGui::SliderAngle( "X-вращение",&tf.xRot,-180.0f,180.0f ) );
+			dcheck( ImGui::SliderAngle( "Y-вращение",&tf.yRot,-180.0f,180.0f ) );
+			dcheck( ImGui::SliderAngle( "Z-вращение",&tf.zRot,-180.0f,180.0f ) );
 			if( dirty )
 			{
 				pSelectedNode->SetAppliedTransform(
@@ -131,14 +131,14 @@ public:
 			bool dirty = false;
 			const auto dcheck = [&dirty](bool changed) {dirty = dirty || changed; };
 			auto& tf = ResolveTransform();
-			ImGui::TextColored({ 0.4f,1.0f,0.6f,1.0f }, "Translation");
+			ImGui::TextColored({ 0.4f,1.0f,0.6f,1.0f }, "Позиция");
 			dcheck(ImGui::SliderFloat("X", &tf.x, -60.f, 60.f));
 			dcheck(ImGui::SliderFloat("Y", &tf.y, -60.f, 60.f));
 			dcheck(ImGui::SliderFloat("Z", &tf.z, -60.f, 60.f));
-			ImGui::TextColored({ 0.4f,1.0f,0.6f,1.0f }, "Orientation");
-			dcheck(ImGui::SliderAngle("X-rotation", &tf.xRot, -180.0f, 180.0f));
-			dcheck(ImGui::SliderAngle("Y-rotation", &tf.yRot, -180.0f, 180.0f));
-			dcheck(ImGui::SliderAngle("Z-rotation", &tf.zRot, -180.0f, 180.0f));
+			ImGui::TextColored({ 0.4f,1.0f,0.6f,1.0f }, "Ориентация");
+			dcheck(ImGui::SliderAngle("X-вращение", &tf.xRot, -180.0f, 180.0f));
+			dcheck(ImGui::SliderAngle("Y-вращение", &tf.yRot, -180.0f, 180.0f));
+			dcheck(ImGui::SliderAngle("Z-вращение", &tf.zRot, -180.0f, 180.0f));
 			if (dirty)
 			{
 				pSelectedNode->SetAppliedTransform(

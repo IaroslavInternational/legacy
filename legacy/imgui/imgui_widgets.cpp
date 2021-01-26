@@ -5605,6 +5605,12 @@ float ImGuiMenuColumns::CalcExtraSpace(float avail_w)
     return ImMax(0.0f, avail_w - Width);
 }
 
+float ImGui::GetMenuHeight()
+{
+    ImGuiContext& g = *GImGui;
+    return g.NextWindowData.MenuBarOffsetMinVal.y + g.FontBaseSize + g.Style.FramePadding.y + 2.0f;
+}
+
 // For the main menu bar, which cannot be moved, we honor g.Style.DisplaySafeAreaPadding to ensure text can be visible on a TV set.
 bool ImGui::BeginMainMenuBar()
 {

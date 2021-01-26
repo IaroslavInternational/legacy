@@ -102,13 +102,13 @@ void Scene::Render(float dt)
 	//light.SpawnControlWindow();
 	//plane.SpawnControlWindow(wnd->Gfx(), "Триггер 1");
 
-	rg.RenderWindows(wnd->Gfx());
+	//rg.RenderWindows(wnd->Gfx());
 
 	//ShowGUI(sceneName);
 	ShowFPS();
 	//ShowTriggersInfo();
 	md.ShowInterface();
-
+	ShowMenu();
 	//ShowImguiDemoWindow();
 
 	// present
@@ -325,6 +325,28 @@ void Scene::ShowTriggersInfo()
 		ImGui::EndGroup();
 	}
 	ImGui::End();
+}
+
+void Scene::ShowMenu()
+{
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("Файл"))
+		{
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Изменить"))
+		{
+			if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+			if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+			ImGui::Separator();
+			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
 }
 
 void Scene::ClearAll()
