@@ -6,6 +6,7 @@
 #include "Channels.h"
 #include "TestModelProbe.h"
 #include "Camera.h"
+#include "AdapterData.h"
 
 Scene::Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window> _wnd,
 			 const char* PathToModelData)
@@ -53,6 +54,14 @@ Scene::Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window>
 
 	sceneName = SceneName;
 	ID = SceneID;
+
+	/*Стиль интерфейса*/
+
+	ImGui::GetStyle().FrameRounding = 4.0f;
+	ImGui::GetStyle().WindowBorderSize = 0.0f;
+	ImGui::GetStyle().WindowRounding = 0.0f;
+
+	/******************/
 }
 
 Scene::~Scene()
@@ -104,12 +113,12 @@ void Scene::Render(float dt)
 
 	//rg.RenderWindows(wnd->Gfx());
 
-	//ShowGUI(sceneName);
 	ShowFPS();
-	//ShowTriggersInfo();
-	md.ShowInterface();
 	ShowMenu();
-	//ShowImguiDemoWindow();
+	ShowLeftSide();
+	ShowRightSide();
+
+	ShowImguiDemoWindow();
 
 	// present
 	wnd->Gfx().EndFrame();
@@ -225,28 +234,39 @@ void Scene::ShowGUI(const char* name)
 
 void Scene::ShowFPS()
 {
-	const float DISTANCE = 10.0f;
+	const float DISTANCE = 0.0f;
 	static int corner = 2;
+
 	ImGuiIO& io = ImGui::GetIO();
-	if (corner != -1)
+
+	ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y + ImGui::GetMenuHeight() : ImGui::GetMenuHeight());
+	ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
+	ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
+	ImGui::SetNextWindowSize({io.DisplaySize.x * 0.2f, io.DisplaySize.y * 0.25f});
+	
+	auto GPU_Data = AdapterReader::GetAdapterData();
+
+	if (ImGui::Begin("FPS", &ShowHardwareInfo, (corner != -1 ? ImGuiWindowFlags_NoMove : 0) | 
+		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize |
+		ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoSavedSettings |
+		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
 	{
-		ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y - DISTANCE : DISTANCE);
-		ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
-		ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
-	}
-	ImGui::SetNextWindowBgAlpha(0.3f); // Transparent background
-	if (ImGui::Begin("FPS", (bool*)(true), (corner != -1 ? ImGuiWindowFlags_NoMove : 0) | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
-	{
-		ImGui::Text("FPS");
+		ImGui::Separator();
+		ImGui::Text("FPS:");
 		ImGui::Text("%.3f мс/кадр (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		if (ImGui::BeginPopupContextWindow())
+
+
+		ImGui::Text("Графическое оборудование:");
+		for (auto& d : GPU_Data)
 		{
-			if (ImGui::MenuItem("Custom", NULL, corner == -1)) corner = -1;
-			if (ImGui::MenuItem("Top-left", NULL, corner == 0)) corner = 0;
-			if (ImGui::MenuItem("Top-right", NULL, corner == 1)) corner = 1;
-			if (ImGui::MenuItem("Bottom-left", NULL, corner == 2)) corner = 2;
-			if (ImGui::MenuItem("Bottom-right", NULL, corner == 3)) corner = 3;
-			ImGui::EndPopup();
+			char name_gpu[256];
+			sprintf_s(name_gpu, "%ws", d.desc.Description);
+
+			if (ImGui::TreeNode(name_gpu))
+			{
+				ImGui::TextColored({ 244.0f, 172.0f, 13.0f, 1.0f},"Память: ~%.1f ГБ", round(static_cast<double>(d.desc.DedicatedVideoMemory) / 1073741824));
+				ImGui::TreePop();
+			}
 		}
 	}
 	ImGui::End();
@@ -335,6 +355,7 @@ void Scene::ShowMenu()
 		{
 			ImGui::EndMenu();
 		}
+
 		if (ImGui::BeginMenu("Изменить"))
 		{
 			if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
@@ -345,8 +366,80 @@ void Scene::ShowMenu()
 			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
 			ImGui::EndMenu();
 		}
+
+		if (ImGui::BeginMenu("Окна"))
+		{
+			if (ImGui::MenuItem("Модели"))
+			{
+				if (ShowModelsList && ShowModelsSettings)
+				{
+					ShowModelsList = false;
+					ShowModelsSettings = false;
+				}
+				else
+				{
+					ShowModelsList = true;
+					ShowModelsSettings = true;
+				}
+			}
+			ImGui::EndMenu();
+		}
+
 		ImGui::EndMainMenuBar();
 	}
+}
+
+void Scene::ShowLeftSide()
+{
+	/* Левая сторона */
+
+	const float DISTANCE = 0.0f;
+	static int corner = 0;
+
+	ImGuiIO& io = ImGui::GetIO();
+
+	ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y - ImGui::GetMenuHeight() : ImGui::GetMenuHeight());
+	ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
+	ImGui::SetNextWindowPos(window_pos, 0, window_pos_pivot);
+	ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x * 0.2f, io.DisplaySize.y * 0.75f), ImGuiCond_FirstUseEver);
+
+	/* Содержимое */
+	
+	if (ShowModelsList)
+	{
+		md.ShowModelsInformation(&ShowModelsList);
+	}
+
+	/**************/
+
+	ImGui::GetStyle().DisplayWindowPadding = { 0, 0 };
+	ImGui::GetStyle().DisplaySafeAreaPadding = { 0, 0 };
+	
+	/* Конец левой стороны */
+}
+
+void Scene::ShowRightSide()
+{
+	/* Правая сторона */
+	const float DISTANCE = 0.0f;
+	static int corner = 1;
+
+	ImGuiIO& io = ImGui::GetIO();
+	ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y - ImGui::GetMenuHeight() : ImGui::GetMenuHeight());
+	ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
+	ImGui::SetNextWindowPos(window_pos, 0, window_pos_pivot);
+	ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x * 0.2f, io.DisplaySize.y * 0.75f), ImGuiCond_FirstUseEver);
+
+	/* Содержимое */
+
+	if (ShowModelsSettings)
+	{
+		md.ShowModelsProperties(&ShowModelsSettings);
+	}
+
+	/**************/
+
+	/* Конец правой стороны */
 }
 
 void Scene::ClearAll()

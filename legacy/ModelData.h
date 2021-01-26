@@ -13,7 +13,8 @@ public:
 	ModelData(const char* path, Graphics& gfx);
 	~ModelData();
 
-	void ShowInterface();
+	void ShowModelsInformation(bool* is_Active);
+	void ShowModelsProperties(bool* is_Active);
 public:
 	std::vector<std::string> modelsName;
 	std::vector<std::unique_ptr<Model>> models;
@@ -21,8 +22,5 @@ public:
 	std::vector<DirectX::XMFLOAT3> modelsOrien;
 private:
 	const char* selected = "";
-	
-	void ShowLeftSideInterface();
-	void ShowRightSideInterface();
 };
 

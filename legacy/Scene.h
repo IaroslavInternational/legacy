@@ -30,19 +30,6 @@ public:
 
 	std::pair<const char*, bool> IsOnTheSceneTrigger();
 
-	/* Интерфейс */
-
-	// Отрисовка интерфейса
-	void ShowGUI(const char* name);
-
-	void ShowFPS();
-
-	void ShowTriggersInfo();
-
-	void ShowMenu();
-
-	/*************/
-
 	// Удаление содердимого 
 	void ClearAll();
 	
@@ -57,6 +44,26 @@ public:
 	// Демо-интерфейс 
 	void ShowImguiDemoWindow();
 private:
+	/* Интерфейс */
+
+	// Верхня панель меню
+	void ShowMenu();
+
+	// Левая панель
+	void ShowLeftSide();
+
+	// Правая панель
+	void ShowRightSide();
+
+	// 
+	void ShowGUI(const char* name);
+
+	void ShowFPS();
+
+	void ShowTriggersInfo();
+
+	/*************/
+private:
 	// Идентификаторы сцены
 	const char* sceneName;
 	const char* ID;
@@ -67,6 +74,15 @@ private:
 	bool onTrigger = false; const char* triggerGoal = nullptr;
 	bool cursorState = false;
 	bool CatchingTriggers = true;
+
+	/* Интерфейс */
+
+	bool ShowModelsList = true;
+	bool ShowModelsSettings = true;
+
+	bool ShowHardwareInfo = true;
+
+	/*************/
 
 	std::vector<const char*> scNames;
 	
