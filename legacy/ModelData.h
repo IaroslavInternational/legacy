@@ -13,8 +13,8 @@ public:
 	ModelData(const char* path, Graphics& gfx);
 	~ModelData();
 
-	void ShowModelsInformation(bool* is_Active);
-	void ShowModelsProperties(bool* is_Active);
+	void ShowModelsInformation();
+	void ShowModelsProperties();
 public:
 	std::vector<std::string> modelsName;
 	std::vector<std::unique_ptr<Model>> models;

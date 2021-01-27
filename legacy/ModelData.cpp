@@ -67,15 +67,12 @@ ModelData::~ModelData()
 {
 }
 
-void ModelData::ShowModelsInformation(bool* is_Active)
+void ModelData::ShowModelsInformation()
 {
-	if (ImGui::Begin("Объекты", is_Active,
+	if (ImGui::Begin("Объекты", NULL,
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | 
-		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar))
+		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus))
 	{
-		ImGui::Text("Объекты");
-		ImGui::Separator();
-
 		for (auto& m_name : modelsName)
 		{
 			char label[128];
@@ -91,16 +88,12 @@ void ModelData::ShowModelsInformation(bool* is_Active)
 	ImGui::End();
 }
 
-void ModelData::ShowModelsProperties(bool* is_Active)
+void ModelData::ShowModelsProperties()
 {
-	if (ImGui::Begin("Опции", is_Active,
+	if (ImGui::Begin("Опции", NULL,
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar))
+		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus))
 	{
-
-		ImGui::Text("Положение");
-		ImGui::Separator();
-
 		for (int k = 0; k < modelsName.size(); k++)
 		{
 			if (modelsName.at(k) == selected)

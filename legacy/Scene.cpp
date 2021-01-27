@@ -8,8 +8,8 @@
 #include "Camera.h"
 #include "AdapterData.h"
 
-Scene::Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window> _wnd,
-			 const char* PathToModelData)
+Scene::Scene(const char* SceneName,		   const char* SceneID,
+			 std::shared_ptr<Window> _wnd, const char* PathToModelData)
 	:
 	wnd(_wnd),
 	light(wnd->Gfx(), { 10.0f, 5.0f, 0.0f }),
@@ -46,7 +46,11 @@ Scene::Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window>
 			dx::XMMatrixRotationX(md.modelsOrien[i].x) *
 			dx::XMMatrixRotationY(md.modelsOrien[i].y) *
 			dx::XMMatrixRotationZ(md.modelsOrien[i].z) *
-			dx::XMMatrixTranslation(md.modelsPos[i].x, md.modelsPos[i].y, md.modelsPos[i].z)
+			dx::XMMatrixTranslation(
+				md.modelsPos[i].x,
+				md.modelsPos[i].y,
+				md.modelsPos[i].z
+			)
 		);
 	}
 
@@ -113,10 +117,10 @@ void Scene::Render(float dt)
 
 	//rg.RenderWindows(wnd->Gfx());
 
-	ShowFPS();
 	ShowMenu();
 	ShowLeftSide();
 	ShowRightSide();
+	ShowLeftBottomSide();
 
 	ShowImguiDemoWindow();
 
@@ -206,6 +210,225 @@ std::pair<const char*, bool> Scene::IsOnTheSceneTrigger()
 	return strc.CheckTriggers(camPos);
 }
 
+/***************** Интерфейс *****************/
+
+void Scene::ShowMenu()
+{
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("Файл"))
+		{
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Изменить"))
+		{
+			if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+			if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+			ImGui::Separator();
+			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Окна"))
+		{
+			if (ImGui::MenuItem("Модели"))
+			{
+				if (ShowModelsList && ShowModelsSettings)
+				{
+					ShowModelsList = false;
+					ShowModelsSettings = false;
+				}
+				else
+				{
+					ShowModelsList = true;
+					ShowModelsSettings = true;
+				}
+			}
+
+			if (ImGui::MenuItem("FPS & GPU"))
+			{
+				if (ShowHardwareInfo)
+				{
+					ShowHardwareInfo = false;
+				}
+				else 
+				{
+					ShowHardwareInfo = true;
+				}
+			}
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMainMenuBar();
+	}
+}
+
+void Scene::ShowLeftSide()
+{
+	/* Левая сторона */
+
+	ImGuiIO& io = ImGui::GetIO();
+	int corner = 0;
+
+	float MenuHeight = ImGui::GetMenuHeight();
+
+	float LeftPanelW = io.DisplaySize.x * 0.2f;
+	float LeftPanelH = io.DisplaySize.y * 0.75f;
+
+	ImVec2 LeftPanelSize = ImVec2(
+		LeftPanelW,
+		LeftPanelH
+	);
+
+	ImVec2 LeftPanelPos = ImVec2(
+		(corner & 1) ? io.DisplaySize.x : 0.0f,
+		(corner & 2) ? io.DisplaySize.y - MenuHeight : MenuHeight
+	);
+
+	ImVec2 LeftPanelPivot = ImVec2(
+		(corner & 1) ? 1.0f : 0.0f,
+		(corner & 2) ? 1.0f : 0.0f
+	);
+
+	ImGui::SetNextWindowPos(LeftPanelPos, 0, LeftPanelPivot);
+	ImGui::SetNextWindowSize(LeftPanelSize, ImGuiCond_FirstUseEver);
+
+	/* Содержимое */
+	
+	if (ShowModelsList)
+	{
+		md.ShowModelsInformation();
+	}
+
+	/**************/
+
+	ImGui::GetStyle().DisplayWindowPadding = { 0.0f, 0.0f };
+	ImGui::GetStyle().DisplaySafeAreaPadding = { 0.0f, 0.0f };
+	
+	/* Конец левой стороны */
+}
+
+void Scene::ShowRightSide()
+{
+	/* Правая сторона */
+
+	ImGuiIO& io = ImGui::GetIO();
+	int corner = 1;
+
+	float MenuHeight = ImGui::GetMenuHeight();
+
+	float RightPanelW = io.DisplaySize.x * 0.2f;
+	float RightPanelH = io.DisplaySize.y * 0.75f;
+
+	ImVec2 RightPanelSize = ImVec2(
+		RightPanelW,
+		RightPanelH
+	);
+
+	ImVec2 RightPanelPos = ImVec2(
+		(corner & 1) ? io.DisplaySize.x : 0.0f,
+		(corner & 2) ? io.DisplaySize.y - MenuHeight : MenuHeight
+	);
+
+	ImVec2 RightPanelPivot = ImVec2(
+		(corner & 1) ? 1.0f : 0.0f,
+		(corner & 2) ? 1.0f : 0.0f
+	);
+
+	ImGui::SetNextWindowPos(RightPanelPos, 0, RightPanelPivot);
+	ImGui::SetNextWindowSize(RightPanelSize, ImGuiCond_FirstUseEver);
+	
+	/* Содержимое */
+
+	if (ShowModelsSettings)
+	{
+		md.ShowModelsProperties();
+	}
+
+	/**************/
+
+	/* Конец правой стороны */
+}
+
+void Scene::ShowLeftBottomSide()
+{
+	/* Левая нижняя сторона */
+
+	ImGuiIO& io = ImGui::GetIO();
+	int corner = 2;
+
+	float MenuHeight = ImGui::GetMenuHeight();
+
+	float LeftBottomPanelW = io.DisplaySize.x * 0.2f;
+	float LeftBottomPanelH = io.DisplaySize.y * 0.25f;
+
+	ImVec2 LeftBottomPanelSize = ImVec2(
+		LeftBottomPanelW,
+		LeftBottomPanelH
+	);
+
+	ImVec2 LeftBottomPanelPos = ImVec2(
+		(corner & 1) ? io.DisplaySize.x : 0.0f,
+		(corner & 2) ? io.DisplaySize.y + MenuHeight : MenuHeight
+	);
+
+	ImVec2 LeftBottomPanelPivot = ImVec2(
+		(corner & 1) ? 1.0f : 0.0f,
+		(corner & 2) ? 1.0f : 0.0f
+	);
+
+	ImGui::SetNextWindowPos(LeftBottomPanelPos, ImGuiCond_Always, LeftBottomPanelPivot);
+	ImGui::SetNextWindowSize(LeftBottomPanelSize);
+
+	/* Содержимое */
+
+	if (ShowHardwareInfo)
+	{
+		ShowFPSAndGPU();
+	}
+
+	/**************/
+
+	/* Конец левой нижней стороны */
+}
+
+void Scene::ShowFPSAndGPU()
+{
+	auto GPU_Data = AdapterReader::GetAdapterData();
+
+	if (ImGui::Begin("Представление", NULL,
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize |
+		ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus))
+	{
+		ImGui::Text("FPS:");
+		ImGui::Text("%.3f мс/кадр (%.2f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+		ImGui::Separator();
+
+		ImGui::Text("Графическое оборудование:");
+		for (auto& d : GPU_Data)
+		{
+			char name_gpu[256];
+			sprintf_s(name_gpu, "%ws", d.desc.Description);
+
+			if (ImGui::TreeNode(name_gpu))
+			{
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(133.0f/255.0f, 219.0f/255.0f, 15.0f/255, 1.0f));
+				ImGui::Text("Память: ~%.1f ГБ", round(static_cast<double>(d.desc.DedicatedVideoMemory) / 1073741824));
+				ImGui::PopStyleColor();
+				ImGui::TreePop();
+			}
+		}
+	}
+	ImGui::End();
+}
+
 void Scene::ShowGUI(const char* name)
 {
 	if (ImGui::Begin(name))
@@ -232,46 +455,6 @@ void Scene::ShowGUI(const char* name)
 	ImGui::End();
 }
 
-void Scene::ShowFPS()
-{
-	const float DISTANCE = 0.0f;
-	static int corner = 2;
-
-	ImGuiIO& io = ImGui::GetIO();
-
-	ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y + ImGui::GetMenuHeight() : ImGui::GetMenuHeight());
-	ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
-	ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
-	ImGui::SetNextWindowSize({io.DisplaySize.x * 0.2f, io.DisplaySize.y * 0.25f});
-	
-	auto GPU_Data = AdapterReader::GetAdapterData();
-
-	if (ImGui::Begin("FPS", &ShowHardwareInfo, (corner != -1 ? ImGuiWindowFlags_NoMove : 0) | 
-		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize |
-		ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoSavedSettings |
-		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
-	{
-		ImGui::Separator();
-		ImGui::Text("FPS:");
-		ImGui::Text("%.3f мс/кадр (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
-
-		ImGui::Text("Графическое оборудование:");
-		for (auto& d : GPU_Data)
-		{
-			char name_gpu[256];
-			sprintf_s(name_gpu, "%ws", d.desc.Description);
-
-			if (ImGui::TreeNode(name_gpu))
-			{
-				ImGui::TextColored({ 244.0f, 172.0f, 13.0f, 1.0f},"Память: ~%.1f ГБ", round(static_cast<double>(d.desc.DedicatedVideoMemory) / 1073741824));
-				ImGui::TreePop();
-			}
-		}
-	}
-	ImGui::End();
-}
-
 void Scene::ShowTriggersInfo()
 {
 	ImGui::SetNextWindowSize(ImVec2(500, 440), ImGuiCond_FirstUseEver);
@@ -281,7 +464,7 @@ void Scene::ShowTriggersInfo()
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("Close")) 
+				if (ImGui::MenuItem("Close"))
 				{
 					ImGui::CloseCurrentPopup();
 				}
@@ -347,100 +530,7 @@ void Scene::ShowTriggersInfo()
 	ImGui::End();
 }
 
-void Scene::ShowMenu()
-{
-	if (ImGui::BeginMainMenuBar())
-	{
-		if (ImGui::BeginMenu("Файл"))
-		{
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Изменить"))
-		{
-			if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-			if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-			ImGui::Separator();
-			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Окна"))
-		{
-			if (ImGui::MenuItem("Модели"))
-			{
-				if (ShowModelsList && ShowModelsSettings)
-				{
-					ShowModelsList = false;
-					ShowModelsSettings = false;
-				}
-				else
-				{
-					ShowModelsList = true;
-					ShowModelsSettings = true;
-				}
-			}
-			ImGui::EndMenu();
-		}
-
-		ImGui::EndMainMenuBar();
-	}
-}
-
-void Scene::ShowLeftSide()
-{
-	/* Левая сторона */
-
-	const float DISTANCE = 0.0f;
-	static int corner = 0;
-
-	ImGuiIO& io = ImGui::GetIO();
-
-	ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y - ImGui::GetMenuHeight() : ImGui::GetMenuHeight());
-	ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
-	ImGui::SetNextWindowPos(window_pos, 0, window_pos_pivot);
-	ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x * 0.2f, io.DisplaySize.y * 0.75f), ImGuiCond_FirstUseEver);
-
-	/* Содержимое */
-	
-	if (ShowModelsList)
-	{
-		md.ShowModelsInformation(&ShowModelsList);
-	}
-
-	/**************/
-
-	ImGui::GetStyle().DisplayWindowPadding = { 0, 0 };
-	ImGui::GetStyle().DisplaySafeAreaPadding = { 0, 0 };
-	
-	/* Конец левой стороны */
-}
-
-void Scene::ShowRightSide()
-{
-	/* Правая сторона */
-	const float DISTANCE = 0.0f;
-	static int corner = 1;
-
-	ImGuiIO& io = ImGui::GetIO();
-	ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y - ImGui::GetMenuHeight() : ImGui::GetMenuHeight());
-	ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
-	ImGui::SetNextWindowPos(window_pos, 0, window_pos_pivot);
-	ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x * 0.2f, io.DisplaySize.y * 0.75f), ImGuiCond_FirstUseEver);
-
-	/* Содержимое */
-
-	if (ShowModelsSettings)
-	{
-		md.ShowModelsProperties(&ShowModelsSettings);
-	}
-
-	/**************/
-
-	/* Конец правой стороны */
-}
+/*********************************************/
 
 void Scene::ClearAll()
 {

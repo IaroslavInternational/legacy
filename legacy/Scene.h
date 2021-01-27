@@ -44,7 +44,9 @@ public:
 	// Демо-интерфейс 
 	void ShowImguiDemoWindow();
 private:
-	/* Интерфейс */
+	/* -- Интерфейс -- */
+
+	/**** Панели ****/
 
 	// Верхня панель меню
 	void ShowMenu();
@@ -55,14 +57,19 @@ private:
 	// Правая панель
 	void ShowRightSide();
 
+	// Левая нижняя панель
+	void ShowLeftBottomSide();
+
+	/****************/
+
 	// 
 	void ShowGUI(const char* name);
 
-	void ShowFPS();
+	void ShowFPSAndGPU();
 
 	void ShowTriggersInfo();
 
-	/*************/
+	/*******************/
 private:
 	// Идентификаторы сцены
 	const char* sceneName;
