@@ -2,11 +2,13 @@
 
 #include "EngineMath.h"
 #include "EngineUtil.h"
-#include "imgui/imgui.h"
+
 #include "Channels.h"
 #include "TestModelProbe.h"
 #include "Camera.h"
+
 #include "AdapterData.h"
+#include "imgui/imgui.h"
 
 Scene::Scene(const char* SceneName,		   const char* SceneID,
 			 std::shared_ptr<Window> _wnd, const char* PathToModelData)
@@ -121,6 +123,7 @@ void Scene::Render(float dt)
 	ShowLeftSide();
 	ShowRightSide();
 	ShowLeftBottomSide();
+	ShowBottomPanel();
 
 	ShowImguiDemoWindow();
 
@@ -234,7 +237,7 @@ void Scene::ShowMenu()
 
 		if (ImGui::BeginMenu("Окна"))
 		{
-			if (ImGui::MenuItem("Модели"))
+			if (ImGui::MenuItem("Модели сцены"))
 			{
 				if (ShowModelsList && ShowModelsSettings)
 				{
@@ -249,15 +252,13 @@ void Scene::ShowMenu()
 			}
 
 			if (ImGui::MenuItem("FPS & GPU"))
+			{	
+				ShowHardwareInfo ? ShowHardwareInfo = false : ShowHardwareInfo = true;
+			}
+
+			if (ImGui::MenuItem("Лог"))
 			{
-				if (ShowHardwareInfo)
-				{
-					ShowHardwareInfo = false;
-				}
-				else 
-				{
-					ShowHardwareInfo = true;
-				}
+				ShowLogs ? ShowLogs = false : ShowLogs = true;
 			}
 
 			ImGui::EndMenu();
@@ -396,6 +397,48 @@ void Scene::ShowLeftBottomSide()
 	/* Конец левой нижней стороны */
 }
 
+void Scene::ShowBottomPanel()
+{
+	/* Нижняя стороны */
+
+	ImGuiIO& io = ImGui::GetIO();
+	int corner = 3;
+
+	float MenuHeight = ImGui::GetMenuHeight();
+
+	float BottomPanelW = round(io.DisplaySize.x * 0.8f);
+	float BottomPanelH = io.DisplaySize.y * 0.25f;
+
+	ImVec2 BottomPanelSize = ImVec2(
+		BottomPanelW,
+		BottomPanelH
+	);
+
+	ImVec2 BottomPanelPos = ImVec2(
+		(corner & 1) ? io.DisplaySize.x : 0.0f,
+		(corner & 2) ? io.DisplaySize.y + MenuHeight : MenuHeight
+	);
+
+	ImVec2 BottomPanelPivot = ImVec2(
+		(corner & 1) ? 1.0f : 0.0f,
+		(corner & 2) ? 1.0f : 0.0f
+	);
+
+	ImGui::SetNextWindowPos(BottomPanelPos, ImGuiCond_Always, BottomPanelPivot);
+	ImGui::SetNextWindowSize(BottomPanelSize);
+
+	/* Содержимое */
+
+	if (ShowLogs)
+	{
+		ShowLog();
+	}
+
+	/**************/
+
+	/* Конец нижней стороны */
+}
+
 void Scene::ShowFPSAndGPU()
 {
 	auto GPU_Data = AdapterReader::GetAdapterData();
@@ -427,6 +470,29 @@ void Scene::ShowFPSAndGPU()
 		}
 	}
 	ImGui::End();
+}
+
+void Scene::ShowLog()
+{
+	ImGui::Begin("Лог", NULL, ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize |
+		ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus);
+
+	if (ImGui::SmallButton("[Debug] Add 5 entries"))
+	{
+		static int counter = 0;
+		for (int n = 0; n < 5; n++)
+		{
+			const char* categories[3] = { "info", "warn", "error" };
+			const char* words[] = { "Bumfuzzled", "Cattywampus", "Snickersnee", "Abibliophobia", "Absquatulate", "Nincompoop", "Pauciloquent" };
+			log.AddLog("[%05d] [%s] Hello, current time is %.1f, here's a word: '%s'\n",
+				ImGui::GetFrameCount(), categories[counter % IM_ARRAYSIZE(categories)], ImGui::GetTime(), words[counter % IM_ARRAYSIZE(words)]);
+			counter++;
+		}
+	}
+
+	log.Draw("Лог", NULL);
 }
 
 void Scene::ShowGUI(const char* name)

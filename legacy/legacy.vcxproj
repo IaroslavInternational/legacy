@@ -306,6 +306,7 @@
   <ItemGroup>
     <ClInclude Include="AdapterData.h" />
     <ClInclude Include="App.h" />
+    <ClInclude Include="AppLog.h" />
     <ClInclude Include="Bindable.h" />
     <ClInclude Include="BindableCodex.h" />
     <ClInclude Include="BindableCommon.h" />

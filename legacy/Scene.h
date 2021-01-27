@@ -1,14 +1,19 @@
 #pragma once
 
 #include "Window.h"
+
 #include "ImguiManager.h"
+#include "AppLog.h"
+
 #include "CameraContainer.h"
 #include "PointLight.h"
 #include "Model.h"
 #include "BlurOutlineRenderGraph.h"
-#include "EngineTimer.h"
-#include "SceneTriggersContainer.h"
 #include "ModelData.h"
+
+#include "EngineTimer.h"
+
+#include "SceneTriggersContainer.h"
 
 namespace dx = DirectX;
 
@@ -60,12 +65,17 @@ private:
 	// Левая нижняя панель
 	void ShowLeftBottomSide();
 
+	// Нижняя панель
+	void ShowBottomPanel();
+
 	/****************/
 
 	// 
 	void ShowGUI(const char* name);
 
 	void ShowFPSAndGPU();
+
+	void ShowLog();
 
 	void ShowTriggersInfo();
 
@@ -84,10 +94,17 @@ private:
 
 	/* Интерфейс */
 
+	// Левая панель моделей на сцене
 	bool ShowModelsList = true;
+
+	// Правая панель усправления настройками моделей
 	bool ShowModelsSettings = true;
 
+	// FPS и информация о графическом адаптере
 	bool ShowHardwareInfo = true;
+
+	// Лог
+	bool ShowLogs = true;
 
 	/*************/
 
@@ -108,6 +125,9 @@ private:
 	
 	SceneTriggersContainer strc;
 private:
+	// Лог панель
+	AppLog log;
+
 	// Контейнер камер
 	CameraContainer cameras;
 
