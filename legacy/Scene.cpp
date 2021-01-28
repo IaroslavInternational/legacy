@@ -10,6 +10,8 @@
 #include "AdapterData.h"
 #include "imgui/imgui.h"
 
+#include <sstream>
+
 Scene::Scene(const char* SceneName,		   const char* SceneID,
 			 std::shared_ptr<Window> _wnd, const char* PathToModelData, 
 			 const char* PathToTriggerData)
@@ -33,11 +35,6 @@ Scene::Scene(const char* SceneName,		   const char* SceneID,
 		it->second->SetDefault();
 	}
 
-	for (auto& m : md.models)
-	{
-		m->LinkTechniques(rg);
-	}
-
 	for (int i = 0; i < md.models.size(); i++)
 	{
 		md.models[i]->LinkTechniques(rg);
@@ -52,6 +49,11 @@ Scene::Scene(const char* SceneName,		   const char* SceneID,
 				md.modelsPos[i].z
 			)
 		);
+
+		std::ostringstream oss;
+		oss << "[Модели]: " << "Загружена модель [" << md.modelsName[i] << "]\n";
+
+		log.AddLog(oss.str().c_str());
 	}
 
 	rg.BindShadowCamera(*light.ShareCamera());
@@ -81,12 +83,17 @@ void Scene::Render(float dt)
 	{
 		onTrigger = info.second;
 		triggerGoal = info.first;
+
+		std::ostringstream oss;
+		oss << "[Триггеры]: " << "Касание триггера [" << static_cast<std::string>(triggerGoal) << "]\n";
+
+		log.AddLog(oss.str().c_str());
 	}
 	else
 	{
 		onTrigger = false;
 	}
-	
+
 	light.Bind(wnd->Gfx(), cameras->GetMatrix());
 	rg.BindMainCamera(cameras.GetActiveCamera());
 
@@ -379,6 +386,10 @@ void Scene::ShowRightSide()
 	else if (ShowTriggersSettings)
 	{
 		strc.ShowTrigSettings();
+
+		ImGui::SetNextWindowPos({round(io.DisplaySize.x - RightPanelW), MenuHeight}, 0, RightPanelPivot);
+		ImGui::SetNextWindowSize({ io.DisplaySize.x * 0.15f, io.DisplaySize.y * 0.15f}, ImGuiCond_FirstUseEver);
+		ShowTrigCheck();
 	}
 
 	/**************/
@@ -500,6 +511,7 @@ void Scene::ShowFPSAndGPU()
 			}
 		}
 	}
+
 	ImGui::End();
 }
 
@@ -508,20 +520,7 @@ void Scene::ShowLog()
 	ImGui::Begin("Лог", NULL, ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize |
 		ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus);
-
-	if (ImGui::SmallButton("[Debug] Add 5 entries"))
-	{
-		static int counter = 0;
-		for (int n = 0; n < 5; n++)
-		{
-			const char* categories[3] = { "info", "warn", "error" };
-			const char* words[] = { "Bumfuzzled", "Cattywampus", "Snickersnee", "Abibliophobia", "Absquatulate", "Nincompoop", "Pauciloquent" };
-			log.AddLog("[%05d] [%s] Hello, current time is %.1f, here's a word: '%s'\n",
-				ImGui::GetFrameCount(), categories[counter % IM_ARRAYSIZE(categories)], ImGui::GetTime(), words[counter % IM_ARRAYSIZE(words)]);
-			counter++;
-		}
-	}
+		ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
 	log.Draw("Лог", NULL);
 }
@@ -534,16 +533,18 @@ void Scene::DisableSides()
 	ShowTriggersSettings = false;
 }
 
-void Scene::ShowGUI(const char* name)
+void Scene::ShowTrigCheck()
 {
-	if (ImGui::Begin(name))
+	if (ImGui::Begin("Попадание", NULL, 
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus))
 	{
-		ImGui::Text("Сцена");
-
 		if (onTrigger)
 		{
-			ImGui::Text("Столкновение с триггером");
-			ImGui::Text("Триггер:");
+			ImGui::Text("Отслежено cтолкновение");
+			ImGui::Text("Цель триггера:");
 			ImGui::Text(triggerGoal);
 		}
 		else
@@ -551,12 +552,8 @@ void Scene::ShowGUI(const char* name)
 			onTrigger = false;
 			ImGui::Text("Не на триггере");
 		}
-
-		if (ImGui::Button("Clear"))
-		{
-			ClearAll();
-		}
 	}
+
 	ImGui::End();
 }
 

@@ -50,23 +50,23 @@ struct AppLog
         }
 
         // Options menu
-        if (ImGui::BeginPopup("Options"))
+        if (ImGui::BeginPopup("Настройки"))
         {
-            if (ImGui::Checkbox("Auto-scroll", &AutoScroll))
+            if (ImGui::Checkbox("Авто-прокрутка", &AutoScroll))
                 if (AutoScroll)
                     ScrollToBottom = true;
             ImGui::EndPopup();
         }
 
         // Main window
-        if (ImGui::Button("Options"))
-            ImGui::OpenPopup("Options");
+        if (ImGui::Button("Настройки"))
+            ImGui::OpenPopup("Настройки");
         ImGui::SameLine();
-        bool clear = ImGui::Button("Clear");
+        bool clear = ImGui::Button("Очистить");
         ImGui::SameLine();
-        bool copy = ImGui::Button("Copy");
+        bool copy = ImGui::Button("Копировать");
         ImGui::SameLine();
-        Filter.Draw("Filter", -100.0f);
+        Filter.Draw("Поиск", -100.0f);
 
         ImGui::Separator();
         ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);

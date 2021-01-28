@@ -70,8 +70,8 @@ private:
 
 	/****************/
 
-	// 
-	void ShowGUI(const char* name);
+	// Отслеживание пересечения триггера
+	void ShowTrigCheck();
 
 	// Показать FPS и графические адаптеры *Левая нижняя панель*
 	void ShowFPSAndGPU();

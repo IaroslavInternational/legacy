@@ -98,11 +98,9 @@ std::pair<const char*, bool> SceneTriggersContainer::CheckTriggers(dx::XMFLOAT3 
 
 			return std::make_pair(HittedTriggerGoal, true);
 		}
-		else
-		{
-			return std::make_pair("", false);
-		}
 	}
+
+	return std::make_pair("NULL", false);
 }
 
 void SceneTriggersContainer::ShowTrigInformation()
