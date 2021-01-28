@@ -13,13 +13,22 @@ struct TriggerStruct
 	dx::XMFLOAT3 PosBottomLeft;  // Позиция левого нижнего угла
 	dx::XMFLOAT3 PosBottomRight; // Позиция правого нижнего угла
 
+	float Roll;
+	float Pitch;
+	float Yaw;
+
 	TriggerStruct(dx::XMFLOAT3 &ptl, dx::XMFLOAT3 &ptr,
-				  dx::XMFLOAT3 &pbl, dx::XMFLOAT3 &pbr)
+				  dx::XMFLOAT3 &pbl, dx::XMFLOAT3 &pbr,
+				  float &r, float&p, float &y)
 	{
 		PosTopLeft = ptl;
 		PosTopRight = ptr;
 		PosBottomLeft = pbl;
 		PosBottomRight = pbr;
+
+		Roll = r;
+		Pitch = p;
+		Yaw = y;
 	}
 
 	// Оператор присваивания
@@ -29,6 +38,10 @@ struct TriggerStruct
 		PosTopRight = rhs.PosTopRight;
 		PosBottomLeft = rhs.PosBottomLeft;
 		PosBottomRight = rhs.PosBottomRight;
+
+		Roll = rhs.Roll;
+		Pitch = rhs.Pitch;
+		Yaw = rhs.Yaw;
 
 		return *this;
 	}
@@ -47,7 +60,11 @@ struct TriggerStruct
 			PosBottomLeft.z == rhs.PosBottomLeft.z &&
 			PosBottomRight.x == rhs.PosBottomRight.x &&
 			PosBottomRight.y == rhs.PosBottomRight.y &&
-			PosBottomRight.z == rhs.PosBottomRight.z;
+			PosBottomRight.z == rhs.PosBottomRight.z &&
+
+			Roll == rhs.Roll &&
+			Pitch == rhs.Pitch &&
+			Yaw == rhs.Yaw;
 	}
 
 	// Оператор не равно

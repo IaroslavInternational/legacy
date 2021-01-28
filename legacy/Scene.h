@@ -117,7 +117,6 @@ private:
 
 	/*************/
 	
-	SceneTriggersContainer strc;
 private:
 	// Лог панель
 	AppLog log;
@@ -138,6 +137,9 @@ private:
 
 	// Модели сцены
 	ModelData md;
-	Plate plane;
+
+	SceneTriggersContainer strc;
+
+	std::map<const char*, std::unique_ptr<Trigger>>* TrigData;
 	/******************************/
 };

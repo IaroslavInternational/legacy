@@ -25,25 +25,54 @@ float CalcHeight(float y1, float y2)
 	}
 }
 
-Trigger::Trigger(TriggerStruct& trs)
+Trigger::Trigger(TriggerStruct& trs, Graphics& gfx)
 	:
-	Trigger(trs.PosTopLeft, trs.PosTopRight, trs.PosBottomLeft, trs.PosBottomRight)
+	Trigger(trs.PosTopLeft, trs.PosTopRight, trs.PosBottomLeft, trs.PosBottomRight, trs.Roll, trs.Pitch, trs.Yaw, gfx)
 {}
 
 Trigger::Trigger(dx::XMFLOAT3 PosTopLeft, dx::XMFLOAT3 PosTopRight,
-				 dx::XMFLOAT3 PosBottomLeft, dx::XMFLOAT3 PosBottomRight)
+				 dx::XMFLOAT3 PosBottomLeft, dx::XMFLOAT3 PosBottomRight,
+				 float roll, float pitch, float yaw,
+				 Graphics& gfx)
 	:
+	Gfx(gfx),
 	platew(CalcWidth(PosTopLeft.x, PosTopRight.x, PosTopLeft.z, PosTopRight.z)),
-	plateh(CalcHeight(PosTopLeft.y, PosBottomLeft.y))
+	plateh(CalcHeight(PosTopLeft.y, PosBottomLeft.y)),
+	plate(Gfx, platew, plateh)
 {
 	triggerPos.triggerPosTopLeft = PosTopLeft;
 	triggerPos.triggerPosTopRight = PosTopRight;
 	triggerPos.triggerPosBottomLeft = PosBottomLeft;
 	triggerPos.triggerPosBottomRight = PosBottomRight;
+
+	triggerOrien.triggerRoll = roll;
+	triggerOrien.triggerPitch = pitch;
+	triggerOrien.triggerYaw = yaw;
 }
 
 Trigger::~Trigger()
 {
+}
+
+Plate* Trigger::GetPlate()
+{
+	return &plate;
+}
+
+void Trigger::SetPosition(dx::XMFLOAT3 pos)
+{
+	plate.SetPos(pos);
+}
+
+void Trigger::SetOrientation(dx::XMFLOAT3 orient )
+{
+	plate.SetRotation(orient.x, orient.y, orient.z);
+}
+
+void Trigger::SetDefault()
+{
+	plate.SetPos(triggerPos.triggerPosTopLeft);
+	plate.SetRotation(triggerOrien.triggerRoll, triggerOrien.triggerPitch, triggerOrien.triggerYaw);
 }
 
 bool Trigger::Check(dx::XMFLOAT3 CameraPos)

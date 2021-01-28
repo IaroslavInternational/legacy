@@ -9,7 +9,7 @@
 class SceneTriggersContainer
 {
 public:
-	SceneTriggersContainer(const char* path);
+	SceneTriggersContainer(const char* path, Graphics& gfx);
 	~SceneTriggersContainer();
 	
 	// Имя цели, статус | Проверка на пересечение триггера
@@ -21,11 +21,13 @@ public:
 	// Показать триггеры *Правая панель*
 	void ShowTrigSettings();
 
+	// Данные триггеров
+	std::map<const char*, std::unique_ptr<Trigger>>* GetData();
 private:
 	const char* selected = "";
 
 	std::vector<std::string> ptr2scs;
 	std::vector<TriggerStruct> trss;
 
-	std::map<const char*, Trigger> trig_sc_container;
+	std::map<const char*, std::unique_ptr<Trigger>> trig_sc_container;
 };

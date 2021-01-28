@@ -16,20 +16,22 @@ Scene::Scene(const char* SceneName,		   const char* SceneID,
 	:
 	wnd(_wnd),
 	light(wnd->Gfx(), { 10.0f, 5.0f, 0.0f }),
-	strc(PathToTriggerData),
-	md(PathToModelData, wnd->Gfx()),
-	plane(wnd->Gfx(), 16.6f, 12.5f, { 200.0f, 100.0f, 10.0f, 0.7f })
+	strc(PathToTriggerData, wnd->Gfx()),
+	TrigData(strc.GetData()),
+	md(PathToModelData, wnd->Gfx())
 {
 	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "A", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));
 	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "B", dx::XMFLOAT3{ -13.5f,28.8f,-6.4f }, PI / 180.0f * 13.0f, PI / 180.0f * 61.0f));
 	cameras.AddCamera(light.ShareCamera());
 
-	plane.SetPos({ 24.4f, 12.5f, 32.0f });
-	plane.SetRotation(0.0f, PI / 2.0f, 0.0f);
-
 	light.LinkTechniques(rg);
 	cameras.LinkTechniques(rg);
-	plane.LinkTechniques(rg);
+	
+	for (auto it = TrigData->begin(); it != TrigData->end(); ++it)
+	{
+		it->second->GetPlate()->LinkTechniques(rg);
+		it->second->SetDefault();
+	}
 
 	for (auto& m : md.models)
 	{
@@ -90,15 +92,18 @@ void Scene::Render(float dt)
 
 	light.Submit(Chan::main);
 	cameras.Submit(Chan::main);
-	plane.Submit(Chan::main);
+
+	for (auto it = TrigData->begin(); it != TrigData->end(); ++it)
+	{
+		it->second->GetPlate()->Submit(Chan::main);
+		it->second->GetPlate()->Submit(Chan::shadow);
+	}
 
 	for (auto& m : md.models)
 	{
 		m->Submit(Chan::main);
 		m->Submit(Chan::shadow);
 	}
-
-	plane.Submit(Chan::shadow);
 
 	rg.Execute(wnd->Gfx());
 

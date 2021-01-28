@@ -10,7 +10,7 @@
 using json = nlohmann::json;
 using namespace std::string_literals;
 
-SceneTriggersContainer::SceneTriggersContainer(const char* path)
+SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx)
 {
 	const auto dataPath = path;
 
@@ -24,6 +24,10 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path)
 	dx::XMFLOAT3 pos_rt;
 	dx::XMFLOAT3 pos_lb;
 	dx::XMFLOAT3 pos_rb;
+
+	float roll;
+	float pitch;
+	float yaw;
 
 	json j;
 	dataFile >> j;
@@ -56,6 +60,11 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path)
 				pos_rb = { pos.at("pos-x"), pos.at("pos-y"), pos.at("pos-z") };
 			}
 
+
+			roll = obj.at("roll");
+			pitch = obj.at("pitch");
+			yaw = obj.at("yaw");
+
 			/***************************/
 
 			/* Запись указателя триггера */
@@ -65,13 +74,13 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path)
 
 			/*****************************/
 
-			trss.emplace_back(pos_lt, pos_rt, pos_lb, pos_rb);
+			trss.emplace_back(pos_lt, pos_rt, pos_lb, pos_rb, roll, pitch, yaw);
 		}
 	}
 
 	for (int i = 0; i < trss.size(); i++)
 	{
-		trig_sc_container.emplace(ptr2scs.at(i).c_str(), trss.at(i));
+		trig_sc_container.emplace(ptr2scs.at(i).c_str(), std::make_unique<Trigger>(trss.at(i), gfx));
 	}
 }
 
@@ -82,7 +91,7 @@ std::pair<const char*, bool> SceneTriggersContainer::CheckTriggers(dx::XMFLOAT3 
 {
 	for (auto it = trig_sc_container.begin(); it != trig_sc_container.end(); it++)
 	{
-		if (it->second.Check(pos))
+		if (it->second->Check(pos))
 		{
 			const char* HittedTriggerGoal;
 			HittedTriggerGoal = it->first;
@@ -131,7 +140,7 @@ void SceneTriggersContainer::ShowTrigSettings()
 		{
 			if (key == selected)
 			{
-				auto pos = value.GetPosition();
+				auto pos = value->GetPosition();
 
 				ImGui::Text("Позиция");
 				ImGui::Text("Левый верхний угол: \n x = %.3f; y = %.3f; z = %.3f;",
@@ -152,4 +161,9 @@ void SceneTriggersContainer::ShowTrigSettings()
 	}
 
 	ImGui::End();
+}
+
+std::map<const char*, std::unique_ptr<Trigger>>* SceneTriggersContainer::GetData()
+{
+	return &trig_sc_container;
 }
