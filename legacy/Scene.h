@@ -22,7 +22,7 @@ class Scene
 public:
 	Scene() = default;
 	Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window> _wnd, 
-		  const char* PathToModelData);
+		  const char* PathToModelData, const char* PathToTriggerData);
 	~Scene();
 
 	/***** /Методы сцены\ *****/
@@ -116,23 +116,6 @@ private:
 	bool ShowTriggersSettings = true;
 
 	/*************/
-
-	std::vector<const char*> scNames;
-	
-	TriggerStruct trs1 = { {24.4f, 12.5f, 32.0f}, {24.4f, 12.5f, 15.4f}, 
-						   {24.4f, 0.0f, 32.0f},  {24.4f, 0.0f, 15.4f} };
-
-	TriggerStruct trs2 = { {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, 
-						   {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} };
-
-	TriggerStruct trs3 = { {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f},
-						   {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} };
-
-	Trigger tr1;
-	Trigger tr2;
-	Trigger tr3;
-
-	std::vector<Trigger> scTriggers;
 	
 	SceneTriggersContainer strc;
 private:

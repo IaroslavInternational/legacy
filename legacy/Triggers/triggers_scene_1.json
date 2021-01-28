@@ -1,0 +1,76 @@
+{
+  "Trigger 1": [
+    {
+      "name": "Trigger 1",
+      "ptr": "Scene 2",
+      "pos-lt": [
+        {
+          "pos-x": 24.4,
+          "pos-y": 12.5,
+          "pos-z": 32.0
+        }
+      ],
+      "pos-rt": [
+        {
+          "pos-x": 24.4,
+          "pos-y": 12.5,
+          "pos-z": 15.4
+        }
+      ],
+      "pos-lb": [
+        {
+          "pos-x": 24.4,
+          "pos-y": 0.0,
+          "pos-z": 32.0
+        }
+      ],
+      "pos-rb": [
+        {
+          "pos-x": 24.4,
+          "pos-y": 0.0,
+          "pos-z": 15.4
+        }
+      ],
+      "roll": 0.0,
+      "pitch": 1.57,
+      "yaw": 0.0
+    }
+  ],
+  "Trigger 2": [
+    {
+      "name": "Trigger 2",
+      "ptr": "Scene 3",
+      "pos-lt": [
+        {
+          "pos-x": 30.0,
+          "pos-y": 12.5,
+          "pos-z": 32.0
+        }
+      ],
+      "pos-rt": [
+        {
+          "pos-x": 30.0,
+          "pos-y": 12.5,
+          "pos-z": 15.4
+        }
+      ],
+      "pos-lb": [
+        {
+          "pos-x": 30.0,
+          "pos-y": 0.0,
+          "pos-z": 32.0
+        }
+      ],
+      "pos-rb": [
+        {
+          "pos-x": 30.0,
+          "pos-y": 0.0,
+          "pos-z": 15.4
+        }
+      ],
+      "roll": 0.0,
+      "pitch": 1.57,
+      "yaw": 0.0
+    }
+  ]
+}

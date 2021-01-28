@@ -13,7 +13,10 @@ public:
 	ModelData(const char* path, Graphics& gfx);
 	~ModelData();
 
+	// Показать модели *Левая панель*
 	void ShowModelsInformation();
+
+	// Показать модели *Правая панель*
 	void ShowModelsProperties();
 public:
 	std::vector<std::string> modelsName;

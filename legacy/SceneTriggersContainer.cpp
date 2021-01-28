@@ -2,12 +2,76 @@
 
 #include "imgui\imgui.h"
 
-SceneTriggersContainer::SceneTriggersContainer(std::vector<const char*>& scenesNames,
-											   std::vector<Trigger>& triggers)
+#include <sstream>
+#include <fstream>
+#include <filesystem>
+#include "json.hpp"
+
+using json = nlohmann::json;
+using namespace std::string_literals;
+
+SceneTriggersContainer::SceneTriggersContainer(const char* path)
 {
-	for (int i = 0; i < scenesNames.size(); i++)
+	const auto dataPath = path;
+
+	std::ifstream dataFile(dataPath);
+	if (!dataFile.is_open())
 	{
-		trig_sc_container.insert(std::make_pair(scenesNames.at(i), triggers.at(i)));
+		throw ("Не удаётся открыть файл с данными о триггерах сцен");
+	}
+	
+	dx::XMFLOAT3 pos_lt;
+	dx::XMFLOAT3 pos_rt;
+	dx::XMFLOAT3 pos_lb;
+	dx::XMFLOAT3 pos_rb;
+
+	json j;
+	dataFile >> j;
+
+	for (json::iterator t = j.begin(); t != j.end(); ++t)
+	{
+		auto d = t.key();
+
+		for (const auto& obj : j.at(d))
+		{
+			/* Запись позиции триггера */
+
+			for (const auto& pos : obj.at("pos-lt"))
+			{
+				pos_lt = { pos.at("pos-x"), pos.at("pos-y"), pos.at("pos-z") };
+			}
+
+			for (const auto& pos : obj.at("pos-rt"))
+			{
+				pos_rt = { pos.at("pos-x"), pos.at("pos-y"), pos.at("pos-z") };
+			}
+
+			for (const auto& pos : obj.at("pos-lb"))
+			{
+				pos_lb = { pos.at("pos-x"), pos.at("pos-y"), pos.at("pos-z") };
+			}
+
+			for (const auto& pos : obj.at("pos-rb"))
+			{
+				pos_rb = { pos.at("pos-x"), pos.at("pos-y"), pos.at("pos-z") };
+			}
+
+			/***************************/
+
+			/* Запись указателя триггера */
+
+			std::string ptr = obj.at("ptr");
+			ptr2scs.emplace_back(ptr);
+
+			/*****************************/
+
+			trss.emplace_back(pos_lt, pos_rt, pos_lb, pos_rb);
+		}
+	}
+
+	for (int i = 0; i < trss.size(); i++)
+	{
+		trig_sc_container.emplace(ptr2scs.at(i).c_str(), trss.at(i));
 	}
 }
 

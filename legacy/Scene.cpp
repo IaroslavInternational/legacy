@@ -11,16 +11,12 @@
 #include "imgui/imgui.h"
 
 Scene::Scene(const char* SceneName,		   const char* SceneID,
-			 std::shared_ptr<Window> _wnd, const char* PathToModelData)
+			 std::shared_ptr<Window> _wnd, const char* PathToModelData, 
+			 const char* PathToTriggerData)
 	:
 	wnd(_wnd),
 	light(wnd->Gfx(), { 10.0f, 5.0f, 0.0f }),
-	scNames({ "—цена 2", "—цена 3", "—цена 9" }),
-	tr1(trs1),
-	tr2(trs2),
-	tr3(trs3),
-	scTriggers({ tr1, tr2, tr3 }),
-	strc(scNames, scTriggers),
+	strc(PathToTriggerData),
 	md(PathToModelData, wnd->Gfx()),
 	plane(wnd->Gfx(), 16.6f, 12.5f, { 200.0f, 100.0f, 10.0f, 0.7f })
 {

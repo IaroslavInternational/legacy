@@ -689,9 +689,6 @@
     <ClInclude Include="Scene.h">
       <Filter>Заголовочные файлы\Сцена</Filter>
     </ClInclude>
-    <ClInclude Include="TriggerStruct.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="SceneTriggersContainer.h">
       <Filter>Заголовочные файлы\Сцена</Filter>
     </ClInclude>
@@ -709,6 +706,9 @@
     </ClInclude>
     <ClInclude Include="AppLog.h">
       <Filter>Заголовочные файлы\Сцена\Модули интерфейса</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerStruct.h">
+      <Filter>Заголовочные файлы\Сцена</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,9 +12,9 @@ App::App(const std::string& commandLine)
 	wnd(std::make_shared<Window>("Legacy")),
 	scriptCommander(TokenizeQuoted(commandLine))
 {
-	scenes.emplace(std::make_unique<Scene>("—цена 1", "1", wnd, "Models\\models_scene_1.json"), true);
-	scenes.emplace(std::make_unique<Scene>("—цена 2", "2", wnd, "Models\\models_scene_1.json"), false);
-	scenes.emplace(std::make_unique<Scene>("—цена 3", "3", wnd, "Models\\models_scene_1.json"), false);
+	scenes.emplace(std::make_unique<Scene>("Scene 1", "1", wnd, "Models\\models_scene_1.json", "Triggers\\triggers_scene_1.json"), true);
+	scenes.emplace(std::make_unique<Scene>("Scene 2", "2", wnd, "Models\\models_scene_1.json", "Triggers\\triggers_scene_1.json"), false);
+	scenes.emplace(std::make_unique<Scene>("Scene 3", "3", wnd, "Models\\models_scene_1.json", "Triggers\\triggers_scene_1.json"), false);
 }
 
 void App::HandleInput( float dt )

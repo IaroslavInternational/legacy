@@ -9,8 +9,7 @@
 class SceneTriggersContainer
 {
 public:
-	SceneTriggersContainer(std::vector<const char*>& scenesNames, 
-						   std::vector<Trigger>& triggers);
+	SceneTriggersContainer(const char* path);
 	~SceneTriggersContainer();
 	
 	// Имя цели, статус | Проверка на пересечение триггера
@@ -25,5 +24,8 @@ public:
 private:
 	const char* selected = "";
 
-	std::multimap<const char*, Trigger> trig_sc_container;
+	std::vector<std::string> ptr2scs;
+	std::vector<TriggerStruct> trss;
+
+	std::map<const char*, Trigger> trig_sc_container;
 };
