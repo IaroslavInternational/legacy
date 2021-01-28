@@ -9,12 +9,21 @@
 class SceneTriggersContainer
 {
 public:
-	SceneTriggersContainer(std::vector<const char*>& scenesNames, std::vector<Trigger> &triggers);
+	SceneTriggersContainer(std::vector<const char*>& scenesNames, 
+						   std::vector<Trigger>& triggers);
 	~SceneTriggersContainer();
 	
+	// Имя цели, статус | Проверка на пересечение триггера
 	std::pair<const char*, bool> CheckTriggers(dx::XMFLOAT3 pos);
 
-	std::multimap<const char*, Trigger>* GetInfo();
+	// Показать триггеры *Левая панель*
+	void ShowTrigInformation();
+
+	// Показать триггеры *Правая панель*
+	void ShowTrigSettings();
+
 private:
+	const char* selected = "";
+
 	std::multimap<const char*, Trigger> trig_sc_container;
 };

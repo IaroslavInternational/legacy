@@ -73,11 +73,14 @@ private:
 	// 
 	void ShowGUI(const char* name);
 
+	// Показать FPS и графические адаптеры *Левая нижняя панель*
 	void ShowFPSAndGPU();
 
+	// Показать лог *Нижняя панель*
 	void ShowLog();
 
-	void ShowTriggersInfo();
+	// Отключить боковые панели
+	void DisableSides();
 
 	/*******************/
 private:
@@ -95,10 +98,10 @@ private:
 	/* Интерфейс */
 
 	// Левая панель моделей на сцене
-	bool ShowModelsList = true;
+	bool ShowModelsList = false;
 
 	// Правая панель усправления настройками моделей
-	bool ShowModelsSettings = true;
+	bool ShowModelsSettings = false;
 
 	// FPS и информация о графическом адаптере
 	bool ShowHardwareInfo = true;
@@ -106,16 +109,24 @@ private:
 	// Лог
 	bool ShowLogs = true;
 
+	// Левая панель триггеров на сцене
+	bool ShowTriggersList = true;
+
+	// Правая панель триггеров на сцене
+	bool ShowTriggersSettings = true;
+
 	/*************/
 
 	std::vector<const char*> scNames;
 	
-	//dx::XMFLOAT3 tr1LT = 
-	
 	TriggerStruct trs1 = { {24.4f, 12.5f, 32.0f}, {24.4f, 12.5f, 15.4f}, 
 						   {24.4f, 0.0f, 32.0f},  {24.4f, 0.0f, 15.4f} };
-	TriggerStruct trs2 = { {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} };
-	TriggerStruct trs3 = { {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} };
+
+	TriggerStruct trs2 = { {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, 
+						   {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} };
+
+	TriggerStruct trs3 = { {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f},
+						   {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} };
 
 	Trigger tr1;
 	Trigger tr2;

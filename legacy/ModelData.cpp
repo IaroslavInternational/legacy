@@ -25,17 +25,22 @@ ModelData::ModelData(const char* path, Graphics& gfx)
 		for (const auto& obj : j.at(d))
 		{
 			/* Запись имени объекта */
+
 			std::string name = obj.at("name");
 			modelsName.push_back(name);
+
 			/************************/
 
 			/* Запись модели, инициализируя по пути и размеру */
+
 			std::string modelPath = obj.at("path");
 			float modelScale = obj.at("scale");
 			models.emplace_back(std::make_unique<Model>(gfx, modelPath, modelScale));
+
 			/**************************************************/
 
 			/* Запись позиции */
+
 			float pos_x = obj.at("pos-x");
 			float pos_y = obj.at("pos-y");
 			float pos_z = obj.at("pos-z");
@@ -43,9 +48,11 @@ ModelData::ModelData(const char* path, Graphics& gfx)
 			DirectX::XMFLOAT3 position = { pos_x, pos_y, pos_z };
 
 			modelsPos.emplace_back(position);
+
 			/******************/
 
 			/* Запись ориентации */
+
 			float roll = obj.at("roll");
 			float pitch = obj.at("pitch");
 			float yaw = obj.at("yaw");
@@ -53,6 +60,7 @@ ModelData::ModelData(const char* path, Graphics& gfx)
 			DirectX::XMFLOAT3 orientation = { roll, pitch, yaw };
 
 			modelsOrien.emplace_back(orientation);
+
 			/*********************/
 		}
 	}
@@ -85,6 +93,7 @@ void ModelData::ShowModelsInformation()
 			}
 		}
 	}
+
 	ImGui::End();
 }
 
@@ -105,5 +114,6 @@ void ModelData::ShowModelsProperties()
 			}
 		}
 	}
+
 	ImGui::End();
 }
