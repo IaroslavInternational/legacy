@@ -2,25 +2,18 @@
   "Trigger 1": [
     {
       "name": "Trigger 1",
-      "ptr": "Scene 2",
-      "pos-lt": [
-        {
-          "pos-x": 24.4,
-          "pos-y": 12.5,
-          "pos-z": 32.0
-        }
-      ],
-      "pos-rt": [
-        {
-          "pos-x": 24.4,
-          "pos-y": 12.5,
-          "pos-z": 15.4
-        }
-      ],
+      "pitch": 1.57,
       "pos-lb": [
         {
           "pos-x": 24.4,
           "pos-y": 0.0,
+          "pos-z": 32.0
+        }
+      ],
+      "pos-lt": [
+        {
+          "pos-x": 24.4,
+          "pos-y": 12.5,
           "pos-z": 32.0
         }
       ],
@@ -31,33 +24,33 @@
           "pos-z": 15.4
         }
       ],
+      "pos-rt": [
+        {
+          "pos-x": 24.4,
+          "pos-y": 12.5,
+          "pos-z": 15.4
+        }
+      ],
+      "ptr": "Scene 2",
       "roll": 0.0,
-      "pitch": 1.57,
       "yaw": 0.0
     }
   ],
   "Trigger 2": [
     {
       "name": "Trigger 2",
-      "ptr": "Scene 3",
-      "pos-lt": [
-        {
-          "pos-x": 30.0,
-          "pos-y": 12.5,
-          "pos-z": 32.0
-        }
-      ],
-      "pos-rt": [
-        {
-          "pos-x": 30.0,
-          "pos-y": 12.5,
-          "pos-z": 15.4
-        }
-      ],
+      "pitch": 1.57,
       "pos-lb": [
         {
           "pos-x": 30.0,
           "pos-y": 0.0,
+          "pos-z": 32.0
+        }
+      ],
+      "pos-lt": [
+        {
+          "pos-x": 30.0,
+          "pos-y": 12.5,
           "pos-z": 32.0
         }
       ],
@@ -68,9 +61,53 @@
           "pos-z": 15.4
         }
       ],
+      "pos-rt": [
+        {
+          "pos-x": 30.0,
+          "pos-y": 12.5,
+          "pos-z": 15.4
+        }
+      ],
+      "ptr": "Scene 3",
       "roll": 0.0,
-      "pitch": 1.57,
       "yaw": 0.0
+    }
+  ],
+  "Trigger 4": [
+    {
+      "name": "Trigger Shit",
+      "pos-lt": [
+        {
+          "pos-x": 38.620998,
+          "pos-y": 11.034000,
+          "pos-z": 13.793000
+        }
+      ],
+      "pos-rt": [
+        {
+          "pos-x": 38.620998,
+          "pos-y": 11.034000,
+          "pos-z": -5.517000
+        }
+      ],
+      "pos-lb": [
+        {
+          "pos-x": 38.620998,
+          "pos-y": 0.000000,
+          "pos-z": 13.793000
+        }
+      ],
+      "pos-rb": [
+        {
+          "pos-x": 38.620998,
+          "pos-y": 0.000000,
+          "pos-z": -5.517000
+        }
+      ],
+      "ptr": "Ass",
+      "roll": 0.000000,
+      "pitch": 1.588250,
+      "yaw": 0.000000
     }
   ]
 }

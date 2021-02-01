@@ -33,6 +33,11 @@ Scene::Scene(const char* SceneName,		   const char* SceneID,
 	{
 		it->second->GetPlate()->LinkTechniques(rg);
 		it->second->SetDefault();
+
+		std::ostringstream oss;
+		oss << "[Триггеры]: " << "Загружен триггер [" << std::string(it->first) << "]\n";
+
+		log.AddLog(oss.str().c_str());
 	}
 
 	for (int i = 0; i < md.models.size(); i++)

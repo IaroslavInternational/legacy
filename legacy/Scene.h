@@ -37,9 +37,6 @@ public:
 
 	// Удаление содердимого 
 	void ClearAll();
-	
-	// Добавление 3Д-модели
-	void LoadModel(const char* path, float scale);
 
 	// Геттер имени сцены
 	const char* GetName() const;
