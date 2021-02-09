@@ -12,9 +12,11 @@ class App
 {
 public:
 	App( const std::string& commandLine = "" );
+	~App();
+
 	// master frame / message loop
 	int Go();
-	~App();
+
 private:
 	void DoFrame( float dt );
 	void HandleInput( float dt );

@@ -192,8 +192,10 @@ void SceneTriggersContainer::ShowTrigInformation()
 void SceneTriggersContainer::ShowTrigSettings()
 {
 	if (ImGui::Begin("Информация", NULL,
-		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus))
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus))
 	{
 		for (const auto& [key, value] : trig_sc_container)
 		{
