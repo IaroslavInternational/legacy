@@ -106,6 +106,7 @@
     <ClCompile Include="cnpy.cpp" />
     <ClCompile Include="CubeTexture.cpp" />
     <ClCompile Include="ModelData.cpp" />
+    <ClCompile Include="PointLightContainer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneTriggersContainer.cpp" />
     <ClCompile Include="ShadowCameraCBuf.cpp" />
@@ -320,6 +321,7 @@
     <ClInclude Include="cnpy.h" />
     <ClInclude Include="CubeTexture.h" />
     <ClInclude Include="ModelData.h" />
+    <ClInclude Include="PointLightContainer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneTriggersContainer.h" />
     <ClInclude Include="ShadowCameraCBuf.h" />

@@ -342,6 +342,9 @@
     <ClCompile Include="ModelData.cpp">
       <Filter>Исходные файлы\Модель</Filter>
     </ClCompile>
+    <ClCompile Include="PointLightContainer.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -709,6 +712,9 @@
     </ClInclude>
     <ClInclude Include="TriggerStruct.h">
       <Filter>Заголовочные файлы\Сцена</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLightContainer.h">
+      <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

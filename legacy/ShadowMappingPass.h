@@ -16,7 +16,6 @@
 #include "Viewport.h"
 #include "EngineMath.h"
 
-
 class Graphics;
 
 namespace Rgph
@@ -72,7 +71,8 @@ namespace Rgph
 		{
 			using namespace DirectX;
 
-			const auto pos = XMLoadFloat3( &pShadowCamera->GetPos() );
+			auto testpos = pShadowCamera->GetPos();
+			const auto pos = XMLoadFloat3(&testpos);
 
 			gfx.SetProjection( XMLoadFloat4x4( &projection ) );
 			for( size_t i = 0; i < 6; i++ )

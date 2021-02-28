@@ -17,16 +17,16 @@ Scene::Scene(const char* SceneName,		   const char* SceneID,
 			 const char* PathToTriggerData)
 	:
 	wnd(_wnd),
-	light(wnd->Gfx(), { 10.0f, 5.0f, 0.0f }),
+	plc("PointLights\\plights_scene_1.json", wnd->Gfx()),
 	strc(PathToTriggerData, wnd->Gfx()),
 	TrigData(strc.GetData()),
 	md(PathToModelData, wnd->Gfx())
 {
 	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "A", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));
 	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "B", dx::XMFLOAT3{ -13.5f,28.8f,-6.4f }, PI / 180.0f * 13.0f, PI / 180.0f * 61.0f));
-	cameras.AddCamera(light.ShareCamera());
-
-	light.LinkTechniques(rg);
+	plc.AddCamerasToLight(cameras);
+	
+	plc.LinkTechniques(rg);
 	cameras.LinkTechniques(rg);
 	
 	for (auto it = TrigData->begin(); it != TrigData->end(); ++it)
@@ -61,7 +61,7 @@ Scene::Scene(const char* SceneName,		   const char* SceneID,
 		log.AddLog(oss.str().c_str());
 	}
 
-	rg.BindShadowCamera(*light.ShareCamera());
+	plc.RgBindShadowCamera(rg);
 
 	sceneName = SceneName;
 	ID = SceneID;
@@ -99,10 +99,11 @@ void Scene::Render(float dt)
 		onTrigger = false;
 	}
 
-	light.Bind(wnd->Gfx(), cameras->GetMatrix());
+	plc.Bind(wnd->Gfx(), cameras->GetMatrix());
+
 	rg.BindMainCamera(cameras.GetActiveCamera());
 
-	light.Submit(Chan::main);
+	plc.Submit(Chan::main);
 	cameras.Submit(Chan::main);
 
 	for (auto it = TrigData->begin(); it != TrigData->end(); ++it)
@@ -128,7 +129,6 @@ void Scene::Render(float dt)
 	// imgui windows
 	//cameras.SpawnWindow(wnd->Gfx());
 	//light.SpawnControlWindow();
-	//plane.SpawnControlWindow(wnd->Gfx(), "Триггер 1");
 
 	//rg.RenderWindows(wnd->Gfx());
 
@@ -138,7 +138,7 @@ void Scene::Render(float dt)
 	ShowLeftBottomSide();
 	ShowBottomPanel();
 
-	ShowImguiDemoWindow();
+	//ShowImguiDemoWindow();
 
 	// present
 	wnd->Gfx().EndFrame();
@@ -286,6 +286,24 @@ void Scene::ShowMenu()
 				}
 			}
 
+			if (ImGui::MenuItem("Точечные источники света сцены"))
+			{
+				if (ShowPLightsList && ShowPLightsSettings)
+				{
+					DisableSides();
+
+					ShowPLightsList = false;
+					ShowPLightsSettings = false;
+				}
+				else
+				{
+					DisableSides();
+
+					ShowPLightsList = true;
+					ShowPLightsSettings = true;
+				}
+			}
+
 			if (ImGui::MenuItem("FPS & GPU"))
 			{	
 				ShowHardwareInfo ? ShowHardwareInfo = false : ShowHardwareInfo = true;
@@ -343,6 +361,10 @@ void Scene::ShowLeftSide()
 	{
 		strc.ShowTrigInformation();
 	}
+	else if (ShowPLightsList)
+	{
+		plc.ShowPLightsInformation();
+	}
 
 	/**************/
 
@@ -395,6 +417,13 @@ void Scene::ShowRightSide()
 		ImGui::SetNextWindowPos({round(io.DisplaySize.x - RightPanelW), MenuHeight}, 0, RightPanelPivot);
 		ImGui::SetNextWindowSize({ io.DisplaySize.x * 0.15f, io.DisplaySize.y * 0.15f}, ImGuiCond_FirstUseEver);
 		ShowTrigCheck();
+	}
+	else if (ShowPLightsSettings)
+	{
+		plc.ShowPLightsProperties();
+
+		ImGui::SetNextWindowPos({ round(io.DisplaySize.x - RightPanelW), MenuHeight }, 0, RightPanelPivot);
+		ImGui::SetNextWindowSize({ io.DisplaySize.x * 0.15f, io.DisplaySize.y * 0.15f }, ImGuiCond_FirstUseEver);
 	}
 
 	/**************/
@@ -535,7 +564,9 @@ void Scene::DisableSides()
 	ShowModelsList = false;
 	ShowModelsSettings = false;
 	ShowTriggersList = false;
-	ShowTriggersSettings = false;
+	ShowTriggersSettings = false;	
+	ShowPLightsList = false;
+	ShowPLightsSettings = false;
 }
 
 void Scene::ShowTrigCheck()

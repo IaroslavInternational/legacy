@@ -14,6 +14,7 @@
 #include "EngineTimer.h"
 
 #include "SceneTriggersContainer.h"
+#include "PointLightContainer.h"
 
 namespace dx = DirectX;
 
@@ -112,6 +113,12 @@ private:
 	// Правая панель триггеров на сцене
 	bool ShowTriggersSettings = true;
 
+	// Левая панель точечных источников света на сцене
+	bool ShowPLightsList = false;
+
+	// Правая панель усправления настройками точечных источников света
+	bool ShowPLightsSettings = false;
+
 	/*************/
 	
 private:
@@ -130,7 +137,7 @@ private:
 	/***** -Модели и объекты- *****/
 
 	// Истоник света
-	PointLight light;
+	PointLightContainer plc;
 
 	// Модели сцены
 	ModelData md;
