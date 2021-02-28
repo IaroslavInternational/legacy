@@ -5,7 +5,7 @@
 class Plate : public Drawable
 {
 public:
-	Plate(Graphics& gfx, float in_width, float in_height, DirectX::XMFLOAT4 color = { 1.0f,1.0f,1.0f,0.0f } );
+	Plate(Graphics& gfx, float in_width, float in_height, DirectX::XMFLOAT4 color = {0.0f, 192.0f, 204.0f, 0.0f});
 	
 	void SetPos( DirectX::XMFLOAT3 pos ) noexcept;
 	void SetRotation( float roll,float pitch,float yaw ) noexcept;

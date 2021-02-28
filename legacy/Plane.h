@@ -30,7 +30,7 @@ public:
 			const float divisionSize_x_tc = 1.0f / float( divisions_x );
 			const float divisionSize_y_tc = 1.0f / float( divisions_y );
 
-			for( int y = 0,i = 0; y < nVertices_y; y++ )
+			for( int y = 0,i = 0; y < nVertices_y ; y++ )
 			{
 				const float y_pos = float( y ) * divisionSize_y - side_y;
 				const float y_pos_tc = 1.0f - float( y ) * divisionSize_y_tc;
@@ -41,7 +41,7 @@ public:
 					vb.EmplaceBack(
 						dx::XMFLOAT3{ x_pos,y_pos,0.0f },
 						dx::XMFLOAT3{ 0.0f,0.0f,-1.0f },
-						dx::XMFLOAT2{ x_pos_tc,y_pos_tc }
+						dx::XMFLOAT2{ x_pos_tc,y_pos_tc}
 					);
 				}
 			}

@@ -5,28 +5,28 @@
       "pitch": 1.57,
       "pos-lb": [
         {
-          "pos-x": 24.4,
+          "pos-x": 0.0,
           "pos-y": 0.0,
           "pos-z": 32.0
         }
       ],
       "pos-lt": [
         {
-          "pos-x": 24.4,
+          "pos-x": 0.0,
           "pos-y": 12.5,
           "pos-z": 32.0
         }
       ],
       "pos-rb": [
         {
-          "pos-x": 24.4,
+          "pos-x": 0.0,
           "pos-y": 0.0,
           "pos-z": 15.4
         }
       ],
       "pos-rt": [
         {
-          "pos-x": 24.4,
+          "pos-x": 0.0,
           "pos-y": 12.5,
           "pos-z": 15.4
         }
