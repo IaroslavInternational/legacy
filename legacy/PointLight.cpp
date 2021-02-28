@@ -23,7 +23,7 @@ PointLight::PointLight( Graphics& gfx,DirectX::XMFLOAT3 pos,float radius )
 
 void PointLight::SpawnControlWindow() noexcept
 {
-	if( ImGui::Begin( "Light" ) )
+	if( ImGui::BeginChild( "Light" ) )
 	{
 		bool dirtyPos = false;
 		const auto d = [&dirtyPos]( bool dirty ){dirtyPos = dirtyPos || dirty;};
@@ -53,7 +53,7 @@ void PointLight::SpawnControlWindow() noexcept
 			Reset();
 		}
 	}
-	ImGui::End();
+	ImGui::EndChild();
 }
 
 void PointLight::Reset() noexcept
