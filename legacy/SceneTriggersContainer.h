@@ -12,6 +12,9 @@ public:
 	SceneTriggersContainer(const char* path, Graphics& gfx);
 	~SceneTriggersContainer();
 	
+	void LinkTechniques(Rgph::RenderGraph& rg);
+	void Submit(size_t channels);
+
 	// Имя цели, статус | Проверка на пересечение триггера
 	std::pair<const char*, bool> CheckTriggers(dx::XMFLOAT3 pos);
 
@@ -20,9 +23,6 @@ public:
 
 	// Показать триггеры *Правая панель*
 	void ShowTrigSettings();
-
-	// Данные триггеров
-	std::map<const char*, std::unique_ptr<Trigger>>* GetData();
 private:
 	const char* filePath;
 

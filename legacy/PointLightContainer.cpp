@@ -50,7 +50,7 @@ PointLightContainer::PointLightContainer(const char* path, Graphics& gfx)
 
 			/* Запись источника освещения */
 
-			pLights.emplace_back(std::make_unique<PointLight>(gfx, position));
+			pLights.emplace_back(std::make_unique<PointLight>(gfx, name, position));
 
 			/**************************************************/
 		}
@@ -69,7 +69,7 @@ void PointLightContainer::LinkTechniques(Rgph::RenderGraph& rg)
 	}
 }
 
-void PointLightContainer::Bind(Graphics& gfx, DirectX::XMMATRIX view)
+void PointLightContainer::Bind(Graphics& gfx, DirectX::FXMMATRIX view)
 {
 	for (auto& pl : pLights)
 	{
@@ -97,7 +97,7 @@ void PointLightContainer::AddCamerasToLight(CameraContainer& camcon)
 {
 	for (auto& pl : pLights)
 	{
-		camcon.AddCamera(pl->ShareCamera());
+		camcon.AddCamera(pl.get()->ShareCamera());
 	}
 }
 
@@ -116,6 +116,20 @@ void PointLightContainer::ShowPLightsInformation()
 			if (ImGui::Selectable(label, selected == pln))
 			{
 				selected = pln.c_str();
+			}
+		}
+
+		//char buf[128];
+		//ImGui::InputText("Имя:", buf, sizeof(buf));
+		//ImGui::Text(buf);
+		if (ImGui::Button("Удалить"))
+		{
+			for (int i = 0; i < pLightsName.size(); i++)
+			{
+				if (pLightsName.at(i) == "tria")
+				{
+					pLights.erase(pLights.begin() + i);
+				}
 			}
 		}
 	}

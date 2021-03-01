@@ -11,7 +11,7 @@ public:
 	~PointLightContainer();
 
 	void LinkTechniques(Rgph::RenderGraph& rg);
-	void Bind(Graphics& gfx, DirectX::XMMATRIX view);
+	void Bind(Graphics& gfx, DirectX::FXMMATRIX view);
 	void Submit(size_t channels);
 
 	void RgBindShadowCamera(Rgph::BlurOutlineRenderGraph& rg);

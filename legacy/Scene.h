@@ -22,7 +22,7 @@ class Scene
 {
 public:
 	Scene() = default;
-	Scene(const char* SceneName, const char* SceneID, std::shared_ptr<Window> _wnd, 
+	Scene(const char* SceneName,	   std::shared_ptr<Window> _wnd, 
 		  const char* PathToModelData, const char* PathToTriggerData);
 	~Scene();
 
@@ -80,11 +80,13 @@ private:
 	// Отключить боковые панели
 	void DisableSides();
 
+	// Цветовая гамма ImGui
+	void SetGuiColors();
+
 	/*******************/
 private:
 	// Идентификаторы сцены
 	const char* sceneName;
-	const char* ID;
 
 	// Настройки
 	bool savingDepth = false;
@@ -120,7 +122,6 @@ private:
 	bool ShowPLightsSettings = false;
 
 	/*************/
-	
 private:
 	// Лог панель
 	AppLog log;
@@ -131,19 +132,19 @@ private:
 	// Указатель на главное окно 
 	std::shared_ptr<Window> wnd;
 
-	//
+	// Рендер граф
 	Rgph::BlurOutlineRenderGraph rg{ wnd->Gfx() };
 
 	/***** -Модели и объекты- *****/
 
-	// Истоник света
+	// Истоники света
 	PointLightContainer plc;
 
 	// Модели сцены
 	ModelData md;
 
+	// Триггеры сцены
 	SceneTriggersContainer strc;
 
-	std::map<const char*, std::unique_ptr<Trigger>>* TrigData;
 	/******************************/
 };

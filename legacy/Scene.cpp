@@ -12,14 +12,12 @@
 
 #include <sstream>
 
-Scene::Scene(const char* SceneName,		   const char* SceneID,
-			 std::shared_ptr<Window> _wnd, const char* PathToModelData, 
-			 const char* PathToTriggerData)
+Scene::Scene(const char* SceneName,		  std::shared_ptr<Window> _wnd, 
+			 const char* PathToModelData, const char* PathToTriggerData)
 	:
 	wnd(_wnd),
 	plc("PointLights\\plights_scene_1.json", wnd->Gfx()),
 	strc(PathToTriggerData, wnd->Gfx()),
-	TrigData(strc.GetData()),
 	md(PathToModelData, wnd->Gfx())
 {
 	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "A", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));
@@ -28,73 +26,14 @@ Scene::Scene(const char* SceneName,		   const char* SceneID,
 	
 	plc.LinkTechniques(rg);
 	cameras.LinkTechniques(rg);
-	
-	for (auto it = TrigData->begin(); it != TrigData->end(); ++it)
-	{
-		it->second->GetPlate()->LinkTechniques(rg);
-		it->second->SetDefault();
-
-		std::ostringstream oss;
-		oss << "[Триггеры]: " << "Загружен триггер [" << std::string(it->first) << "]\n";
-
-		log.AddLog(oss.str().c_str());
-	}
-
-	for (int i = 0; i < md.models.size(); i++)
-	{
-		md.models[i]->LinkTechniques(rg);
-		md.models[i]->SetRootTransform
-		(
-			dx::XMMatrixRotationX(md.modelsOrien[i].x) *
-			dx::XMMatrixRotationY(md.modelsOrien[i].y) *
-			dx::XMMatrixRotationZ(md.modelsOrien[i].z) *
-			dx::XMMatrixTranslation(
-				md.modelsPos[i].x,
-				md.modelsPos[i].y,
-				md.modelsPos[i].z
-			)
-		);
-
-		std::ostringstream oss;
-		oss << "[Модели]: " << "Загружена модель [" << md.modelsName[i] << "]\n";
-
-		log.AddLog(oss.str().c_str());
-	}
+	strc.LinkTechniques(rg);
+	md.LinkTechniques(rg);
 
 	plc.RgBindShadowCamera(rg);
 
 	sceneName = SceneName;
-	ID = SceneID;
 
-	/*Стиль интерфейса*/
-
-	ImGui::GetStyle().FrameRounding = 4.0f;									// Закругление компонентов
-	ImGui::GetStyle().WindowBorderSize = 0.0f;								// Размер границы
-	ImGui::GetStyle().WindowRounding = 0.0f;								// Закругление окон
-
-	// Цвета
-	ImVec4* colors = ImGui::GetStyle().Colors; 
-	colors[ImGuiCol_MenuBarBg] = ImVec4(0.15f, 0.36f, 0.39f, 1.00f);		// Главное меню
-	colors[ImGuiCol_WindowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.84f);			// Фон окна
-	colors[ImGuiCol_TitleBg] = ImVec4(0.24f, 0.00f, 0.20f, 0.73f);			// Меню окна
-	colors[ImGuiCol_TitleBgActive] = ImVec4(0.15f, 0.00f, 0.07f, 0.73f);	// Наведение на меню окна
-	colors[ImGuiCol_FrameBg] = ImVec4(0.00f, 0.50f, 0.38f, 0.54f);			// Компонента
-	colors[ImGuiCol_FrameBgHovered] = ImVec4(0.00f, 0.18f, 0.15f, 0.40f);	// Наведение на компоненту
-	colors[ImGuiCol_FrameBgActive] = ImVec4(0.06f, 0.48f, 0.45f, 0.67f);	// Активные компонента
-	colors[ImGuiCol_CheckMark] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);		// Галочка
-	colors[ImGuiCol_SliderGrab] = ImVec4(0.37f, 0.70f, 0.00f, 1.00f);		// Ползунок слайдера
-	colors[ImGuiCol_SliderGrabActive] = ImVec4(0.62f, 0.82f, 0.19f, 1.00f);	// Актвиный ползунок слайдера
-	colors[ImGuiCol_Button] = ImVec4(0.56f, 0.05f, 0.05f, 0.59f);			// Кнопка
-	colors[ImGuiCol_ButtonHovered] = ImVec4(0.26f, 0.01f, 0.17f, 1.00f);	// Наведение на кнопку
-	colors[ImGuiCol_ButtonActive] = ImVec4(0.03f, 0.55f, 0.48f, 1.00f);		// Активная кнопка
-	colors[ImGuiCol_HeaderHovered] = ImVec4(0.40f, 0.22f, 0.59f, 0.80f);	// Наведение на заголовк
-	colors[ImGuiCol_Separator] = ImVec4(0.66f, 0.60f, 0.00f, 0.50f);		// Разделитель
-	colors[ImGuiCol_Tab] = ImVec4(0.00f, 0.08f, 0.27f, 0.86f);				// Раздел
-	colors[ImGuiCol_TabHovered] = ImVec4(0.01f, 0.43f, 0.63f, 0.80f);		// Наведение на раздел
-	colors[ImGuiCol_TabActive] = ImVec4(0.66f, 0.60f, 0.00f, 0.50f);		// Активный раздел
-
-
-	/******************/
+	SetGuiColors();
 }
 
 Scene::~Scene()
@@ -126,19 +65,14 @@ void Scene::Render(float dt)
 	rg.BindMainCamera(cameras.GetActiveCamera());
 
 	plc.Submit(Chan::main);
+
 	cameras.Submit(Chan::main);
+	
+	strc.Submit(Chan::main);
+	strc.Submit(Chan::shadow);
 
-	for (auto it = TrigData->begin(); it != TrigData->end(); ++it)
-	{
-		it->second->GetPlate()->Submit(Chan::main);
-		it->second->GetPlate()->Submit(Chan::shadow);
-	}
-
-	for (auto& m : md.models)
-	{
-		m->Submit(Chan::main);
-		m->Submit(Chan::shadow);
-	}
+	md.Submit(Chan::main);
+	md.Submit(Chan::shadow);
 
 	rg.Execute(wnd->Gfx());
 
@@ -148,19 +82,15 @@ void Scene::Render(float dt)
 		savingDepth = false;
 	}
 
-	// imgui windows
-	//cameras.SpawnWindow(wnd->Gfx());
-	//light.SpawnControlWindow();
-
-	//rg.RenderWindows(wnd->Gfx());
-
 	ShowMenu();
 	ShowLeftSide();
 	ShowRightSide();
 	ShowLeftBottomSide();
 	ShowBottomPanel();
 
-	ShowImguiDemoWindow();
+	// ShowImguiDemoWindow();
+	//rg.RenderWindows(wnd->Gfx());
+	cameras.SpawnWindow(wnd->Gfx());
 
 	// present
 	wnd->Gfx().EndFrame();
@@ -589,6 +519,38 @@ void Scene::DisableSides()
 	ShowTriggersSettings = false;	
 	ShowPLightsList = false;
 	ShowPLightsSettings = false;
+}
+
+void Scene::SetGuiColors()
+{
+	/*Стиль интерфейса*/
+
+	ImGui::GetStyle().FrameRounding = 4.0f;									// Закругление компонентов
+	ImGui::GetStyle().WindowBorderSize = 0.0f;								// Размер границы
+	ImGui::GetStyle().WindowRounding = 0.0f;								// Закругление окон
+
+	// Цвета
+	ImVec4* colors = ImGui::GetStyle().Colors;
+	colors[ImGuiCol_MenuBarBg] = ImVec4(0.15f, 0.36f, 0.39f, 1.00f);		// Главное меню
+	colors[ImGuiCol_WindowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.84f);			// Фон окна
+	colors[ImGuiCol_TitleBg] = ImVec4(0.24f, 0.00f, 0.20f, 0.73f);			// Меню окна
+	colors[ImGuiCol_TitleBgActive] = ImVec4(0.15f, 0.00f, 0.07f, 0.73f);	// Наведение на меню окна
+	colors[ImGuiCol_FrameBg] = ImVec4(0.00f, 0.50f, 0.38f, 0.54f);			// Компонента
+	colors[ImGuiCol_FrameBgHovered] = ImVec4(0.00f, 0.18f, 0.15f, 0.40f);	// Наведение на компоненту
+	colors[ImGuiCol_FrameBgActive] = ImVec4(0.06f, 0.48f, 0.45f, 0.67f);	// Активные компонента
+	colors[ImGuiCol_CheckMark] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);		// Галочка
+	colors[ImGuiCol_SliderGrab] = ImVec4(0.37f, 0.70f, 0.00f, 1.00f);		// Ползунок слайдера
+	colors[ImGuiCol_SliderGrabActive] = ImVec4(0.62f, 0.82f, 0.19f, 1.00f);	// Актвиный ползунок слайдера
+	colors[ImGuiCol_Button] = ImVec4(0.56f, 0.05f, 0.05f, 0.59f);			// Кнопка
+	colors[ImGuiCol_ButtonHovered] = ImVec4(0.26f, 0.01f, 0.17f, 1.00f);	// Наведение на кнопку
+	colors[ImGuiCol_ButtonActive] = ImVec4(0.03f, 0.55f, 0.48f, 1.00f);		// Активная кнопка
+	colors[ImGuiCol_HeaderHovered] = ImVec4(0.40f, 0.22f, 0.59f, 0.80f);	// Наведение на заголовк
+	colors[ImGuiCol_Separator] = ImVec4(0.66f, 0.60f, 0.00f, 0.50f);		// Разделитель
+	colors[ImGuiCol_Tab] = ImVec4(0.00f, 0.08f, 0.27f, 0.86f);				// Раздел
+	colors[ImGuiCol_TabHovered] = ImVec4(0.01f, 0.43f, 0.63f, 0.80f);		// Наведение на раздел
+	colors[ImGuiCol_TabActive] = ImVec4(0.66f, 0.60f, 0.00f, 0.50f);		// Активный раздел
+
+	/******************/
 }
 
 void Scene::ShowTrigCheck()

@@ -69,10 +69,51 @@ ModelData::ModelData(const char* path, Graphics& gfx)
 	modelsPos.shrink_to_fit();
 	modelsOrien.shrink_to_fit();
 	modelsName.shrink_to_fit();
+
+	Init();
 }
 
 ModelData::~ModelData()
 {
+}
+
+void ModelData::LinkTechniques(Rgph::RenderGraph& rg)
+{
+	for (int i = 0; i < models.size(); i++)
+	{
+		models[i]->LinkTechniques(rg);
+
+		//std::ostringstream oss;
+		//oss << "[Модели]: " << "Загружена модель [" << md.modelsName[i] << "]\n";
+
+		//log.AddLog(oss.str().c_str());
+	}
+}
+
+void ModelData::Submit(size_t channels)
+{
+	for (auto& m : models)
+	{
+		m->Submit(channels);
+	}
+}
+
+void ModelData::Init()
+{
+	for (int i = 0; i < models.size(); i++)
+	{
+		models[i]->SetRootTransform
+		(
+			dx::XMMatrixRotationX(modelsOrien[i].x) *
+			dx::XMMatrixRotationY(modelsOrien[i].y) *
+			dx::XMMatrixRotationZ(modelsOrien[i].z) *
+			dx::XMMatrixTranslation(
+				modelsPos[i].x,
+				modelsPos[i].y,
+				modelsPos[i].z
+			)
+		);
+	}
 }
 
 void ModelData::ShowModelsInformation()

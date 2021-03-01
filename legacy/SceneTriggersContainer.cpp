@@ -89,6 +89,28 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx)
 SceneTriggersContainer::~SceneTriggersContainer()
 {}
 
+void SceneTriggersContainer::LinkTechniques(Rgph::RenderGraph &rg)
+{
+	for (auto it = trig_sc_container.begin(); it != trig_sc_container.end(); ++it)
+	{
+		it->second->GetPlate()->LinkTechniques(rg);
+		it->second->SetDefault();
+
+		//std::ostringstream oss;
+		//oss << "[Триггеры]: " << "Загружен триггер [" << std::string(it->first) << "]\n";
+
+		//log.AddLog(oss.str().c_str());
+	}
+}
+
+void SceneTriggersContainer::Submit(size_t channels)
+{
+	for (auto it = trig_sc_container.begin(); it != trig_sc_container.end(); ++it)
+	{
+		it->second->GetPlate()->Submit(channels);
+	}
+}
+
 std::pair<const char*, bool> SceneTriggersContainer::CheckTriggers(dx::XMFLOAT3 pos)
 {
 	for (auto it = trig_sc_container.begin(); it != trig_sc_container.end(); it++)
@@ -222,11 +244,6 @@ void SceneTriggersContainer::ShowTrigSettings()
 	}
 
 	ImGui::End();
-}
-
-std::map<const char*, std::unique_ptr<Trigger>>* SceneTriggersContainer::GetData()
-{
-	return &trig_sc_container;
 }
 
 void SceneTriggersContainer::LoadTrigger(std::string name, std::string ptr, TriggerStruct& trs)
