@@ -121,6 +121,7 @@ private:
 	// Правая панель усправления настройками точечных источников света
 	bool ShowPLightsSettings = false;
 
+	bool test = false;
 	/*************/
 private:
 	// Лог панель

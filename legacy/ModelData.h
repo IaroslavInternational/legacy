@@ -15,6 +15,7 @@ public:
 
 	void LinkTechniques(Rgph::RenderGraph& rg);
 	void Submit(size_t channels);
+	void AddTestModel(Graphics& gfx);
 
 	// Показать модели *Левая панель*
 	void ShowModelsInformation();

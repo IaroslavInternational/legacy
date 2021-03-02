@@ -18,7 +18,8 @@ Scene::Scene(const char* SceneName,		  std::shared_ptr<Window> _wnd,
 	wnd(_wnd),
 	plc("PointLights\\plights_scene_1.json", wnd->Gfx()),
 	strc(PathToTriggerData, wnd->Gfx()),
-	md(PathToModelData, wnd->Gfx())
+	md(PathToModelData, wnd->Gfx()),
+	sceneName(SceneName)
 {
 	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "A", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));
 	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "B", dx::XMFLOAT3{ -13.5f,28.8f,-6.4f }, PI / 180.0f * 13.0f, PI / 180.0f * 61.0f));
@@ -30,8 +31,6 @@ Scene::Scene(const char* SceneName,		  std::shared_ptr<Window> _wnd,
 	md.LinkTechniques(rg);
 
 	plc.RgBindShadowCamera(rg);
-
-	sceneName = SceneName;
 
 	SetGuiColors();
 }
@@ -95,6 +94,13 @@ void Scene::Render(float dt)
 	// present
 	wnd->Gfx().EndFrame();
 	rg.Reset();
+
+	if (test)
+	{
+		md.AddTestModel(wnd->Gfx());
+		md.LinkTechniques(rg);
+		test = false;
+	}
 }
 
 void Scene::ProcessInput(float dt)
@@ -197,6 +203,16 @@ void Scene::ShowMenu()
 			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
 			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
 			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Тест"))
+		{
+			if (ImGui::MenuItem("Add"))
+			{
+				test = true;
+			}
+
 			ImGui::EndMenu();
 		}
 

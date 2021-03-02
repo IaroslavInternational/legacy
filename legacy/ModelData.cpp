@@ -98,6 +98,18 @@ void ModelData::Submit(size_t channels)
 	}
 }
 
+void ModelData::AddTestModel(Graphics& gfx)
+{
+	modelsName.push_back("goblin");
+	models.emplace_back(std::make_unique<Model>(gfx, "Models\\gobber\\GoblinX.obj", 4.0f));
+	
+	DirectX::XMFLOAT3 pos = {-8.0f, 10.0f, 0.0f};
+	modelsPos.emplace_back(pos);
+
+	DirectX::XMFLOAT3 ori = { 0.0f, -1.57f, 0.0f };
+	modelsOrien.emplace_back(ori);
+}
+
 void ModelData::Init()
 {
 	for (int i = 0; i < models.size(); i++)
