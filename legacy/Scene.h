@@ -16,6 +16,8 @@
 #include "SceneTriggersContainer.h"
 #include "PointLightContainer.h"
 
+#include "SceneDataReader.h"
+
 namespace dx = DirectX;
 
 class Scene
@@ -23,7 +25,7 @@ class Scene
 public:
 	Scene() = default;
 	Scene(const char* SceneName,	   std::shared_ptr<Window> _wnd, 
-		  const char* PathToModelData, const char* PathToTriggerData);
+		  const char* Data);
 	~Scene();
 
 	/***** /Методы сцены\ *****/
@@ -137,6 +139,8 @@ private:
 	Rgph::BlurOutlineRenderGraph rg{ wnd->Gfx() };
 
 	/***** -Модели и объекты- *****/
+
+	SceneDataReader sdr;
 
 	// Истоники света
 	PointLightContainer plc;

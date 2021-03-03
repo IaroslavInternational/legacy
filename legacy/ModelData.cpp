@@ -101,7 +101,7 @@ void ModelData::Submit(size_t channels)
 void ModelData::AddTestModel(Graphics& gfx)
 {
 	modelsName.push_back("goblin");
-	models.emplace_back(std::make_unique<Model>(gfx, "Models\\gobber\\GoblinX.obj", 4.0f));
+	models.emplace_back(std::make_unique<Model>(gfx, "Scenes\\Scene 1\\Models\\gobber\\GoblinX.obj", 4.0f));
 	
 	DirectX::XMFLOAT3 pos = {-8.0f, 10.0f, 0.0f};
 	modelsPos.emplace_back(pos);

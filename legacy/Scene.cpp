@@ -13,12 +13,13 @@
 #include <sstream>
 
 Scene::Scene(const char* SceneName,		  std::shared_ptr<Window> _wnd, 
-			 const char* PathToModelData, const char* PathToTriggerData)
+			 const char* Data)
 	:
 	wnd(_wnd),
-	plc("PointLights\\plights_scene_1.json", wnd->Gfx()),
-	strc(PathToTriggerData, wnd->Gfx()),
-	md(PathToModelData, wnd->Gfx()),
+	sdr(Data),
+	plc(sdr.GetPaths().at(2).c_str(), wnd->Gfx()),
+	md(sdr.GetPaths().at(0).c_str(), wnd->Gfx()),
+	strc(sdr.GetPaths().at(1).c_str(), wnd->Gfx()),
 	sceneName(SceneName)
 {
 	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "A", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));

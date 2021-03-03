@@ -108,6 +108,7 @@
     <ClCompile Include="ModelData.cpp" />
     <ClCompile Include="PointLightContainer.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneDataReader.cpp" />
     <ClCompile Include="SceneTriggersContainer.cpp" />
     <ClCompile Include="ShadowCameraCBuf.cpp" />
     <ClCompile Include="CameraContainer.cpp" />
@@ -323,6 +324,7 @@
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="PointLightContainer.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneDataReader.h" />
     <ClInclude Include="SceneTriggersContainer.h" />
     <ClInclude Include="ShadowCameraCBuf.h" />
     <ClInclude Include="CameraContainer.h" />
