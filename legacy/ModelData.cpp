@@ -6,6 +6,8 @@ using json = nlohmann::json;
 using namespace std::string_literals;
 
 ModelData::ModelData(const char* path, Graphics& gfx)
+	:
+	path(path)
 {
 	const auto dataPath = path;
 
@@ -110,6 +112,54 @@ void ModelData::AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path,
 	modelsOrien.emplace_back(ori);
 
 	models.back()->LinkTechniques(rg);
+
+	using std::to_string;
+
+	// Открытие файла с триггерами
+	std::ifstream dataFile(this->path);
+	if (!dataFile.is_open())
+	{
+		throw ("Не удаётся открыть файл с данными о моделях сцен");
+	}
+
+	// Чтение файла
+	json j;
+	dataFile >> j;
+
+	// Закрытие файла
+	dataFile.close();
+
+	// Новый триггер
+	std::ostringstream newModel;
+	newModel << "\"" << name << "\":[{";
+
+	newModel << "\"name\": \""  << name << "\",";
+	newModel << "\"path\": \""  << path << "\",";
+	newModel << "\"scale\": " << 1.0f << ",";
+
+	newModel << "\"pos-x\": "  << 0.0f << ",";
+	newModel << "\"pos-y\" : " << 0.0f << ",";
+	newModel << "\"pos-z\" : " << 0.0f << ",";
+
+	newModel << "\"roll\": "  << 0.0f << ",";
+	newModel << "\"pitch\": " << 0.0f << ",";
+	newModel << "\"yaw\": "   << 0.0f << "}]";
+
+	// Подготовка к вставке в файл
+	std::string json_str = j.dump();
+	size_t pos_of_par = json_str.find_last_of('}');
+	size_t pos_of_par2 = json_str.find_last_of(']');
+
+	json_str.at(pos_of_par) = ' ';
+	json_str.at(pos_of_par2 + 1) = ',';
+
+	// Запись в файл нового триггера
+	std::ofstream ostr(this->path);
+	ostr << json_str + newModel.str() + '}';
+
+	// Закрытие файла
+	ostr.close();
+
 	//InitAt(models.size());
 }
 

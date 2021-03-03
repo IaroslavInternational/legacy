@@ -90,7 +90,7 @@ void Scene::Render(float dt)
 
 	// ShowImguiDemoWindow();
 	//rg.RenderWindows(wnd->Gfx());
-	cameras.SpawnWindow(wnd->Gfx());
+	//cameras.SpawnWindow(wnd->Gfx());
 
 	// present
 	wnd->Gfx().EndFrame();
@@ -264,6 +264,11 @@ void Scene::ShowMenu()
 			if (ImGui::MenuItem("Лог"))
 			{
 				ShowLogs ? ShowLogs = false : ShowLogs = true;
+			}
+
+			if (ImGui::MenuItem("Отключить панели"))
+			{
+				DisableAll();
 			}
 
 			ImGui::EndMenu();
@@ -519,6 +524,14 @@ void Scene::DisableSides()
 	ShowTriggersSettings = false;	
 	ShowPLightsList = false;
 	ShowPLightsSettings = false;
+}
+
+void Scene::DisableAll()
+{
+	DisableSides();
+	
+	ShowHardwareInfo = false;
+	ShowLogs = false;
 }
 
 void Scene::SetGuiColors()

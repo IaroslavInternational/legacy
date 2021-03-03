@@ -82,6 +82,9 @@ private:
 	// Отключить боковые панели
 	void DisableSides();
 
+	// Отключить все панели
+	void DisableAll();
+
 	// Цветовая гамма ImGui
 	void SetGuiColors();
 

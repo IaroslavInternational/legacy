@@ -38,6 +38,8 @@ private:
 
 	/***************************/
 
+	const char* path;
+
 	const char* selected = "";
 };
 
