@@ -15,10 +15,10 @@ public:
 
 	void LinkTechniques(Rgph::RenderGraph& rg);
 	void Submit(size_t channels);
-	void AddTestModel(Graphics& gfx);
+	void AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path, const char* name);
 
 	// Показать модели *Левая панель*
-	void ShowModelsInformation();
+	void ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg);
 
 	// Показать модели *Правая панель*
 	void ShowModelsProperties();
@@ -29,7 +29,15 @@ private:
 	std::vector<DirectX::XMFLOAT3> modelsOrien;
 private:
 	void Init();
+	void InitAt(size_t i);
 private:
+	/* Данные для новой модели */
+	
+	mutable char newPath[256];
+	mutable char newName[256];
+
+	/***************************/
+
 	const char* selected = "";
 };
 

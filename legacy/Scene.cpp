@@ -95,13 +95,6 @@ void Scene::Render(float dt)
 	// present
 	wnd->Gfx().EndFrame();
 	rg.Reset();
-
-	if (test)
-	{
-		md.AddTestModel(wnd->Gfx());
-		md.LinkTechniques(rg);
-		test = false;
-	}
 }
 
 void Scene::ProcessInput(float dt)
@@ -204,16 +197,6 @@ void Scene::ShowMenu()
 			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
 			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
 			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Тест"))
-		{
-			if (ImGui::MenuItem("Add"))
-			{
-				test = true;
-			}
-
 			ImGui::EndMenu();
 		}
 
@@ -324,7 +307,7 @@ void Scene::ShowLeftSide()
 	
 	if (ShowModelsList)
 	{
-		md.ShowModelsInformation();
+		md.ShowModelsInformation(wnd->Gfx(), rg);
 	}
 	else if (ShowTriggersList)
 	{

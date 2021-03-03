@@ -100,10 +100,10 @@ private:
 	/* Интерфейс */
 
 	// Левая панель моделей на сцене
-	bool ShowModelsList = false;
+	bool ShowModelsList = true;
 
 	// Правая панель усправления настройками моделей
-	bool ShowModelsSettings = false;
+	bool ShowModelsSettings = true;
 
 	// FPS и информация о графическом адаптере
 	bool ShowHardwareInfo = true;
@@ -112,10 +112,10 @@ private:
 	bool ShowLogs = true;
 
 	// Левая панель триггеров на сцене
-	bool ShowTriggersList = true;
+	bool ShowTriggersList = false;
 
 	// Правая панель триггеров на сцене
-	bool ShowTriggersSettings = true;
+	bool ShowTriggersSettings = false;
 
 	// Левая панель точечных источников света на сцене
 	bool ShowPLightsList = false;
@@ -123,7 +123,6 @@ private:
 	// Правая панель усправления настройками точечных источников света
 	bool ShowPLightsSettings = false;
 
-	bool test = false;
 	/*************/
 private:
 	// Лог панель

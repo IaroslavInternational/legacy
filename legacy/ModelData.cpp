@@ -98,16 +98,19 @@ void ModelData::Submit(size_t channels)
 	}
 }
 
-void ModelData::AddTestModel(Graphics& gfx)
+void ModelData::AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path, const char* name)
 {
-	modelsName.push_back("goblin");
-	models.emplace_back(std::make_unique<Model>(gfx, "Scenes\\Scene 1\\Models\\gobber\\GoblinX.obj", 4.0f));
+	modelsName.push_back(name);
+	models.emplace_back(std::make_unique<Model>(gfx, path, 1.0f));
 	
-	DirectX::XMFLOAT3 pos = {-8.0f, 10.0f, 0.0f};
+	DirectX::XMFLOAT3 pos = {0.0f, 0.0f, 0.0f};
 	modelsPos.emplace_back(pos);
 
-	DirectX::XMFLOAT3 ori = { 0.0f, -1.57f, 0.0f };
+	DirectX::XMFLOAT3 ori = { 0.0f, 0.0f, 0.0f };
 	modelsOrien.emplace_back(ori);
+
+	models.back()->LinkTechniques(rg);
+	//InitAt(models.size());
 }
 
 void ModelData::Init()
@@ -128,21 +131,56 @@ void ModelData::Init()
 	}
 }
 
-void ModelData::ShowModelsInformation()
+void ModelData::InitAt(size_t i)
+{
+	models[i]->SetRootTransform
+	(
+		dx::XMMatrixRotationX(modelsOrien[i].x) *
+		dx::XMMatrixRotationY(modelsOrien[i].y) *
+		dx::XMMatrixRotationZ(modelsOrien[i].z) *
+		dx::XMMatrixTranslation(
+			modelsPos[i].x,
+			modelsPos[i].y,
+			modelsPos[i].z
+		)
+	);
+}
+
+void ModelData::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 {
 	if (ImGui::Begin("Объекты", NULL,
-		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | 
+		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus))
 	{
 		for (auto& m_name : modelsName)
 		{
 			char label[128];
 			sprintf_s(label, m_name.c_str(), selected);
-			
+
 			ImGui::Bullet();
 			if (ImGui::Selectable(label, selected == m_name))
 			{
 				selected = m_name.c_str();
+			}
+		}
+
+		if (ImGui::Button("Добавить"))
+		{
+			ImGui::OpenPopup("Добавление модели");
+		}
+
+		if (ImGui::BeginPopupModal("Добавление модели", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			ImGui::Text("Введите путь к объекту и его имя");
+			ImGui::Separator();
+
+			ImGui::InputText("Путь", newPath, sizeof(newPath));
+			ImGui::InputText("Имя", newName, sizeof(newName));
+
+			if (ImGui::Button("Добавить"))
+			{
+				AddModel(gfx, rg, newPath, newName);
+				ImGui::CloseCurrentPopup();
 			}
 		}
 	}
