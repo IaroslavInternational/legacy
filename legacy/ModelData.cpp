@@ -159,8 +159,6 @@ void ModelData::AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path,
 
 	// Закрытие файла
 	ostr.close();
-
-	//InitAt(models.size());
 }
 
 void ModelData::Init()
@@ -179,21 +177,6 @@ void ModelData::Init()
 			)
 		);
 	}
-}
-
-void ModelData::InitAt(size_t i)
-{
-	models[i]->SetRootTransform
-	(
-		dx::XMMatrixRotationX(modelsOrien[i].x) *
-		dx::XMMatrixRotationY(modelsOrien[i].y) *
-		dx::XMMatrixRotationZ(modelsOrien[i].z) *
-		dx::XMMatrixTranslation(
-			modelsPos[i].x,
-			modelsPos[i].y,
-			modelsPos[i].z
-		)
-	);
 }
 
 void ModelData::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)

@@ -12,7 +12,6 @@ cbuffer ObjectCBuf : register(b1)
     float specularGloss;
 };
 
-
 float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float4 spos : ShadowPosition) : SV_Target
 {
     float3 diffuse;

@@ -97,7 +97,7 @@ namespace Bind
 			return GenerateUID( slot );
 		}
 	};
-
+	
 	template<typename C>
 	class PixelConstantBuffer : public ConstantBuffer<C>
 	{

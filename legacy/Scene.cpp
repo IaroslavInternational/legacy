@@ -238,6 +238,22 @@ void Scene::ShowMenu()
 				}
 			}
 
+			if (ImGui::MenuItem("Камеры сцены"))
+			{
+				if (ShowCamsList)
+				{
+					DisableSides();
+
+					ShowCamsList = false;
+				}
+				else
+				{
+					DisableSides();
+
+					ShowCamsList = true;
+				}
+			}
+
 			if (ImGui::MenuItem("Точечные источники света сцены"))
 			{
 				if (ShowPLightsList && ShowPLightsSettings)
@@ -321,6 +337,10 @@ void Scene::ShowLeftSide()
 	else if (ShowPLightsList)
 	{
 		plc.ShowPLightsInformation();
+	}
+	else if (ShowCamsList)
+	{
+		cameras.ShowCamsInformationAndSettings(wnd->Gfx());
 	}
 
 	/**************/
