@@ -1,5 +1,6 @@
 #include "ModelData.h"
 #include "imgui\imgui.h"
+#include "imgui\ImGuiFileDialog.h"
 #include "TestModelProbe.h"
 
 using json = nlohmann::json;
@@ -199,22 +200,33 @@ void ModelData::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 
 		if (ImGui::Button("Добавить"))
 		{
-			ImGui::OpenPopup("Добавление модели");
+			ImGuiFileDialog::Instance()->OpenDialog("ModelOD", "Choose File", ".obj,.mtl,.gltf", ".");
 		}
 
-		if (ImGui::BeginPopupModal("Добавление модели", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+		if (ImGuiFileDialog::Instance()->Display("ModelOD"))
 		{
-			ImGui::Text("Введите путь к объекту и его имя");
-			ImGui::Separator();
-
-			ImGui::InputText("Путь", newPath, sizeof(newPath));
-			ImGui::InputText("Имя", newName, sizeof(newName));
-
-			if (ImGui::Button("Добавить"))
+			if (ImGuiFileDialog::Instance()->IsOk())
 			{
-				AddModel(gfx, rg, newPath, newName);
-				ImGui::CloseCurrentPopup();
+				std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+				std::string copy1 = filePathName;
+
+				std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+				std::string copy2 = filePath;
+
+				std::string test = copy1.replace(0, copy2.size() + 1, "");
+				
+				for (int i = 0; i != filePathName.size(); i++)
+				{
+					if (filePathName[i] == '\\')
+					{
+						filePathName[i] = '/';
+					}
+				}
+				
+				AddModel(gfx, rg, filePathName.c_str(), test.c_str());
 			}
+
+			ImGuiFileDialog::Instance()->Close();
 		}
 	}
 

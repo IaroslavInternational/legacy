@@ -9,6 +9,7 @@
 
 #include "AdapterData.h"
 #include "imgui/imgui.h"
+#include "imgui/ImGuiFileDialog.h"
 
 #include <sstream>
 
@@ -88,9 +89,9 @@ void Scene::Render(float dt)
 	ShowLeftBottomSide();
 	ShowBottomPanel();
 
+
 	// ShowImguiDemoWindow();
 	//rg.RenderWindows(wnd->Gfx());
-	//cameras.SpawnWindow(wnd->Gfx());
 
 	// present
 	wnd->Gfx().EndFrame();
@@ -380,7 +381,7 @@ void Scene::ShowRightSide()
 
 	ImGui::SetNextWindowPos(RightPanelPos, 0, RightPanelPivot);
 	ImGui::SetNextWindowSize(RightPanelSize, ImGuiCond_FirstUseEver);
-	
+
 	/* Содержимое */
 
 	if (ShowModelsSettings)
@@ -391,8 +392,8 @@ void Scene::ShowRightSide()
 	{
 		strc.ShowTrigSettings();
 
-		ImGui::SetNextWindowPos({round(io.DisplaySize.x - RightPanelW), MenuHeight}, 0, RightPanelPivot);
-		ImGui::SetNextWindowSize({ io.DisplaySize.x * 0.15f, io.DisplaySize.y * 0.15f}, ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos({ round(io.DisplaySize.x - RightPanelW), MenuHeight }, 0, RightPanelPivot);
+		ImGui::SetNextWindowSize({ io.DisplaySize.x * 0.15f, io.DisplaySize.y * 0.15f }, ImGuiCond_FirstUseEver);
 		ShowTrigCheck();
 	}
 	else if (ShowPLightsSettings)

@@ -8,7 +8,6 @@ class Material;
 class FrameCommander;
 struct aiMesh;
 
-
 class Mesh : public Drawable
 {
 public:

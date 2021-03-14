@@ -105,6 +105,11 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="cnpy.cpp" />
     <ClCompile Include="CubeTexture.cpp" />
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\ImGuiFileDialog.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />              	<ClCompile Include="imgui\imgui_impl_win32.cpp" />    	<ClCompile Include="imgui\imgui_tables.cpp" />    	<ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="ModelData.cpp" />
     <ClCompile Include="PointLightContainer.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -133,12 +138,6 @@
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="GraphicsResource.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
-    <ClCompile Include="imgui\imgui.cpp" />
-    <ClCompile Include="imgui\imgui_demo.cpp" />
-    <ClCompile Include="imgui\imgui_draw.cpp" />
-    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Job.cpp" />
@@ -321,6 +320,17 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="cnpy.h" />
     <ClInclude Include="CubeTexture.h" />
+    <ClInclude Include="imgui\dirent\dirent.h" />
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\ImGuiFileDialog.h" />
+    <ClInclude Include="imgui\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="imgui\imgui_impl_win32.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imstb_rectpack.h" />
+    <ClInclude Include="imgui\imstb_textedit.h" />
+    <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="PointLightContainer.h" />
     <ClInclude Include="Scene.h" />
@@ -392,14 +402,6 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsThrowMacros.h" />
     <ClInclude Include="ImguiManager.h" />
-    <ClInclude Include="imgui\imconfig.h" />
-    <ClInclude Include="imgui\imgui.h" />
-    <ClInclude Include="imgui\imgui_impl_dx11.h" />
-    <ClInclude Include="imgui\imgui_impl_win32.h" />
-    <ClInclude Include="imgui\imgui_internal.h" />
-    <ClInclude Include="imgui\imstb_rectpack.h" />
-    <ClInclude Include="imgui\imstb_textedit.h" />
-    <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="IndexedTriangleList.h" />
     <ClInclude Include="InputLayout.h" />
