@@ -1,0 +1,15 @@
+{
+  "sponza": [
+    {
+      "name": "main scene 2",
+      "path": "Scenes\\Scene 2\\Models\\Sponza\\sponza.obj",
+      "pitch": 0.0,
+      "pos-x": 0.0,
+      "pos-y": 0.0,
+      "pos-z": 0.0,
+      "roll": 0.0,
+      "scale": 0.05,
+      "yaw": 0.0
+    }
+  ]
+}

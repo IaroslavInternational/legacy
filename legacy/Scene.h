@@ -38,7 +38,9 @@ public:
 
 	std::pair<const char*, bool> IsOnTheSceneTrigger();
 
-	// Удаление содердимого 
+	void ResetPos();
+
+	// Удаление содержимого 
 	void ClearAll();
 
 	// Геттер имени сцены

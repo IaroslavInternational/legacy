@@ -13,8 +13,7 @@ App::App(const std::string& commandLine)
 	scriptCommander(TokenizeQuoted(commandLine))
 {
 	scenes.emplace(std::make_unique<Scene>("Scene 1", wnd, "Scenes\\Scene 1\\scene_1.json"), true);
-	scenes.emplace(std::make_unique<Scene>("Scene 2", wnd, "Scenes\\Scene 1\\scene_1.json"), false);
-	scenes.emplace(std::make_unique<Scene>("Scene 3", wnd, "Scenes\\Scene 1\\scene_1.json"), false);
+	scenes.emplace(std::make_unique<Scene>("Scene 2", wnd, "Scenes\\Scene 2\\scene_2.json"), false);
 }
 
 void App::HandleInput( float dt )
@@ -35,6 +34,34 @@ void App::DoFrame( float dt )
 		if (s.second)
 		{
 			s.first->Render(dt);
+
+			auto activeSceneName = s.first->GetName();
+
+			auto t = s.first->IsOnTheSceneTrigger();
+
+			if (t.second)
+			{
+				for (auto it = scenes.begin(); it != scenes.end(); ++it)
+				{
+					if (static_cast<std::string>(it->first->GetName()) == static_cast<std::string>(t.first))
+					{
+						// Делаем новую сцену активной
+						it->second = true;
+						it->first->ResetPos();
+						break;
+					}
+				}
+
+				for (auto it = scenes.begin(); it != scenes.end(); ++it)
+				{
+					if (it->first->GetName() == activeSceneName)
+					{
+						// Делаем старую сцену неактивной
+						it->second = false;
+						break;
+					}
+				}
+			}
 		}
 	}
 }

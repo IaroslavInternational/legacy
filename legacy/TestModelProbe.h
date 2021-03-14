@@ -152,7 +152,7 @@ public:
 			TP probe;
 			pSelectedNode->Accept(probe);
 		}
-		ImGui::End();
+		ImGui::EndChild();
 	}
 protected:
 	bool PushNode( Node& node ) override

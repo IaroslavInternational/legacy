@@ -179,6 +179,11 @@ std::pair<const char*, bool> Scene::IsOnTheSceneTrigger()
 	return strc.CheckTriggers(camPos);
 }
 
+void Scene::ResetPos()
+{
+	cameras.GetActiveCamera().SetPos(dx::XMFLOAT3{ -13.5f,6.0f,3.5f });
+}
+
 /***************** Èםעונפויס *****************/
 
 void Scene::ShowMenu()
@@ -535,6 +540,7 @@ void Scene::ShowLog()
 		ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
 	log.Draw("Ëמד", NULL);
+	ImGui::End();
 }
 
 void Scene::DisableSides()

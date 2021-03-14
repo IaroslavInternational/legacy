@@ -35,42 +35,5 @@
       "roll": 0.0,
       "yaw": 0.0
     }
-  ],
-  "Trigger 2": [
-    {
-      "name": "Trigger 2",
-      "pitch": 1.57,
-      "pos-lb": [
-        {
-          "pos-x": 30.0,
-          "pos-y": 0.0,
-          "pos-z": 32.0
-        }
-      ],
-      "pos-lt": [
-        {
-          "pos-x": 30.0,
-          "pos-y": 12.5,
-          "pos-z": 32.0
-        }
-      ],
-      "pos-rb": [
-        {
-          "pos-x": 30.0,
-          "pos-y": 0.0,
-          "pos-z": 15.4
-        }
-      ],
-      "pos-rt": [
-        {
-          "pos-x": 30.0,
-          "pos-y": 12.5,
-          "pos-z": 15.4
-        }
-      ],
-      "ptr": "Scene 3",
-      "roll": 0.0,
-      "yaw": 0.0
-    }
   ]
 }
