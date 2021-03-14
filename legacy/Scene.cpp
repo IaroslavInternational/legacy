@@ -40,64 +40,6 @@ Scene::Scene(const char* SceneName,		  std::shared_ptr<Window> _wnd,
 Scene::~Scene()
 {}
 
-void Scene::Render(float dt)
-{
-	wnd->Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
-
-	auto info = IsOnTheSceneTrigger();
-
-	if (info.second)
-	{
-		onTrigger = info.second;
-		triggerGoal = info.first;
-
-		std::ostringstream oss;
-		oss << "[Триггеры]: " << "Касание триггера [" << static_cast<std::string>(triggerGoal) << "]\n";
-
-		log.AddLog(oss.str().c_str());
-	}
-	else
-	{
-		onTrigger = false;
-	}
-
-	plc.Bind(wnd->Gfx(), cameras->GetMatrix());
-
-	rg.BindMainCamera(cameras.GetActiveCamera());
-
-	plc.Submit(Chan::main);
-
-	cameras.Submit(Chan::main);
-	
-	strc.Submit(Chan::main);
-	strc.Submit(Chan::shadow);
-
-	md.Submit(Chan::main);
-	md.Submit(Chan::shadow);
-
-	rg.Execute(wnd->Gfx());
-
-	if (savingDepth)
-	{
-		rg.DumpShadowMap(wnd->Gfx(), "shadow.png");
-		savingDepth = false;
-	}
-
-	ShowMenu();
-	ShowLeftSide();
-	ShowRightSide();
-	ShowLeftBottomSide();
-	ShowBottomPanel();
-
-
-	// ShowImguiDemoWindow();
-	//rg.RenderWindows(wnd->Gfx());
-
-	// present
-	wnd->Gfx().EndFrame();
-	rg.Reset();
-}
-
 void Scene::ProcessInput(float dt)
 {
 	while (const auto e = wnd->kbd.ReadKey())
@@ -167,6 +109,64 @@ void Scene::ProcessInput(float dt)
 	}
 }
 
+void Scene::Render(float dt)
+{
+	wnd->Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
+
+	auto info = IsOnTheSceneTrigger();
+
+	if (info.second)
+	{
+		onTrigger = info.second;
+		triggerGoal = info.first;
+
+		std::ostringstream oss;
+		oss << "[Триггеры]: " << "Касание триггера [" << static_cast<std::string>(triggerGoal) << "]\n";
+
+		log.AddLog(oss.str().c_str());
+	}
+	else
+	{
+		onTrigger = false;
+	}
+
+	plc.Bind(wnd->Gfx(), cameras->GetMatrix());
+
+	rg.BindMainCamera(cameras.GetActiveCamera());
+
+	plc.Submit(Chan::main);
+
+	cameras.Submit(Chan::main);
+	
+	strc.Submit(Chan::main);
+	strc.Submit(Chan::shadow);
+
+	md.Submit(Chan::main);
+	md.Submit(Chan::shadow);
+
+	rg.Execute(wnd->Gfx());
+
+	if (savingDepth)
+	{
+		rg.DumpShadowMap(wnd->Gfx(), "shadow.png");
+		savingDepth = false;
+	}
+
+	ShowMenu();
+	ShowLeftSide();
+	ShowRightSide();
+	ShowLeftBottomSide();
+	ShowBottomPanel();
+
+
+	//ShowImguiDemoWindow();
+	//rg.RenderWindows(wnd->Gfx());
+
+	// present
+	wnd->Gfx().EndFrame();
+	rg.Reset();
+}
+
 std::pair<const char*, bool> Scene::IsOnTheSceneTrigger()
 {
 	dx::XMFLOAT3 camPos =
@@ -192,94 +192,93 @@ void Scene::ShowMenu()
 	{
 		if (ImGui::BeginMenu("Файл"))
 		{
-			ImGui::EndMenu();
-		}
+			if (ImGui::MenuItem("Выход"))
+			{
+				exit(0);
+			}
 
-		if (ImGui::BeginMenu("Изменить"))
-		{
-			if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-			if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-			ImGui::Separator();
-			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
 			ImGui::EndMenu();
 		}
 
 		if (ImGui::BeginMenu("Окна"))
 		{
-			if (ImGui::MenuItem("Модели сцены"))
+			if (ImGui::BeginMenu("Объекты"))
 			{
-				if (ShowModelsList && ShowModelsSettings)
+				if (ImGui::MenuItem("Точечные источники света"))
 				{
-					DisableSides();
+					if (ShowPLightsList && ShowPLightsSettings)
+					{
+						DisableSides();
 
-					ShowModelsList = false;
-					ShowModelsSettings = false;
+						ShowPLightsList = false;
+						ShowPLightsSettings = false;
+					}
+					else
+					{
+						DisableSides();
+
+						ShowPLightsList = true;
+						ShowPLightsSettings = true;
+					}
 				}
-				else
+
+				if (ImGui::MenuItem("Триггеры"))
 				{
-					DisableSides();
+					if (ShowTriggersList && ShowTriggersSettings)
+					{
+						DisableSides();
 
-					ShowModelsList = true;
-					ShowModelsSettings = true;
+						ShowTriggersList = false;
+						ShowTriggersSettings = false;
+					}
+					else
+					{
+						DisableSides();
+
+						ShowTriggersList = true;
+						ShowTriggersSettings = true;
+					}
 				}
-			}
 
-			if (ImGui::MenuItem("Триггеры сцены"))
-			{
-				if (ShowTriggersList && ShowTriggersSettings)
+				if (ImGui::MenuItem("Модели"))
 				{
-					DisableSides();
+					if (ShowModelsList && ShowModelsSettings)
+					{
+						DisableSides();
 
-					ShowTriggersList = false;
-					ShowTriggersSettings = false;
+						ShowModelsList = false;
+						ShowModelsSettings = false;
+					}
+					else
+					{
+						DisableSides();
+
+						ShowModelsList = true;
+						ShowModelsSettings = true;
+					}
 				}
-				else
+
+				if (ImGui::MenuItem("Камеры"))
 				{
-					DisableSides();
+					if (ShowCamsList)
+					{
+						DisableSides();
 
-					ShowTriggersList = true;
-					ShowTriggersSettings = true;
+						ShowCamsList = false;
+					}
+					else
+					{
+						DisableSides();
+
+						ShowCamsList = true;
+					}
 				}
-			}
 
-			if (ImGui::MenuItem("Камеры сцены"))
-			{
-				if (ShowCamsList)
-				{
-					DisableSides();
-
-					ShowCamsList = false;
-				}
-				else
-				{
-					DisableSides();
-
-					ShowCamsList = true;
-				}
-			}
-
-			if (ImGui::MenuItem("Точечные источники света сцены"))
-			{
-				if (ShowPLightsList && ShowPLightsSettings)
-				{
-					DisableSides();
-
-					ShowPLightsList = false;
-					ShowPLightsSettings = false;
-				}
-				else
-				{
-					DisableSides();
-
-					ShowPLightsList = true;
-					ShowPLightsSettings = true;
-				}
+				ImGui::EndMenu();
 			}
 
 			if (ImGui::MenuItem("FPS & GPU"))
-			{	
+			{
 				ShowHardwareInfo ? ShowHardwareInfo = false : ShowHardwareInfo = true;
 			}
 
@@ -589,6 +588,10 @@ void Scene::SetGuiColors()
 	colors[ImGuiCol_Tab] = ImVec4(0.00f, 0.08f, 0.27f, 0.86f);				// Раздел
 	colors[ImGuiCol_TabHovered] = ImVec4(0.01f, 0.43f, 0.63f, 0.80f);		// Наведение на раздел
 	colors[ImGuiCol_TabActive] = ImVec4(0.66f, 0.60f, 0.00f, 0.50f);		// Активный раздел
+	colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.19f, 0.67f, 0.65f, 1.00f);	// Ползунок
+	colors[ImGuiCol_HeaderHovered] = ImVec4(0.11f, 0.36f, 0.38f, 0.80f);	// Блок заголовка
+	colors[ImGuiCol_TableHeaderBg] = ImVec4(0.31f, 0.04f, 0.04f, 0.81f);	// Блок заголовка таблицы
+
 
 	/******************/
 }
@@ -618,12 +621,6 @@ void Scene::ShowTrigCheck()
 }
 
 /*********************************************/
-
-void Scene::ClearAll()
-{
-	/*sponza.~Model();
-	light.~PointLight();*/
-}
 
 const char* Scene::GetName() const
 {

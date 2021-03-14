@@ -35,28 +35,30 @@ void App::DoFrame( float dt )
 		{
 			s.first->Render(dt);
 
+			// Имя активной сцены
 			auto activeSceneName = s.first->GetName();
 
+			// Данные о триггере
 			auto t = s.first->IsOnTheSceneTrigger();
 
 			if (t.second)
 			{
+				// Делаем новую сцену активной
 				for (auto it = scenes.begin(); it != scenes.end(); ++it)
 				{
 					if (static_cast<std::string>(it->first->GetName()) == static_cast<std::string>(t.first))
-					{
-						// Делаем новую сцену активной
+					{						
 						it->second = true;
 						it->first->ResetPos();
 						break;
 					}
 				}
 
+				// Делаем старую сцену неактивной
 				for (auto it = scenes.begin(); it != scenes.end(); ++it)
 				{
 					if (it->first->GetName() == activeSceneName)
-					{
-						// Делаем старую сцену неактивной
+					{						
 						it->second = false;
 						break;
 					}
@@ -73,15 +75,17 @@ int App::Go()
 {
 	while( true )
 	{
-		// process all messages pending, but to not block for new messages
-		if( const auto ecode = Window::ProcessMessages() )
+		// Обработка всех сообщений
+		if(const auto ecode = Window::ProcessMessages())
 		{
-			// if return optional has value, means we're quitting so return exit code
+			// Если optional имеет значение, выходим
 			return *ecode;
 		}
-		// execute the game logic
+		
+		// Логика игры
 		const auto dt = timer.Mark() * speed_factor;
-		HandleInput( dt );
-		DoFrame( dt );
+		
+		HandleInput(dt);
+		DoFrame(dt);
 	}
 }

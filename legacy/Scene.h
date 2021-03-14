@@ -30,18 +30,16 @@ public:
 
 	/***** /Методы сцены\ *****/
 
-	// Отрисовка сцены
-	void Render(float dt);
-
 	// Обработка входных данных
 	void ProcessInput(float dt);
 
+	// Отрисовка сцены
+	void Render(float dt);
+
 	std::pair<const char*, bool> IsOnTheSceneTrigger();
 
+	// Возращение камеры на исходное положение
 	void ResetPos();
-
-	// Удаление содержимого 
-	void ClearAll();
 
 	// Геттер имени сцены
 	const char* GetName() const;
