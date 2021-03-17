@@ -200,34 +200,10 @@ void ModelData::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 
 		if (ImGui::Button("Добавить"))
 		{
-			ImGuiFileDialog::Instance()->OpenDialog("ModelOD", "Choose File", ".obj,.mtl,.gltf", ".");
+			ImGuiFileDialog::Instance()->OpenDialog("ModelOD", "Выбирете файл", ".obj,.mtl,.gltf", "");
 		}
 
-		if (ImGuiFileDialog::Instance()->Display("ModelOD"))
-		{
-			if (ImGuiFileDialog::Instance()->IsOk())
-			{
-				std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-				std::string copy1 = filePathName;
-
-				std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-				std::string copy2 = filePath;
-
-				std::string test = copy1.replace(0, copy2.size() + 1, "");
-				
-				for (int i = 0; i != filePathName.size(); i++)
-				{
-					if (filePathName[i] == '\\')
-					{
-						filePathName[i] = '/';
-					}
-				}
-				
-				AddModel(gfx, rg, filePathName.c_str(), test.c_str());
-			}
-
-			ImGuiFileDialog::Instance()->Close();
-		}
+		OpenDialog(gfx, rg);
 	}
 
 	ImGui::End();
@@ -252,4 +228,33 @@ void ModelData::ShowModelsProperties()
 	}
 
 	ImGui::End();
+}
+
+void ModelData::OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg)
+{
+	if (ImGuiFileDialog::Instance()->Display("ModelOD"))
+	{
+		if (ImGuiFileDialog::Instance()->IsOk())
+		{
+			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+			std::string copy1 = filePathName;
+
+			std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+			std::string copy2 = filePath;
+
+			std::string test = copy1.replace(0, copy2.size() + 1, "");
+
+			for (int i = 0; i != filePathName.size(); i++)
+			{
+				if (filePathName[i] == '\\')
+				{
+					filePathName[i] = '/';
+				}
+			}
+
+			AddModel(gfx, rg, filePathName.c_str(), test.c_str());
+		}
+
+		ImGuiFileDialog::Instance()->Close();
+	}
 }

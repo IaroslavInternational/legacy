@@ -1,17 +1,4 @@
 {
-  "nano-suit": [
-    {
-      "name": "nano",
-      "path": "Scenes\\Scene 1\\Models\\nano_textured\\nanosuit.obj",
-      "pitch": 1.57,
-      "pos-x": 27.0,
-      "pos-y": -0.56,
-      "pos-z": 1.7,
-      "roll": 0.0,
-      "scale": 1.0,
-      "yaw": 0.0
-    }
-  ],
   "sponza": [
     {
       "name": "main scene",

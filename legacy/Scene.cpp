@@ -240,22 +240,35 @@ void Scene::ShowMenu()
 					}
 				}
 
-				if (ImGui::MenuItem("Модели"))
+				if (ImGui::BeginMenu("Модели"))
 				{
-					if (ShowModelsList && ShowModelsSettings)
+					if (ImGui::MenuItem("Окна"))
 					{
-						DisableSides();
+						if (ShowModelsList && ShowModelsSettings)
+						{
+							DisableSides();
 
-						ShowModelsList = false;
-						ShowModelsSettings = false;
+							ShowModelsList = false;
+							ShowModelsSettings = false;
+						}
+						else
+						{
+							DisableSides();
+
+							ShowModelsList = true;
+							ShowModelsSettings = true;
+						}
 					}
-					else
+
+					if (ImGui::MenuItem("Добавить"))
 					{
-						DisableSides();
-
-						ShowModelsList = true;
-						ShowModelsSettings = true;
+						ImGuiFileDialog::Instance()->OpenDialog("ModelOD", "Выбирете файл", ".obj,.mtl,.gltf", "");
 					}
+
+					md.OpenDialog(wnd->Gfx(), rg);
+
+
+					ImGui::EndMenu();
 				}
 
 				if (ImGui::MenuItem("Камеры"))

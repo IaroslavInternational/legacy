@@ -15,21 +15,23 @@ public:
 
 	void LinkTechniques(Rgph::RenderGraph& rg);
 	void Submit(size_t channels);
-	void AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path, const char* name);
 
 	// Показать модели *Левая панель*
 	void ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg);
 
 	// Показать модели *Правая панель*
 	void ShowModelsProperties();
+
+	void OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg);
 private:
 	std::vector<std::string> modelsName;
 	std::vector<std::unique_ptr<Model>> models;
 	std::vector<DirectX::XMFLOAT3> modelsPos;
 	std::vector<DirectX::XMFLOAT3> modelsOrien;
 private:
+	void AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path, const char* name);
+
 	void Init();
-	void InitAt(size_t i);
 private:
 	/* Данные для новой модели */
 	
