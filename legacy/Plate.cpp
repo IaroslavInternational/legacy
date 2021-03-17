@@ -17,11 +17,11 @@ Plate::Plate(Graphics& gfx, float in_width, float in_height, DirectX::XMFLOAT4 c
 	using namespace Bind;
 	namespace dx = DirectX;
 
-	//auto model = Plane::MakeTesselatedTextured(Plane::Make().vertices.GetLayout(), 1, 1);
-	auto model = Plane::Make();
+	auto model = Plane::MakeTesselatedTextured(Plane::Make().vertices.GetLayout(), 1, 1);
+	//auto model = Plane::Make();
 
 	//model.Transform(dx::XMMatrixScaling(width, height, 1.0f));
-	model.SetNormalsIndependentFlat();
+	//model.SetNormalsIndependentFlat();
 	const auto geometryTag = "$plane." + std::to_string(width);
 	pVertices = VertexBuffer::Resolve(gfx, geometryTag, model.vertices);
 	pIndices = IndexBuffer::Resolve(gfx, geometryTag, model.indices);

@@ -66,6 +66,10 @@ public:
 					indices.push_back( indexArray[1] );
 					indices.push_back( indexArray[2] );
 					indices.push_back( indexArray[3] );
+					indices.push_back( indexArray[0] ); //0
+					indices.push_back( indexArray[1] ); //1
+					indices.push_back( indexArray[1] ); //1
+					indices.push_back( indexArray[3] ); //2
 				}
 			}
 		}
