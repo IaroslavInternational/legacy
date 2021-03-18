@@ -180,6 +180,42 @@ void ModelData::Init()
 	}
 }
 
+template<typename T>
+void ModelData::SetNewValue(const char* modelName, const char* param, T val)
+{
+	// Открытие файла с триггерами
+	std::ifstream dataFile(this->path);
+	if (!dataFile.is_open())
+	{
+		throw ("Не удаётся открыть файл с данными о моделях сцен");
+	}
+
+	// Чтение файла
+	json j;
+	dataFile >> j;
+
+	// Закрытие файла
+	dataFile.close();
+
+	for (json::iterator m = j.begin(); m != j.end(); ++m)
+	{
+		auto d = m.key();
+
+		for (auto& obj : j.at(d))
+		{
+			//json jn = { "pos-x", {val} };
+			obj["pos-x"] = val;
+		}
+	}
+
+	// Запись в файл нового триггера
+	std::ofstream ostr(this->path);
+	ostr << j.dump();
+
+	// Закрытие файла
+	ostr.close();
+}
+
 void ModelData::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 {
 	if (ImGui::Begin("Объекты", NULL,
@@ -209,7 +245,7 @@ void ModelData::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 	ImGui::End();
 }
 
-void ModelData::ShowModelsProperties()
+void ModelData::ShowModelsProperties(AppLog& log)
 {
 	if (ImGui::Begin("Опции", NULL,
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
@@ -222,8 +258,24 @@ void ModelData::ShowModelsProperties()
 				static MP probe{ modelsName.at(k) };
 				probe.SpawnChildWindow(*models.at(k));
 
+				if (isSave)
+				{
+					auto test = probe.GetCurrentTransform();
+
+					log.AddLog(std::to_string(test).c_str());
+					log.AddLog("\n");
+
+					SetNewValue<float>(modelsName.at(k).c_str(), "pos-x", test);
+					isSave = false;
+				}
+
 				break;
 			}
+		}
+
+		if (ImGui::Button("Сохранить"))
+		{
+			isSave = true;
 		}
 	}
 

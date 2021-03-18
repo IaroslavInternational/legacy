@@ -6,6 +6,7 @@
 #include <fstream>
 #include <filesystem>
 #include "json.hpp"
+#include "AppLog.h"
 
 class ModelData
 {
@@ -20,7 +21,7 @@ public:
 	void ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg);
 
 	// Показать модели *Правая панель*
-	void ShowModelsProperties();
+	void ShowModelsProperties(AppLog& log);
 
 	void OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg);
 private:
@@ -32,16 +33,13 @@ private:
 	void AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path, const char* name);
 
 	void Init();
+
+	template<typename T>
+	void SetNewValue(const char* modelName, const char* param, T val);
 private:
-	/* Данные для новой модели */
-	
-	mutable char newPath[256];
-	mutable char newName[256];
-
-	/***************************/
-
 	const char* path;
 
 	const char* selected = "";
-};
 
+	bool isSave = false;
+};

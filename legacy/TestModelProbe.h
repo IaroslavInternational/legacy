@@ -193,6 +193,11 @@ private:
 	};
 	std::string name;
 	std::unordered_map<int,TransformParameters> transformParams;
+public:
+	float GetCurrentTransform()
+	{
+		return ResolveTransform().x;
+	}
 private:
 	TransformParameters& ResolveTransform() noexcept
 	{
