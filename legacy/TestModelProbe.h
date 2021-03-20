@@ -7,14 +7,16 @@
 #include "DynamicConstant.h"
 #include "Model.h"
 #include "Node.h"
+
 #include <DirectXMath.h>
 #include <string>
 #include <unordered_map>
+
 #include "EngineXM.h"
 
 namespace dx = DirectX;
 
-// Mesh
+// Параметры мэша
 class TP : public TechniqueProbe
 {
 public:
@@ -78,12 +80,16 @@ public:
 	}
 };
 
+// Параметры модели
 class MP : ModelProbe
 {
 public:
-	MP( std::string name ) : name( std::move( name ) )
+	MP(std::string name) 
+		: 
+		name(std::move(name))
 	{}
-	void SpawnWindow( Model& model )
+
+	void SpawnWindow(Model& model)
 	{
 		ImGui::Begin( name.c_str() );
 		ImGui::Columns( 2,nullptr,true );
@@ -155,7 +161,7 @@ public:
 		ImGui::EndChild();
 	}
 protected:
-	bool PushNode( Node& node ) override
+	bool PushNode(Node& node) override
 	{
 		// if there is no selected node, set selectedId to an impossible value
 		const int selectedId = (pSelectedNode == nullptr) ? -1 : pSelectedNode->GetId();
@@ -176,7 +182,8 @@ protected:
 		// signal if children should also be recursed
 		return expanded;
 	}
-	void PopNode( Node& node ) override
+
+	void PopNode(Node& node) override
 	{
 		ImGui::TreePop();
 	}
@@ -191,12 +198,28 @@ private:
 		float y = 0.0f;
 		float z = 0.0f;
 	};
+
 	std::string name;
-	std::unordered_map<int,TransformParameters> transformParams;
+	std::unordered_map<int, TransformParameters> transformParams;
 public:
-	float GetCurrentTransform()
+	dx::XMFLOAT3 GetCurrentPosition()
 	{
-		return ResolveTransform().x;
+		dx::XMFLOAT3 pos = 
+		{ 
+			ResolveTransform().x, ResolveTransform().y, ResolveTransform().z 
+		};
+
+		return pos;
+	}
+
+	dx::XMFLOAT3 GetCurrentOrientation()
+	{
+		dx::XMFLOAT3 orient =
+		{
+			ResolveTransform().xRot, ResolveTransform().yRot, ResolveTransform().zRot
+		};
+
+		return orient;
 	}
 private:
 	TransformParameters& ResolveTransform() noexcept
@@ -209,6 +232,7 @@ private:
 		}
 		return i->second;
 	}
+
 	TransformParameters& LoadTransform( int id ) noexcept
 	{
 		const auto& applied = pSelectedNode->GetAppliedTransform();

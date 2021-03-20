@@ -199,12 +199,9 @@ void ModelData::SetNewValue(const char* modelName, const char* param, T val)
 
 	for (json::iterator m = j.begin(); m != j.end(); ++m)
 	{
-		auto d = m.key();
-
-		for (auto& obj : j.at(d))
+		for (auto& obj : j.at(modelName))
 		{
-			//json jn = { "pos-x", {val} };
-			obj["pos-x"] = val;
+			obj[param] = val;
 		}
 	}
 
@@ -245,7 +242,7 @@ void ModelData::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 	ImGui::End();
 }
 
-void ModelData::ShowModelsProperties(AppLog& log)
+void ModelData::ShowModelsProperties()
 {
 	if (ImGui::Begin("Îïöèè", NULL,
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
@@ -260,12 +257,17 @@ void ModelData::ShowModelsProperties(AppLog& log)
 
 				if (isSave)
 				{
-					auto test = probe.GetCurrentTransform();
+					auto pos = probe.GetCurrentPosition();
+					auto orient = probe.GetCurrentOrientation();
 
-					log.AddLog(std::to_string(test).c_str());
-					log.AddLog("\n");
+					SetNewValue<float>(modelsName.at(k).c_str(), "pos-x", pos.x);
+					SetNewValue<float>(modelsName.at(k).c_str(), "pos-y", pos.y);
+					SetNewValue<float>(modelsName.at(k).c_str(), "pos-z", pos.z);
 
-					SetNewValue<float>(modelsName.at(k).c_str(), "pos-x", test);
+					SetNewValue<float>(modelsName.at(k).c_str(), "roll", orient.x);
+					SetNewValue<float>(modelsName.at(k).c_str(), "pitch", orient.y);
+					SetNewValue<float>(modelsName.at(k).c_str(), "yaw", orient.z);
+
 					isSave = false;
 				}
 
