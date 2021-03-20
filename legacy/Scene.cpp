@@ -403,7 +403,7 @@ void Scene::ShowRightSide()
 
 	if (ShowModelsSettings)
 	{
-		md.ShowModelsProperties(this->log);
+		md.ShowModelsProperties();
 	}
 	else if (ShowTriggersSettings)
 	{

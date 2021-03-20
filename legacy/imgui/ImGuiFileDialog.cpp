@@ -1,30 +1,3 @@
-// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-
-/*
-MIT License
-
-Copyright (c) 2019-2020 Stephane Cuillerdier (aka aiekick)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-
 #include "ImGuiFileDialog.h"
 
 #ifdef __cplusplus
@@ -113,37 +86,37 @@ namespace IGFD
 #define resetButtonString "R"
 #endif // resetButtonString
 #ifndef drivesButtonString
-#define drivesButtonString "Drives"
+#define drivesButtonString "Диски"
 #endif // drivesButtonString
 #ifndef searchString
-#define searchString "Search :"
+#define searchString "Поиск :"
 #endif // searchString
 #ifndef dirEntryString
-#define dirEntryString "[Dir]"
+#define dirEntryString "[Папка]"
 #endif // dirEntryString
 #ifndef linkEntryString
-#define linkEntryString "[Link]"
+#define linkEntryString "[Ссылка]"
 #endif // linkEntryString
 #ifndef fileEntryString
-#define fileEntryString "[File]"
+#define fileEntryString "[Файл]"
 #endif // fileEntryString
 #ifndef fileNameString
-#define fileNameString "File Name :"
+#define fileNameString "Имя файла :"
 #endif // fileNameString
 #ifndef dirNameString
-#define dirNameString "Directory Path :"
+#define dirNameString "Путь папки :"
 #endif // dirNameString
 #ifndef buttonResetSearchString
-#define buttonResetSearchString "Reset search"
+#define buttonResetSearchString "Сбросить поиск"
 #endif // buttonResetSearchString
 #ifndef buttonDriveString
-#define buttonDriveString "Drives"
+#define buttonDriveString "Диски"
 #endif // buttonDriveString
 #ifndef buttonResetPathString
-#define buttonResetPathString "Reset to current directory"
+#define buttonResetPathString "Вернуться к текущей папке"
 #endif // buttonResetPathString
 #ifndef buttonCreateDirString
-#define buttonCreateDirString "Create Directory"
+#define buttonCreateDirString "Создать папку"
 #endif // buttonCreateDirString
 #ifndef tableHeaderAscendingIcon
 #define tableHeaderAscendingIcon "A|"
@@ -152,28 +125,28 @@ namespace IGFD
 #define tableHeaderDescendingIcon "D|"
 #endif // tableHeaderDescendingIcon
 #ifndef tableHeaderFileNameString
-#define tableHeaderFileNameString "File name"
+#define tableHeaderFileNameString "Имя файла"
 #endif // tableHeaderFileNameString
 #ifndef tableHeaderFileTypeString
-#define tableHeaderFileTypeString "Type"
+#define tableHeaderFileTypeString "Тип"
 #endif // tableHeaderFileTypeString
 #ifndef tableHeaderFileSizeString
-#define tableHeaderFileSizeString "Size"
+#define tableHeaderFileSizeString "Размер"
 #endif // tableHeaderFileSizeString
 #ifndef tableHeaderFileDateString
-#define tableHeaderFileDateString "Date"
+#define tableHeaderFileDateString "Дата"
 #endif // tableHeaderFileDateString
 #ifndef OverWriteDialogTitleString
-#define OverWriteDialogTitleString "The file Already Exist !"
+#define OverWriteDialogTitleString "Файл уже существует !"
 #endif // OverWriteDialogTitleString
 #ifndef OverWriteDialogMessageString
-#define OverWriteDialogMessageString "Would you like to OverWrite it ?"
+#define OverWriteDialogMessageString "Перезаписать файл ?"
 #endif // OverWriteDialogMessageString
 #ifndef OverWriteDialogConfirmButtonString
-#define OverWriteDialogConfirmButtonString "Confirm"
+#define OverWriteDialogConfirmButtonString "Подтвердить"
 #endif // OverWriteDialogConfirmButtonString
 #ifndef OverWriteDialogCancelButtonString
-#define OverWriteDialogCancelButtonString "Cancel"
+#define OverWriteDialogCancelButtonString "Отмена"
 #endif // OverWriteDialogCancelButtonString
 // see strftime functionin <ctime> for customize
 #ifndef DateTimeFormat
