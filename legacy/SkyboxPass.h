@@ -89,11 +89,7 @@ namespace Rgph
 		}
 		void RenderWindow()
 		{
-			if( ImGui::Begin( "Skybox" ) )
-			{
-				ImGui::Checkbox( "Use sphere",&useSphere );
-			}
-			ImGui::End();
+			ImGui::Checkbox("Use sphere", &useSphere);
 		}
 	private:
 		bool useSphere = true;

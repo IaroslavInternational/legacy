@@ -149,20 +149,29 @@ namespace Rgph
 		blurKernel->SetBuffer( k );
 	}
 
-	void BlurOutlineRenderGraph::RenderWindows( Graphics& gfx )
+	void BlurOutlineRenderGraph::RenderWindows(Graphics& gfx)
 	{
-		RenderShadowWindow( gfx );
-		RenderKernelWindow( gfx );
-		dynamic_cast<SkyboxPass&>(FindPassByName( "skybox" )).RenderWindow();
+		if (ImGui::Begin("Контур моделей", NULL,
+			ImGuiWindowFlags_NoMove |
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse |
+			ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus))
+		{
+			RenderKernelWindow(gfx);
+			dynamic_cast<SkyboxPass&>(FindPassByName("skybox")).RenderWindow();
+			RenderShadowWindow(gfx);
+		}
+
+		ImGui::End();
 	}
 
 	void BlurOutlineRenderGraph::RenderKernelWindow( Graphics& gfx )
 	{
-		if( ImGui::Begin( "Ядро" ) )
+		if( ImGui::BeginChild( "Ядро"))
 		{
 			bool filterChanged = false;
 			{
-				const char* items[] = { "Гаусс","Коробка" };
+				const char* items[] = { "Гаусс","Квадр." };
 				static const char* curItem = items[0];
 				if( ImGui::BeginCombo( "Тип фильтра",curItem ) )
 				{
@@ -173,6 +182,7 @@ namespace Rgph
 						{
 							filterChanged = true;
 							curItem = items[n];
+
 							if( curItem == items[0] )
 							{
 								kernelType = KernelType::Gauss;
@@ -205,20 +215,18 @@ namespace Rgph
 				}
 			}
 		}
-		ImGui::End();
 	}
 
-	void Rgph::BlurOutlineRenderGraph::RenderShadowWindow( Graphics& gfx )
+	void Rgph::BlurOutlineRenderGraph::RenderShadowWindow(Graphics& gfx)
 	{
-		if( ImGui::Begin( "Тень" ) )
+		if (ImGui::Button("Dump Cubemap"))
 		{
-			if( ImGui::Button( "Dump Cubemap" ) )
-			{
-				DumpShadowMap( gfx,"Dumps\\shadow_" );
-			}
+			DumpShadowMap(gfx, "shadow_");
 		}
-		ImGui::End();
+
+		ImGui::EndChild();
 	}
+
 	void Rgph::BlurOutlineRenderGraph::BindMainCamera( Camera& cam )
 	{
 		dynamic_cast<LambertianPass&>(FindPassByName( "lambertian" )).BindMainCamera( cam );

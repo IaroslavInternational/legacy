@@ -404,6 +404,11 @@ void Scene::ShowRightSide()
 	if (ShowModelsSettings)
 	{
 		md.ShowModelsProperties();
+
+		ImGui::SetNextWindowPos({ round(io.DisplaySize.x - RightPanelW), MenuHeight }, 0, RightPanelPivot);
+		ImGui::SetNextWindowSize({ io.DisplaySize.x * 0.2f, io.DisplaySize.y * 0.2f }, ImGuiCond_FirstUseEver);
+
+		rg.RenderWindows(wnd->Gfx());
 	}
 	else if (ShowTriggersSettings)
 	{
@@ -420,7 +425,7 @@ void Scene::ShowRightSide()
 		ImGui::SetNextWindowPos({ round(io.DisplaySize.x - RightPanelW), MenuHeight }, 0, RightPanelPivot);
 		ImGui::SetNextWindowSize({ io.DisplaySize.x * 0.15f, io.DisplaySize.y * 0.15f }, ImGuiCond_FirstUseEver);
 	}
-
+	
 	/**************/
 
 	/* Конец правой стороны */
