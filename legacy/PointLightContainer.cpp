@@ -118,22 +118,7 @@ void PointLightContainer::ShowPLightsInformation()
 				selected = pln.c_str();
 			}
 		}
-
-		//char buf[128];
-		//ImGui::InputText("Имя:", buf, sizeof(buf));
-		//ImGui::Text(buf);
-		if (ImGui::Button("Удалить"))
-		{
-			for (int i = 0; i < pLightsName.size(); i++)
-			{
-				if (pLightsName.at(i) == "tria")
-				{
-					pLights.erase(pLights.begin() + i);
-				}
-			}
-		}
 	}
-
 	ImGui::End();
 }
 
@@ -152,6 +137,5 @@ void PointLightContainer::ShowPLightsProperties()
 			}
 		}
 	}
-
 	ImGui::End();
 }

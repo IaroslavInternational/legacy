@@ -360,6 +360,9 @@
     <ClCompile Include="imgui\ImGuiFileDialog.cpp">
       <Filter>imgui\dialog</Filter>
     </ClCompile>
+    <ClCompile Include="SceneObjects.cpp">
+      <Filter>Исходные файлы\Сцена</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -742,6 +745,9 @@
     </ClInclude>
     <ClInclude Include="imgui\ImGuiFileDialog.h">
       <Filter>imgui\dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneObjects.h">
+      <Filter>Заголовочные файлы\Сцена</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

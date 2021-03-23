@@ -1,17 +1,4 @@
 {
-  "HouseRock1.obj": [
-    {
-      "name": "HouseRock1.obj",
-      "path": "C:/Users/Yaros/source/repos/legacy/legacy/Scenes/Scene 1/Models/HouseSimple/HouseRock1.obj",
-      "pitch": 1.082104206085205,
-      "pos-x": -7.5,
-      "pos-y": -1.875,
-      "pos-z": 5.625,
-      "roll": 0.10471975803375244,
-      "scale": 1,
-      "yaw": -0.40142571926116943
-    }
-  ],
   "sponza": [
     {
       "name": "main scene 1",

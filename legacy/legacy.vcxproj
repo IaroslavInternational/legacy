@@ -109,11 +109,15 @@
     <ClCompile Include="imgui\ImGuiFileDialog.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
-    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />              	<ClCompile Include="imgui\imgui_impl_win32.cpp" />    	<ClCompile Include="imgui\imgui_tables.cpp" />    	<ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="ModelData.cpp" />
     <ClCompile Include="PointLightContainer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneDataReader.cpp" />
+    <ClCompile Include="SceneObjects.cpp" />
     <ClCompile Include="SceneTriggersContainer.cpp" />
     <ClCompile Include="ShadowCameraCBuf.cpp" />
     <ClCompile Include="CameraContainer.cpp" />
@@ -335,6 +339,7 @@
     <ClInclude Include="PointLightContainer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneDataReader.h" />
+    <ClInclude Include="SceneObjects.h" />
     <ClInclude Include="SceneTriggersContainer.h" />
     <ClInclude Include="ShadowCameraCBuf.h" />
     <ClInclude Include="CameraContainer.h" />

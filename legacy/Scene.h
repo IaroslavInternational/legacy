@@ -1,22 +1,12 @@
 #pragma once
 
 #include "Window.h"
-
 #include "ImguiManager.h"
-#include "AppLog.h"
 
-#include "CameraContainer.h"
-#include "PointLight.h"
-#include "Model.h"
 #include "BlurOutlineRenderGraph.h"
-#include "ModelData.h"
-
 #include "EngineTimer.h"
 
-#include "SceneTriggersContainer.h"
-#include "PointLightContainer.h"
-
-#include "SceneDataReader.h"
+#include "SceneObjects.h"
 
 namespace dx = DirectX;
 
@@ -53,6 +43,9 @@ private:
 
 	/**** Панели ****/
 
+	// Установка положения и размеров панели
+	void SetPanelWidthAndPos(int corner, float width, float height);
+
 	// Верхня панель меню
 	void ShowMenu();
 
@@ -66,7 +59,7 @@ private:
 	void ShowLeftBottomSide();
 
 	// Нижняя панель
-	void ShowBottomPanel();
+	void ShowBottomPanel();	
 
 	/****************/
 
@@ -131,30 +124,15 @@ private:
 
 	/*************/
 private:
-	// Лог панель
-	AppLog log;
-
-	// Контейнер камер
-	CameraContainer cameras;
-
 	// Указатель на главное окно 
 	std::shared_ptr<Window> wnd;
 
 	// Рендер граф
 	Rgph::BlurOutlineRenderGraph rg{ wnd->Gfx() };
 
-	/***** -Модели и объекты- *****/
+	/***** -Объекты- *****/
 
-	SceneDataReader sdr;
-
-	// Истоники света
-	PointLightContainer plc;
-
-	// Модели сцены
-	ModelData md;
-
-	// Триггеры сцены
-	SceneTriggersContainer strc;
+	SceneObjects objects;
 
 	/******************************/
 };

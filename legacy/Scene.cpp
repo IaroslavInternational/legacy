@@ -1,15 +1,11 @@
 #include "Scene.h"
 
-#include "EngineMath.h"
 #include "EngineUtil.h"
-
 #include "Channels.h"
-#include "TestModelProbe.h"
-#include "Camera.h"
-
 #include "AdapterData.h"
 #include "imgui/imgui.h"
 #include "imgui/ImGuiFileDialog.h"
+#include "Camera.h"
 
 #include <sstream>
 
@@ -17,22 +13,10 @@ Scene::Scene(const char* SceneName,		  std::shared_ptr<Window> _wnd,
 			 const char* Data)
 	:
 	wnd(_wnd),
-	sdr(Data),
-	plc(sdr.GetPaths().at(2).c_str(), wnd->Gfx()),
-	md(sdr.GetPaths().at(0).c_str(), wnd->Gfx()),
-	strc(sdr.GetPaths().at(1).c_str(), wnd->Gfx()),
+	objects(Data, wnd->Gfx(), rg),
 	sceneName(SceneName)
-{
-	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "A", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));
-	cameras.AddCamera(std::make_unique<Camera>(wnd->Gfx(), "B", dx::XMFLOAT3{ -13.5f,28.8f,-6.4f }, PI / 180.0f * 13.0f, PI / 180.0f * 61.0f));
-	plc.AddCamerasToLight(cameras);
-	
-	plc.LinkTechniques(rg);
-	cameras.LinkTechniques(rg);
-	strc.LinkTechniques(rg);
-	md.LinkTechniques(rg);
-
-	plc.RgBindShadowCamera(rg);
+{	
+	objects.LinkTechniques(rg);
 
 	SetGuiColors();
 }
@@ -76,27 +60,27 @@ void Scene::ProcessInput(float dt)
 	{
 		if (wnd->kbd.KeyIsPressed('W'))
 		{
-			cameras->Translate({ 0.0f,0.0f,dt });
+			objects.cameras->Translate({ 0.0f,0.0f,dt });
 		}
 		if (wnd->kbd.KeyIsPressed('A'))
 		{
-			cameras->Translate({ -dt,0.0f,0.0f });
+			objects.cameras->Translate({ -dt,0.0f,0.0f });
 		}
 		if (wnd->kbd.KeyIsPressed('S'))
 		{
-			cameras->Translate({ 0.0f,0.0f,-dt });
+			objects.cameras->Translate({ 0.0f,0.0f,-dt });
 		}
 		if (wnd->kbd.KeyIsPressed('D'))
 		{
-			cameras->Translate({ dt,0.0f,0.0f });
+			objects.cameras->Translate({ dt,0.0f,0.0f });
 		}
 		if (wnd->kbd.KeyIsPressed('R'))
 		{
-			cameras->Translate({ 0.0f,dt,0.0f });
+			objects.cameras->Translate({ 0.0f,dt,0.0f });
 		}
 		if (wnd->kbd.KeyIsPressed('F'))
 		{
-			cameras->Translate({ 0.0f,-dt,0.0f });
+			objects.cameras->Translate({ 0.0f,-dt,0.0f });
 		}
 	}
 
@@ -104,7 +88,7 @@ void Scene::ProcessInput(float dt)
 	{
 		if (!wnd->CursorEnabled())
 		{
-			cameras->Rotate((float)delta->x, (float)delta->y);
+			objects.cameras->Rotate((float)delta->x, (float)delta->y);
 		}
 	}
 }
@@ -115,7 +99,7 @@ void Scene::Render(float dt)
 
 	auto info = IsOnTheSceneTrigger();
 
-	if (info.second)
+	/*if (info.second)
 	{
 		onTrigger = info.second;
 		triggerGoal = info.first;
@@ -128,21 +112,13 @@ void Scene::Render(float dt)
 	else
 	{
 		onTrigger = false;
-	}
+	}*/
 
-	plc.Bind(wnd->Gfx(), cameras->GetMatrix());
+	objects.pointLights.Bind(wnd->Gfx(), objects.cameras->GetMatrix());
+	rg.BindMainCamera(objects.cameras.GetActiveCamera());
 
-	rg.BindMainCamera(cameras.GetActiveCamera());
-
-	plc.Submit(Chan::main);
-
-	cameras.Submit(Chan::main);
-	
-	strc.Submit(Chan::main);
-	strc.Submit(Chan::shadow);
-
-	md.Submit(Chan::main);
-	md.Submit(Chan::shadow);
+	objects.Submit(Chan::main);
+	objects.models.Submit(Chan::shadow);
 
 	rg.Execute(wnd->Gfx());
 
@@ -158,9 +134,7 @@ void Scene::Render(float dt)
 	ShowLeftBottomSide();
 	ShowBottomPanel();
 
-
 	//ShowImguiDemoWindow();
-	//rg.RenderWindows(wnd->Gfx());
 
 	// present
 	wnd->Gfx().EndFrame();
@@ -171,20 +145,48 @@ std::pair<const char*, bool> Scene::IsOnTheSceneTrigger()
 {
 	dx::XMFLOAT3 camPos =
 	{
-		cameras.GetActiveCamera().GetPos().x,
-		cameras.GetActiveCamera().GetPos().y,
-		cameras.GetActiveCamera().GetPos().z
+		objects.cameras.GetActiveCamera().GetPos().x,
+		objects.cameras.GetActiveCamera().GetPos().y,
+		objects.cameras.GetActiveCamera().GetPos().z
 	};
 
-	return strc.CheckTriggers(camPos);
+	return objects.triggersScene.CheckTriggers(camPos);
 }
 
 void Scene::ResetPos()
 {
-	cameras.GetActiveCamera().SetPos(dx::XMFLOAT3{ -13.5f,6.0f,3.5f });
+	objects.cameras.GetActiveCamera().SetPos(dx::XMFLOAT3{ -13.5f,6.0f,3.5f });
 }
 
 /***************** Интерфейс *****************/
+
+void Scene::SetPanelWidthAndPos(int corner, float width, float height)
+{
+	ImGuiIO& io = ImGui::GetIO();
+
+	float MenuHeight = ImGui::GetMenuHeight();
+
+	float PanelW = round(io.DisplaySize.x * width);
+	float PanelH = io.DisplaySize.y * height;
+
+	ImVec2 BottomPanelSize = ImVec2(
+		PanelW,
+		PanelH
+	);
+
+	ImVec2 PanelPos = ImVec2(
+		(corner & 1) ? io.DisplaySize.x : 0.0f,
+		(corner & 2) ? io.DisplaySize.y + MenuHeight : MenuHeight
+	);
+
+	ImVec2 PanelPivot = ImVec2(
+		(corner & 1) ? 1.0f : 0.0f,
+		(corner & 2) ? 1.0f : 0.0f
+	);
+
+	ImGui::SetNextWindowPos(PanelPos, ImGuiCond_Always, PanelPivot);
+	ImGui::SetNextWindowSize(BottomPanelSize);
+}
 
 void Scene::ShowMenu()
 {
@@ -265,7 +267,7 @@ void Scene::ShowMenu()
 						ImGuiFileDialog::Instance()->OpenDialog("ModelOD", "Выбирете файл", ".obj,.mtl,.gltf", "");
 					}
 
-					md.OpenDialog(wnd->Gfx(), rg);
+					objects.models.OpenDialog(wnd->Gfx(), rg);
 
 
 					ImGui::EndMenu();
@@ -316,49 +318,25 @@ void Scene::ShowLeftSide()
 {
 	/* Левая сторона */
 
-	ImGuiIO& io = ImGui::GetIO();
-	int corner = 0;
-
-	float MenuHeight = ImGui::GetMenuHeight();
-
-	float LeftPanelW = io.DisplaySize.x * 0.2f;
-	float LeftPanelH = io.DisplaySize.y * 0.75f;
-
-	ImVec2 LeftPanelSize = ImVec2(
-		LeftPanelW,
-		LeftPanelH
-	);
-
-	ImVec2 LeftPanelPos = ImVec2(
-		(corner & 1) ? io.DisplaySize.x : 0.0f,
-		(corner & 2) ? io.DisplaySize.y - MenuHeight : MenuHeight
-	);
-
-	ImVec2 LeftPanelPivot = ImVec2(
-		(corner & 1) ? 1.0f : 0.0f,
-		(corner & 2) ? 1.0f : 0.0f
-	);
-
-	ImGui::SetNextWindowPos(LeftPanelPos, 0, LeftPanelPivot);
-	ImGui::SetNextWindowSize(LeftPanelSize, ImGuiCond_FirstUseEver);
+	SetPanelWidthAndPos(0, 0.2f, 0.75f);
 
 	/* Содержимое */
 	
 	if (ShowModelsList)
 	{
-		md.ShowModelsInformation(wnd->Gfx(), rg);
+		objects.models.ShowModelsInformation(wnd->Gfx(), rg);
 	}
 	else if (ShowTriggersList)
 	{
-		strc.ShowTrigInformation();
+		objects.triggersScene.ShowTrigInformation();
 	}
 	else if (ShowPLightsList)
 	{
-		plc.ShowPLightsInformation();
+		objects.pointLights.ShowPLightsInformation();
 	}
 	else if (ShowCamsList)
 	{
-		cameras.ShowCamsInformationAndSettings(wnd->Gfx());
+		objects.cameras.ShowCamsInformationAndSettings(wnd->Gfx());
 	}
 
 	/**************/
@@ -377,33 +355,20 @@ void Scene::ShowRightSide()
 	int corner = 1;
 
 	float MenuHeight = ImGui::GetMenuHeight();
-
 	float RightPanelW = io.DisplaySize.x * 0.2f;
-	float RightPanelH = io.DisplaySize.y * 0.75f;
-
-	ImVec2 RightPanelSize = ImVec2(
-		RightPanelW,
-		RightPanelH
-	);
-
-	ImVec2 RightPanelPos = ImVec2(
-		(corner & 1) ? io.DisplaySize.x : 0.0f,
-		(corner & 2) ? io.DisplaySize.y - MenuHeight : MenuHeight
-	);
 
 	ImVec2 RightPanelPivot = ImVec2(
 		(corner & 1) ? 1.0f : 0.0f,
 		(corner & 2) ? 1.0f : 0.0f
 	);
 
-	ImGui::SetNextWindowPos(RightPanelPos, 0, RightPanelPivot);
-	ImGui::SetNextWindowSize(RightPanelSize, ImGuiCond_FirstUseEver);
+	SetPanelWidthAndPos(corner, 0.2f, 0.75f);
 
 	/* Содержимое */
 
 	if (ShowModelsSettings)
 	{
-		md.ShowModelsProperties();
+		objects.models.ShowModelsProperties();
 
 		ImGui::SetNextWindowPos({ round(io.DisplaySize.x - RightPanelW), MenuHeight }, 0, RightPanelPivot);
 		ImGui::SetNextWindowSize({ io.DisplaySize.x * 0.2f, io.DisplaySize.y * 0.2f }, ImGuiCond_FirstUseEver);
@@ -412,7 +377,7 @@ void Scene::ShowRightSide()
 	}
 	else if (ShowTriggersSettings)
 	{
-		strc.ShowTrigSettings();
+		objects.triggersScene.ShowTrigSettings();
 
 		ImGui::SetNextWindowPos({ round(io.DisplaySize.x - RightPanelW), MenuHeight }, 0, RightPanelPivot);
 		ImGui::SetNextWindowSize({ io.DisplaySize.x * 0.15f, io.DisplaySize.y * 0.15f }, ImGuiCond_FirstUseEver);
@@ -420,7 +385,7 @@ void Scene::ShowRightSide()
 	}
 	else if (ShowPLightsSettings)
 	{
-		plc.ShowPLightsProperties();
+		objects.pointLights.ShowPLightsProperties();
 
 		ImGui::SetNextWindowPos({ round(io.DisplaySize.x - RightPanelW), MenuHeight }, 0, RightPanelPivot);
 		ImGui::SetNextWindowSize({ io.DisplaySize.x * 0.15f, io.DisplaySize.y * 0.15f }, ImGuiCond_FirstUseEver);
@@ -434,32 +399,8 @@ void Scene::ShowRightSide()
 void Scene::ShowLeftBottomSide()
 {
 	/* Левая нижняя сторона */
-
-	ImGuiIO& io = ImGui::GetIO();
-	int corner = 2;
-
-	float MenuHeight = ImGui::GetMenuHeight();
-
-	float LeftBottomPanelW = io.DisplaySize.x * 0.2f;
-	float LeftBottomPanelH = io.DisplaySize.y * 0.25f;
-
-	ImVec2 LeftBottomPanelSize = ImVec2(
-		LeftBottomPanelW,
-		LeftBottomPanelH
-	);
-
-	ImVec2 LeftBottomPanelPos = ImVec2(
-		(corner & 1) ? io.DisplaySize.x : 0.0f,
-		(corner & 2) ? io.DisplaySize.y + MenuHeight : MenuHeight
-	);
-
-	ImVec2 LeftBottomPanelPivot = ImVec2(
-		(corner & 1) ? 1.0f : 0.0f,
-		(corner & 2) ? 1.0f : 0.0f
-	);
-
-	ImGui::SetNextWindowPos(LeftBottomPanelPos, ImGuiCond_Always, LeftBottomPanelPivot);
-	ImGui::SetNextWindowSize(LeftBottomPanelSize);
+	
+	SetPanelWidthAndPos(2, 0.2f, 0.25f);
 
 	/* Содержимое */
 
@@ -477,31 +418,7 @@ void Scene::ShowBottomPanel()
 {
 	/* Нижняя стороны */
 
-	ImGuiIO& io = ImGui::GetIO();
-	int corner = 3;
-
-	float MenuHeight = ImGui::GetMenuHeight();
-
-	float BottomPanelW = round(io.DisplaySize.x * 0.8f);
-	float BottomPanelH = io.DisplaySize.y * 0.25f;
-
-	ImVec2 BottomPanelSize = ImVec2(
-		BottomPanelW,
-		BottomPanelH
-	);
-
-	ImVec2 BottomPanelPos = ImVec2(
-		(corner & 1) ? io.DisplaySize.x : 0.0f,
-		(corner & 2) ? io.DisplaySize.y + MenuHeight : MenuHeight
-	);
-
-	ImVec2 BottomPanelPivot = ImVec2(
-		(corner & 1) ? 1.0f : 0.0f,
-		(corner & 2) ? 1.0f : 0.0f
-	);
-
-	ImGui::SetNextWindowPos(BottomPanelPos, ImGuiCond_Always, BottomPanelPivot);
-	ImGui::SetNextWindowSize(BottomPanelSize);
+	SetPanelWidthAndPos(3, 0.8f, 0.25f);
 
 	/* Содержимое */
 
@@ -551,13 +468,7 @@ void Scene::ShowFPSAndGPU()
 
 void Scene::ShowLog()
 {
-	ImGui::Begin("Лог", NULL, ImGuiWindowFlags_NoMove |
-		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize |
-		ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus);
-
-	log.Draw("Лог", NULL);
-	ImGui::End();
+	objects.DrawLog();
 }
 
 void Scene::DisableSides()
