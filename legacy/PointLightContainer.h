@@ -3,11 +3,12 @@
 #include "PointLight.h"
 #include "BlurOutlineRenderGraph.h"
 #include "CameraContainer.h"
+#include "AppLog.h"
 
 class PointLightContainer
 {
 public:
-	PointLightContainer(const char* path, Graphics& gfx);
+	PointLightContainer(const char* path, Graphics& gfx, AppLog* aLog);
 	~PointLightContainer();
 
 	void LinkTechniques(Rgph::RenderGraph& rg);
@@ -15,7 +16,7 @@ public:
 	void Submit(size_t channels);
 
 	void RgBindShadowCamera(Rgph::BlurOutlineRenderGraph& rg);
-	void AddCamerasToLight(CameraContainer& camcon);
+	void AddCamerasToLight(CameraContainer* camcon);
 
 	// Показать источники освещения *Левая панель*
 	void ShowPLightsInformation();
@@ -28,4 +29,6 @@ private:
 	std::vector<std::unique_ptr<PointLight>> pLights;
 private:
 	const char* selected = "";
+
+	AppLog* applog;
 };

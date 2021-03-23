@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Model.h"
+#include "AppLog.h"
 
 #include <sstream>
 #include <fstream>
@@ -11,7 +12,7 @@
 class ModelData
 {
 public:
-	ModelData(const char* path, Graphics& gfx);
+	ModelData(const char* path, Graphics& gfx, AppLog* aLog);
 	~ModelData();
 
 	void LinkTechniques(Rgph::RenderGraph& rg);
@@ -49,4 +50,6 @@ private:
 
 	// Если нажата кнопка сохранить
 	bool isSave = false;
+
+	AppLog* applog;
 };

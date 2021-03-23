@@ -2,6 +2,7 @@
 
 #include "TriggerStruct.h"
 #include "Plate.h"
+#include "BlurOutlineRenderGraph.h"
 
 #include <DirectXMath.h>
 
@@ -14,20 +15,23 @@ public:
 	Trigger(TriggerStruct& trs, Graphics& gfx);
 	Trigger(dx::XMFLOAT3 PosTopLeft,	dx::XMFLOAT3 PosTopRight,
 			dx::XMFLOAT3 PosBottomLeft, dx::XMFLOAT3 PosBottomRight,
-			float roll, float pitch, float yaw,
-			Graphics& gfx);
+			float roll, float pitch, float yaw, Graphics& gfx);
 	~Trigger();
 
-	// Отрисовка триггера
-	Plate* GetPlate();
+	void LinkTechniques(Rgph::RenderGraph& rg);
 
+	void Submit(size_t channels);
+
+	// Установка позиции
 	void SetPosition(dx::XMFLOAT3 pos);
 
+	// Установка ориентации
 	void SetOrientation(dx::XMFLOAT3 orient);
 
+	// Установка начального положение
 	void SetDefault();
 
-	// Проверка на триггер через координаты
+	// Проверка на касание триггера через координаты
 	bool Check(dx::XMFLOAT3 CameraPos);
 
 	// Установка ширины триггера
@@ -54,9 +58,7 @@ private:
 		float triggerYaw;
 	} triggerOrien;
 
-	/* 2Д-плита триггера */
-	
-	Graphics& Gfx;
+	/* Визуальный контур триггера */
 
 	float platew;
 	float plateh;

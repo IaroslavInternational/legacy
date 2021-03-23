@@ -1,6 +1,7 @@
 #pragma once
 
 #include "imgui\imgui.h"
+#include "LogCommands.h"
 
 struct AppLog
 {
@@ -24,6 +25,7 @@ struct AppLog
         LineOffsets.push_back(0);
     }
 
+    // Добавить лог
     void AddLog(const char* fmt, ...) IM_FMTARGS(2)
     {
         int old_size = Buf.size();
@@ -36,6 +38,13 @@ struct AppLog
                 LineOffsets.push_back(old_size + 1);
         if (AutoScroll)
             ScrollToBottom = true;
+    }
+
+    // Добавить лог с заголовком
+    void AddLog(const char* header, const char* fmt, ...) IM_FMTARGS(2)
+    {
+        AddLog(header);
+        AddLog(fmt);
     }
 
     void Draw(const char* title, bool* p_open = NULL)

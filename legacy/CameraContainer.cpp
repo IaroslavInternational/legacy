@@ -4,19 +4,31 @@
 #include "Graphics.h"
 #include "RenderGraph.h"
 
+#include <sstream>
+
 Camera* CameraContainer::operator->()
 {
 	return &GetActiveCamera();
 }
+
+CameraContainer::CameraContainer(AppLog* aLog)
+	:
+	applog(aLog)
+{}
 
 CameraContainer::~CameraContainer()
 {}
 
 void CameraContainer::LinkTechniques( Rgph::RenderGraph& rg )
 {
-	for( auto& pcam : cameras )
+	for(int i = 0; i < cameras.size(); i++)
 	{
-		pcam->LinkTechniques( rg );
+		cameras[i]->LinkTechniques(rg);
+
+		std::ostringstream oss;
+		oss << "Добавлено к рендеру [" << cameras[i]->GetName() << "]\n";
+
+		applog->AddLog(CAMERAS_LOG, oss.str().c_str());
 	}
 }
 
@@ -39,6 +51,11 @@ void CameraContainer::Bind(Graphics& gfx)
 void CameraContainer::AddCamera(std::shared_ptr<Camera> pCam)
 {
 	cameras.push_back(std::move(pCam));
+
+	std::ostringstream oss;
+	oss << "Добавлено [" << cameras.at(cameras.size() - 1)->GetName() << "]\n";
+
+	applog->AddLog(CAMERAS_LOG, oss.str().c_str());
 }
 
 Camera& CameraContainer::GetActiveCamera()

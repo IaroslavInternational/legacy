@@ -35,10 +35,9 @@ Trigger::Trigger(dx::XMFLOAT3 PosTopLeft, dx::XMFLOAT3 PosTopRight,
 				 float roll, float pitch, float yaw,
 				 Graphics& gfx)
 	:
-	Gfx(gfx),
 	platew(CalcWidth(PosTopLeft.x, PosTopRight.x, PosTopLeft.z, PosTopRight.z)),
 	plateh(CalcHeight(PosTopLeft.y, PosBottomLeft.y)),
-	plate(Gfx, platew, plateh)
+	plate(gfx, platew, plateh)
 {
 	triggerPos.triggerPosTopLeft = PosTopLeft;
 	triggerPos.triggerPosTopRight = PosTopRight;
@@ -54,9 +53,14 @@ Trigger::~Trigger()
 {
 }
 
-Plate* Trigger::GetPlate()
+void Trigger::LinkTechniques(Rgph::RenderGraph& rg)
 {
-	return &plate;
+	plate.LinkTechniques(rg);
+}
+
+void Trigger::Submit(size_t channels)
+{
+	plate.Submit(channels);
 }
 
 void Trigger::SetPosition(dx::XMFLOAT3 pos)

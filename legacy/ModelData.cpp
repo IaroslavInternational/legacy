@@ -6,10 +6,13 @@
 using json = nlohmann::json;
 using namespace std::string_literals;
 
-ModelData::ModelData(const char* path, Graphics& gfx)
+ModelData::ModelData(const char* path, Graphics& gfx, AppLog* aLog)
 	:
-	path(path)
+	path(path),
+	applog(aLog)
 {
+	applog->AddLog(MODEL_LOG, "Инициализация\n");
+
 	const auto dataPath = path;
 
 	std::ifstream dataFile(dataPath);
@@ -86,10 +89,10 @@ void ModelData::LinkTechniques(Rgph::RenderGraph& rg)
 	{
 		models[i]->LinkTechniques(rg);
 
-		//std::ostringstream oss;
-		//oss << "[Модели]: " << "Загружена модель [" << md.modelsName[i] << "]\n";
+		std::ostringstream oss;
+		oss << "Добавлено к рендеру [" << modelsName[i] << "]\n";
 
-		//log.AddLog(oss.str().c_str());
+		applog->AddLog(MODEL_LOG, oss.str().c_str());
 	}
 }
 
@@ -114,6 +117,11 @@ void ModelData::AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path,
 
 	models.back()->LinkTechniques(rg);
 
+	std::ostringstream ostr;
+	ostr << "Добавлено к рендеру [" << name << "]\n";
+
+	applog->AddLog(MODEL_LOG, ostr.str().c_str());
+
 	using std::to_string;
 
 	// Открытие файла с триггерами
@@ -122,6 +130,8 @@ void ModelData::AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path,
 	{
 		throw ("Не удаётся открыть файл с данными о моделях сцен");
 	}
+
+	applog->AddLog(MODEL_LOG, "Добавление\n");
 
 	// Чтение файла
 	json j;
@@ -155,11 +165,16 @@ void ModelData::AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path,
 	json_str.at(pos_of_par2 + 1) = ',';
 
 	// Запись в файл нового триггера
-	std::ofstream ostr(this->path);
-	ostr << json_str + newModel.str() + '}';
+	std::ofstream ostream(this->path);
+	ostream << json_str + newModel.str() + '}';
 
 	// Закрытие файла
-	ostr.close();
+	ostream.close();
+
+	std::ostringstream oss;
+	oss << "Добавлено [" << name << "]\n";
+
+	applog->AddLog(MODEL_LOG, oss.str().c_str());
 }
 
 void ModelData::Init()
@@ -177,6 +192,11 @@ void ModelData::Init()
 				modelsPos[i].z
 			)
 		);
+
+		std::ostringstream oss;
+		oss << "Установка положения [" << modelsName[i] << "]\n";
+
+		applog->AddLog(MODEL_LOG, oss.str().c_str());
 	}
 }
 
@@ -189,6 +209,11 @@ void ModelData::SetNewValue(const char* modelName, const char* param, T val)
 	{
 		throw ("Не удаётся открыть файл с данными о моделях сцен");
 	}
+
+	std::ostringstream ostrlog;
+	ostrlog << "Установка [" << param << " : " << std::to_string(val) << "] " << "для [" << modelName << "]\n";
+
+	applog->AddLog(MODEL_LOG, ostrlog.str().c_str());
 
 	// Чтение файла
 	json j;
@@ -234,6 +259,7 @@ void ModelData::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 		if (ImGui::Button("Добавить"))
 		{
 			ImGuiFileDialog::Instance()->OpenDialog("ModelOD", "Выбирете файл", ".obj,.mtl,.gltf", "");
+			applog->AddLog(SYSTEM_LOG, "Добавить модель\n");
 		}
 
 		OpenDialog(gfx, rg);
@@ -260,9 +286,13 @@ void ModelData::ShowModelsProperties()
 					auto pos = probe.GetCurrentPosition();
 					auto orient = probe.GetCurrentOrientation();
 
+					applog->AddLog(MODEL_LOG, "Сохранение позиции\n");
+
 					SetNewValue<float>(modelsName.at(k).c_str(), "pos-x", pos.x);
 					SetNewValue<float>(modelsName.at(k).c_str(), "pos-y", pos.y);
 					SetNewValue<float>(modelsName.at(k).c_str(), "pos-z", pos.z);
+
+					applog->AddLog(MODEL_LOG, "Сохранение ориентации\n");
 
 					SetNewValue<float>(modelsName.at(k).c_str(), "roll", orient.x);
 					SetNewValue<float>(modelsName.at(k).c_str(), "pitch", orient.y);

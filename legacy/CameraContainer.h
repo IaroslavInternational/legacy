@@ -1,5 +1,7 @@
 #pragma once
 
+#include "AppLog.h"
+
 #include <vector>
 #include <memory>
 
@@ -15,6 +17,8 @@ class CameraContainer
 {
 public:
 	Camera* operator->();
+	
+	CameraContainer(AppLog* aLog);
 	~CameraContainer();
 	
 	void LinkTechniques( Rgph::RenderGraph& rg );
@@ -29,6 +33,9 @@ private:
 	Camera& GetControlledCamera();
 private:
 	std::vector<std::shared_ptr<Camera>> cameras;
+	
 	int active = 0;
 	int controlled = 0;
+
+	AppLog* applog;
 };

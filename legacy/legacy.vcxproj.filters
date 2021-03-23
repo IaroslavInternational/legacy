@@ -10,9 +10,6 @@
     <Filter Include="Шейдеры">
       <UniqueIdentifier>{246c933d-909b-4e52-ace4-7be4ab3da27b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Шейдеры\Common">
-      <UniqueIdentifier>{de9872ec-5ab7-495b-81e9-7da662a1234a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Исходные файлы">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
@@ -87,6 +84,9 @@
     </Filter>
     <Filter Include="imgui\dialog">
       <UniqueIdentifier>{c54226af-a7d6-4921-b22c-330372dc4f54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Шейдеры\Заголовки">
+      <UniqueIdentifier>{de9872ec-5ab7-495b-81e9-7da662a1234a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -749,6 +749,9 @@
     <ClInclude Include="SceneObjects.h">
       <Filter>Заголовочные файлы\Сцена</Filter>
     </ClInclude>
+    <ClInclude Include="LogCommands.h">
+      <Filter>Заголовочные файлы\Сцена\Модули интерфейса</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="legacy.rc">
@@ -774,28 +777,28 @@
       <Filter>Другое</Filter>
     </None>
     <None Include="VShadow.hlsli">
-      <Filter>Шейдеры\Common</Filter>
+      <Filter>Шейдеры\Заголовки</Filter>
     </None>
     <None Include="LightVectorData.hlsli">
-      <Filter>Шейдеры\Common</Filter>
+      <Filter>Шейдеры\Заголовки</Filter>
     </None>
     <None Include="PointLight.hlsli">
-      <Filter>Шейдеры\Common</Filter>
+      <Filter>Шейдеры\Заголовки</Filter>
     </None>
     <None Include="ShaderOps.hlsli">
-      <Filter>Шейдеры\Common</Filter>
+      <Filter>Шейдеры\Заголовки</Filter>
     </None>
     <None Include="Transform.hlsli">
-      <Filter>Шейдеры\Common</Filter>
+      <Filter>Шейдеры\Заголовки</Filter>
     </None>
     <None Include="_PShadow_Dynamic.hlsli">
-      <Filter>Шейдеры\Common</Filter>
+      <Filter>Шейдеры\Заголовки</Filter>
     </None>
     <None Include="_PShadow_Static.hlsli">
-      <Filter>Шейдеры\Common</Filter>
+      <Filter>Шейдеры\Заголовки</Filter>
     </None>
     <None Include="PShadow.hlsli">
-      <Filter>Шейдеры\Common</Filter>
+      <Filter>Шейдеры\Заголовки</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
   </ItemGroup>

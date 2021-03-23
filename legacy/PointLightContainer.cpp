@@ -10,8 +10,12 @@
 using json = nlohmann::json;
 using namespace std::string_literals;
 
-PointLightContainer::PointLightContainer(const char* path, Graphics& gfx)
+PointLightContainer::PointLightContainer(const char* path, Graphics& gfx, AppLog* aLog)
+	:
+	applog(aLog)
 {
+	applog->AddLog(POINTLIGHTS_LOG, "Инициализация\n");
+
 	const auto dataPath = path;
 
 	std::ifstream dataFile(dataPath);
@@ -63,9 +67,14 @@ PointLightContainer::~PointLightContainer()
 
 void PointLightContainer::LinkTechniques(Rgph::RenderGraph& rg)
 {
-	for (auto& pl : pLights)
+	for (int i = 0; i < pLights.size(); i++)
 	{
-		pl->LinkTechniques(rg);
+		pLights[i]->LinkTechniques(rg);
+
+		std::ostringstream oss;
+		oss << "Добавлено к рендеру [" << pLightsName[i] << "]\n";
+
+		applog->AddLog(POINTLIGHTS_LOG, oss.str().c_str());
 	}
 }
 
@@ -93,11 +102,11 @@ void PointLightContainer::RgBindShadowCamera(Rgph::BlurOutlineRenderGraph& rg)
 	}
 }
 
-void PointLightContainer::AddCamerasToLight(CameraContainer& camcon)
+void PointLightContainer::AddCamerasToLight(CameraContainer* camcon)
 {
 	for (auto& pl : pLights)
 	{
-		camcon.AddCamera(pl.get()->ShareCamera());
+		camcon->AddCamera(pl.get()->ShareCamera());
 	}
 }
 

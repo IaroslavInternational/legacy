@@ -1,15 +1,16 @@
 #pragma once
 
 #include "Trigger.h"
+#include "AppLog.h"
 
 #include <map>
 #include <vector>
 
-// Триггер для перехода на следующую сцену
+// Триггеры для перехода на следующую сцену
 class SceneTriggersContainer
 {
 public:
-	SceneTriggersContainer(const char* path, Graphics& gfx);
+	SceneTriggersContainer(const char* path, Graphics& gfx, AppLog* aLog);
 	~SceneTriggersContainer();
 	
 	void LinkTechniques(Rgph::RenderGraph& rg);
@@ -35,17 +36,19 @@ private:
 
 	/* Данные для нового триггера */
 	
-	char name[128];
-	char goal[128];
+	mutable char name[128];
+	mutable char goal[128];
 
-	float pos_lt[3] = { 0.0f, 0.0f, 0.0f };
-	float pos_rt[3] = { 0.0f, 0.0f, 0.0f };
-	float pos_lb[3] = { 0.0f, 0.0f, 0.0f };
-	float pos_rb[3] = { 0.0f, 0.0f, 0.0f };
+	mutable float pos_lt[3] = { 0.0f, 0.0f, 0.0f };
+	mutable float pos_rt[3] = { 0.0f, 0.0f, 0.0f };
+	mutable float pos_lb[3] = { 0.0f, 0.0f, 0.0f };
+	mutable float pos_rb[3] = { 0.0f, 0.0f, 0.0f };
 
-	float orient[3] = { 0.0f, 0.0f, 0.0f };
+	mutable float orient[3] = { 0.0f, 0.0f, 0.0f };
 	
 	/******************************/
 private:
 	void LoadTrigger(std::string name, std::string ptr, TriggerStruct& trs);
+private:
+	AppLog* applog;
 };

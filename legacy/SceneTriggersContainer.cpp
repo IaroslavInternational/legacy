@@ -10,10 +10,13 @@
 using json = nlohmann::json;
 using namespace std::string_literals;
 
-SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx)
+SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx, AppLog* aLog)
 	:
-	filePath(path)
+	filePath(path),
+	applog(aLog)
 {
+	applog->AddLog(TRIGGER_LOG, "Инициализация\n");
+
 	std::ifstream dataFile(filePath);
 	if (!dataFile.is_open())
 	{
@@ -93,13 +96,13 @@ void SceneTriggersContainer::LinkTechniques(Rgph::RenderGraph &rg)
 {
 	for (auto it = trig_sc_container.begin(); it != trig_sc_container.end(); ++it)
 	{
-		it->second->GetPlate()->LinkTechniques(rg);
+		it->second->LinkTechniques(rg);
 		it->second->SetDefault();
 
-		//std::ostringstream oss;
-		//oss << "[Триггеры]: " << "Загружен триггер [" << std::string(it->first) << "]\n";
+		std::ostringstream oss;
+		oss << "Добавлено к рендеру [" << std::string(it->first) << "]\n";
 
-		//log.AddLog(oss.str().c_str());
+		applog->AddLog(TRIGGER_LOG, oss.str().c_str());
 	}
 }
 
@@ -107,7 +110,7 @@ void SceneTriggersContainer::Submit(size_t channels)
 {
 	for (auto it = trig_sc_container.begin(); it != trig_sc_container.end(); ++it)
 	{
-		it->second->GetPlate()->Submit(channels);
+		it->second->Submit(channels);
 	}
 }
 
@@ -117,8 +120,12 @@ std::pair<const char*, bool> SceneTriggersContainer::CheckTriggers(dx::XMFLOAT3 
 	{
 		if (it->second->Check(pos))
 		{
-			const char* HittedTriggerGoal;
-			HittedTriggerGoal = it->first;
+			const char* HittedTriggerGoal = it->first;
+
+			std::ostringstream oss;
+			oss << "Касание [" << static_cast<std::string>(HittedTriggerGoal) << "]\n";
+
+			applog->AddLog(TRIGGER_LOG, oss.str().c_str());
 
 			return std::make_pair(HittedTriggerGoal, true);
 		}
@@ -248,6 +255,10 @@ void SceneTriggersContainer::ShowTrigSettings()
 
 void SceneTriggersContainer::LoadTrigger(std::string name, std::string ptr, TriggerStruct& trs)
 {
+	// TO DO:
+	// Исправить баги
+	// Реализовать лог
+
 	using std::to_string;
 
 	// Открытие файла с триггерами
