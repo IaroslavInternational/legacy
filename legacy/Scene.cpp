@@ -97,23 +97,6 @@ void Scene::Render(float dt)
 {
 	wnd->Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
 
-	auto info = IsOnTheSceneTrigger();
-
-	/*if (info.second)
-	{
-		onTrigger = info.second;
-		triggerGoal = info.first;
-
-		std::ostringstream oss;
-		oss << "[Триггеры]: " << "Касание триггера [" << static_cast<std::string>(triggerGoal) << "]\n";
-
-		log.AddLog(oss.str().c_str());
-	}
-	else
-	{
-		onTrigger = false;
-	}*/
-
 	objects.pointLights.Bind(wnd->Gfx(), objects.cameras->GetMatrix());
 	rg.BindMainCamera(objects.cameras.GetActiveCamera());
 
@@ -143,14 +126,7 @@ void Scene::Render(float dt)
 
 std::pair<const char*, bool> Scene::IsOnTheSceneTrigger()
 {
-	dx::XMFLOAT3 camPos =
-	{
-		objects.cameras.GetActiveCamera().GetPos().x,
-		objects.cameras.GetActiveCamera().GetPos().y,
-		objects.cameras.GetActiveCamera().GetPos().z
-	};
-
-	return objects.triggersScene.CheckTriggers(camPos);
+	return objects.triggersScene.CheckTriggers(objects.cameras.GetActiveCamera().GetPos());
 }
 
 void Scene::ResetPos()

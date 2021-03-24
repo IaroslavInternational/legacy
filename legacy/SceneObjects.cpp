@@ -14,7 +14,7 @@ SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx,
 {
 	cameras.AddCamera(std::make_shared<Camera>(gfx, "A", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));
 	cameras.AddCamera(std::make_shared<Camera>(gfx, "B", dx::XMFLOAT3{ -13.5f,28.8f,-6.4f }, PI / 180.0f * 13.0f, PI / 180.0f * 61.0f));
-	pointLights.AddCamerasToLight(&cameras);
+	pointLights.AddCamerasToLight(&cameras);	// Важно !
 
 	pointLights.RgBindShadowCamera(rg);
 }

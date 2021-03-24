@@ -47,3 +47,5 @@
 #define STRICT
 
 #include <Windows.h>
+
+#include "EngineConverter.h"
