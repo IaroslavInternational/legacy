@@ -39,6 +39,8 @@ public:
 	// Демо-интерфейс 
 	void ShowImguiDemoWindow();
 private:
+#if IS_ENGINE_MODE
+
 	/* -- Интерфейс -- */
 
 	/**** Панели ****/
@@ -82,6 +84,9 @@ private:
 	void SetGuiColors();
 
 	/*******************/
+
+#endif // IS_ENGINE_MODE
+
 private:
 	// Идентификаторы сцены
 	const char* sceneName;

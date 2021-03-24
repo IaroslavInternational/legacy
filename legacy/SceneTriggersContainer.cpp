@@ -276,7 +276,7 @@ void SceneTriggersContainer::LoadTrigger(std::string name, std::string ptr, Trig
 	dataFile.close();
 
 	// Число триггеров в файле + 1
-	int triggerIndex = trig_sc_container.size() + 1;
+	size_t triggerIndex = trig_sc_container.size() + 1;
 
 	// Новый триггер
 	std::string newTrigger = "\"Trigger " + to_string(triggerIndex);

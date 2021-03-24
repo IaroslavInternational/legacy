@@ -18,7 +18,9 @@ Scene::Scene(const char* SceneName,		  std::shared_ptr<Window> _wnd,
 {	
 	objects.LinkTechniques(rg);
 
+#if IS_ENGINE_MODE
 	SetGuiColors();
+#endif // IS_ENGINE_MODE
 }
 
 Scene::~Scene()
@@ -111,6 +113,7 @@ void Scene::Render(float dt)
 		savingDepth = false;
 	}
 
+#if IS_ENGINE_MODE
 	ShowMenu();
 	ShowLeftSide();
 	ShowRightSide();
@@ -118,6 +121,7 @@ void Scene::Render(float dt)
 	ShowBottomPanel();
 
 	//ShowImguiDemoWindow();
+#endif
 
 	// present
 	wnd->Gfx().EndFrame();
@@ -134,6 +138,7 @@ void Scene::ResetPos()
 	objects.cameras.GetActiveCamera().SetPos(dx::XMFLOAT3{ -13.5f,6.0f,3.5f });
 }
 
+#if IS_ENGINE_MODE
 /***************** Èםעונפויס *****************/
 
 void Scene::SetPanelWidthAndPos(int corner, float width, float height)
@@ -526,6 +531,7 @@ void Scene::ShowTrigCheck()
 }
 
 /*********************************************/
+#endif
 
 const char* Scene::GetName() const
 {
