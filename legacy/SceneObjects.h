@@ -5,7 +5,9 @@
 #include "CameraContainer.h"
 #include "PointLightContainer.h"
 
+#if IS_ENGINE_MODE
 #include "AppLog.h"
+#endif
 
 #include "SceneDataReader.h"
 
@@ -18,11 +20,15 @@ public:
 	void LinkTechniques(Rgph::RenderGraph& rg);
 	void Submit(size_t channels);
 
+#if IS_ENGINE_MODE
 	void DrawLog();
+#endif
 private:
 	SceneDataReader sdr;
 	
+#if IS_ENGINE_MODE
 	AppLog applog;
+#endif
 public:
 	/***** -Объекты- *****/
 	

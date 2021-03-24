@@ -1,11 +1,16 @@
 #include "ModelData.h"
+
+#if IS_ENGINE_MODE
 #include "imgui\imgui.h"
 #include "imgui\ImGuiFileDialog.h"
+#endif // IS_ENGINE_MODE
+
 #include "TestModelProbe.h"
 
 using json = nlohmann::json;
 using namespace std::string_literals;
 
+#if IS_ENGINE_MODE
 ModelData::ModelData(const char* path, Graphics& gfx, AppLog* aLog)
 	:
 	path(path),
@@ -78,6 +83,77 @@ ModelData::ModelData(const char* path, Graphics& gfx, AppLog* aLog)
 
 	Init();
 }
+#else
+ModelData::ModelData(const char* path, Graphics& gfx)
+	:
+	path(path)
+{
+	const auto dataPath = path;
+
+	std::ifstream dataFile(dataPath);
+	if (!dataFile.is_open())
+	{
+		throw ("Не удаётся открыть файл с данными о моделях");
+	}
+
+	json j;
+	dataFile >> j;
+
+	for (json::iterator m = j.begin(); m != j.end(); ++m)
+	{
+		auto d = m.key();
+
+		for (const auto& obj : j.at(d))
+		{
+			/* Запись имени объекта */
+
+			std::string name = obj.at("name");
+			modelsName.push_back(name);
+
+			/************************/
+
+			/* Запись модели, инициализируя по пути и размеру */
+
+			std::string modelPath = obj.at("path");
+			float modelScale = obj.at("scale");
+			models.emplace_back(std::make_unique<Model>(gfx, modelPath, modelScale));
+
+			/**************************************************/
+
+			/* Запись позиции */
+
+			float pos_x = obj.at("pos-x");
+			float pos_y = obj.at("pos-y");
+			float pos_z = obj.at("pos-z");
+
+			DirectX::XMFLOAT3 position = { pos_x, pos_y, pos_z };
+
+			modelsPos.emplace_back(position);
+
+			/******************/
+
+			/* Запись ориентации */
+
+			float roll = obj.at("roll");
+			float pitch = obj.at("pitch");
+			float yaw = obj.at("yaw");
+
+			DirectX::XMFLOAT3 orientation = { roll, pitch, yaw };
+
+			modelsOrien.emplace_back(orientation);
+
+			/*********************/
+		}
+	}
+
+	models.shrink_to_fit();
+	modelsPos.shrink_to_fit();
+	modelsOrien.shrink_to_fit();
+	modelsName.shrink_to_fit();
+
+	Init();
+}
+#endif // IS_ENGINE_MODE
 
 ModelData::~ModelData()
 {
@@ -89,10 +165,12 @@ void ModelData::LinkTechniques(Rgph::RenderGraph& rg)
 	{
 		models[i]->LinkTechniques(rg);
 
+#if IS_ENGINE_MODE
 		std::ostringstream oss;
 		oss << "Добавлено к рендеру [" << modelsName[i] << "]\n";
 
 		applog->AddLog(MODEL_LOG, oss.str().c_str());
+#endif // IS_ENGINE_MODE
 	}
 }
 
@@ -117,10 +195,12 @@ void ModelData::AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path,
 
 	models.back()->LinkTechniques(rg);
 
+#if IS_ENGINE_MODE
 	std::ostringstream ostr;
 	ostr << "Добавлено к рендеру [" << name << "]\n";
 
 	applog->AddLog(MODEL_LOG, ostr.str().c_str());
+#endif // IS_ENGINE_MODE
 
 	using std::to_string;
 
@@ -131,7 +211,9 @@ void ModelData::AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path,
 		throw ("Не удаётся открыть файл с данными о моделях сцен");
 	}
 
+#if IS_ENGINE_MODE
 	applog->AddLog(MODEL_LOG, "Добавление\n");
+#endif // IS_ENGINE_MODE
 
 	// Чтение файла
 	json j;
@@ -171,10 +253,12 @@ void ModelData::AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path,
 	// Закрытие файла
 	ostream.close();
 
+#if IS_ENGINE_MODE
 	std::ostringstream oss;
 	oss << "Добавлено [" << name << "]\n";
 
 	applog->AddLog(MODEL_LOG, oss.str().c_str());
+#endif // IS_ENGINE_MODE
 }
 
 void ModelData::Init()
@@ -193,10 +277,12 @@ void ModelData::Init()
 			)
 		);
 
+#if IS_ENGINE_MODE
 		std::ostringstream oss;
 		oss << "Установка положения [" << modelsName[i] << "]\n";
 
 		applog->AddLog(MODEL_LOG, oss.str().c_str());
+#endif // IS_ENGINE_MODE
 	}
 }
 
@@ -210,10 +296,12 @@ void ModelData::SetNewValue(const char* modelName, const char* param, T val)
 		throw ("Не удаётся открыть файл с данными о моделях сцен");
 	}
 
+#if IS_ENGINE_MODE
 	std::ostringstream ostrlog;
 	ostrlog << "Установка [" << param << " : " << std::to_string(val) << "] " << "для [" << modelName << "]\n";
 
 	applog->AddLog(MODEL_LOG, ostrlog.str().c_str());
+#endif // IS_ENGINE_MODE
 
 	// Чтение файла
 	json j;
@@ -238,6 +326,7 @@ void ModelData::SetNewValue(const char* modelName, const char* param, T val)
 	ostr.close();
 }
 
+#if IS_ENGINE_MODE
 void ModelData::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 {
 	if (ImGui::Begin("Объекты", NULL,
@@ -342,3 +431,4 @@ void ModelData::OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg)
 		ImGuiFileDialog::Instance()->Close();
 	}
 }
+#endif // IS_ENGINE_MODE

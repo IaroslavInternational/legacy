@@ -1,7 +1,12 @@
 #pragma once
 
+#include "EngineConverter.h"
+
 #include "Trigger.h"
+
+#if IS_ENGINE_MODE
 #include "AppLog.h"
+#endif // IS_ENGINE_MODE
 
 #include <map>
 #include <vector>
@@ -10,7 +15,11 @@
 class SceneTriggersContainer
 {
 public:
+#if IS_ENGINE_MODE
 	SceneTriggersContainer(const char* path, Graphics& gfx, AppLog* aLog);
+#else
+	SceneTriggersContainer(const char* path, Graphics& gfx);
+#endif // IS_ENGINE_MODE
 	~SceneTriggersContainer();
 	
 	void LinkTechniques(Rgph::RenderGraph& rg);
@@ -19,11 +28,13 @@ public:
 	// Имя цели, статус | Проверка на пересечение триггера
 	std::pair<const char*, bool> CheckTriggers(dx::XMFLOAT3 pos);
 
+#if IS_ENGINE_MODE
 	// Показать триггеры *Левая панель*
 	void ShowTrigInformation();
 
 	// Показать триггеры *Правая панель*
 	void ShowTrigSettings();
+#endif // IS_ENGINE_MODE
 private:
 	const char* filePath;
 
@@ -34,6 +45,7 @@ private:
 
 	std::map<const char*, std::unique_ptr<Trigger>> trig_sc_container;
 
+#if IS_ENGINE_MODE
 	/* Данные для нового триггера */
 	
 	mutable char name[128];
@@ -47,8 +59,11 @@ private:
 	mutable float orient[3] = { 0.0f, 0.0f, 0.0f };
 	
 	/******************************/
+#endif // IS_ENGINE_MODE
 private:
 	void LoadTrigger(std::string name, std::string ptr, TriggerStruct& trs);
 private:
+#if IS_ENGINE_MODE
 	AppLog* applog;
+#endif
 };

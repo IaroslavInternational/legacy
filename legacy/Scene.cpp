@@ -2,9 +2,13 @@
 
 #include "EngineUtil.h"
 #include "Channels.h"
+
+#if IS_ENGINE_MODE
 #include "AdapterData.h"
 #include "imgui/imgui.h"
 #include "imgui/ImGuiFileDialog.h"
+#endif // IS_ENGINE_MODE
+
 #include "Camera.h"
 
 #include <sstream>
@@ -53,7 +57,9 @@ void Scene::ProcessInput(float dt)
 			showDemoWindow = true;
 			break;
 		case VK_RETURN:
+#if IS_ENGINE_MODE
 			savingDepth = true;
+#endif // IS_ENGINE_MODE
 			break;
 		}
 	}
@@ -107,13 +113,13 @@ void Scene::Render(float dt)
 
 	rg.Execute(wnd->Gfx());
 
+#if IS_ENGINE_MODE
 	if (savingDepth)
 	{
 		rg.DumpShadowMap(wnd->Gfx(), "shadow.png");
 		savingDepth = false;
 	}
 
-#if IS_ENGINE_MODE
 	ShowMenu();
 	ShowLeftSide();
 	ShowRightSide();
@@ -530,18 +536,18 @@ void Scene::ShowTrigCheck()
 	ImGui::End();
 }
 
-/*********************************************/
-#endif
-
-const char* Scene::GetName() const
-{
-	return sceneName;
-}
-
 void Scene::ShowImguiDemoWindow()
 {
 	if (showDemoWindow)
 	{
 		ImGui::ShowDemoWindow(&showDemoWindow);
 	}
+}
+
+/*********************************************/
+#endif
+
+const char* Scene::GetName() const
+{
+	return sceneName;
 }

@@ -1,7 +1,10 @@
 #pragma once
 
 #include "Window.h"
+
+#if IS_ENGINE_MODE
 #include "ImguiManager.h"
+#endif
 
 #include "BlurOutlineRenderGraph.h"
 #include "EngineTimer.h"
@@ -35,9 +38,6 @@ public:
 	const char* GetName() const;
 
 	/***** \Методы сцены/ *****/
-
-	// Демо-интерфейс 
-	void ShowImguiDemoWindow();
 private:
 #if IS_ENGINE_MODE
 
@@ -84,19 +84,27 @@ private:
 	void SetGuiColors();
 
 	/*******************/
+	
+	// Демо-интерфейс 
+	void ShowImguiDemoWindow();
+
+	/*******************/
 
 #endif // IS_ENGINE_MODE
-
 private:
 	// Идентификаторы сцены
 	const char* sceneName;
 
 	// Настройки
+#if IS_ENGINE_MODE
 	bool savingDepth = false;
+#endif // IS_ENGINE_MODE
+
 	bool showDemoWindow = true;
 	bool onTrigger = false; const char* triggerGoal = nullptr;
 	bool cursorState = false;
-	bool CatchingTriggers = true;
+
+#if IS_ENGINE_MODE
 
 	/* Интерфейс */
 
@@ -128,6 +136,8 @@ private:
 	bool ShowCamsList = false;
 
 	/*************/
+
+#endif // IS_ENGINE_MODE
 private:
 	// Указатель на главное окно 
 	std::shared_ptr<Window> wnd;
@@ -135,9 +145,9 @@ private:
 	// Рендер граф
 	Rgph::BlurOutlineRenderGraph rg{ wnd->Gfx() };
 
-	/***** -Объекты- *****/
+	/********* -Объекты- *********/
 
 	SceneObjects objects;
 
-	/******************************/
+	/*****************************/
 };

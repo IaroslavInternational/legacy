@@ -1,15 +1,19 @@
 #include "SceneTriggersContainer.h"
 
+#if IS_ENGINE_MODE
 #include "imgui\imgui.h"
+#endif // IS_ENGINE_MODE
 
 #include <sstream>
 #include <fstream>
 #include <filesystem>
+
 #include "json.hpp"
 
 using json = nlohmann::json;
 using namespace std::string_literals;
 
+#if IS_ENGINE_MODE
 SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx, AppLog* aLog)
 	:
 	filePath(path),
@@ -88,6 +92,83 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx, 
 
 	dataFile.close();
 }
+#else
+SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx)
+	:
+	filePath(path)
+{
+	std::ifstream dataFile(filePath);
+	if (!dataFile.is_open())
+	{
+		throw ("Не удаётся открыть файл с данными о триггерах сцен");
+	}
+
+	dx::XMFLOAT3 pos_lt;
+	dx::XMFLOAT3 pos_rt;
+	dx::XMFLOAT3 pos_lb;
+	dx::XMFLOAT3 pos_rb;
+
+	float roll;
+	float pitch;
+	float yaw;
+
+	json j;
+	dataFile >> j;
+
+	for (json::iterator t = j.begin(); t != j.end(); ++t)
+	{
+		auto d = t.key();
+
+		for (const auto& obj : j.at(d))
+		{
+			/* Запись позиции триггера */
+
+			for (const auto& pos : obj.at("pos-lt"))
+			{
+				pos_lt = { pos.at("pos-x"), pos.at("pos-y"), pos.at("pos-z") };
+			}
+
+			for (const auto& pos : obj.at("pos-rt"))
+			{
+				pos_rt = { pos.at("pos-x"), pos.at("pos-y"), pos.at("pos-z") };
+			}
+
+			for (const auto& pos : obj.at("pos-lb"))
+			{
+				pos_lb = { pos.at("pos-x"), pos.at("pos-y"), pos.at("pos-z") };
+			}
+
+			for (const auto& pos : obj.at("pos-rb"))
+			{
+				pos_rb = { pos.at("pos-x"), pos.at("pos-y"), pos.at("pos-z") };
+			}
+
+
+			roll = obj.at("roll");
+			pitch = obj.at("pitch");
+			yaw = obj.at("yaw");
+
+			/***************************/
+
+			/* Запись указателя триггера */
+
+			std::string ptr = obj.at("ptr");
+			ptr2scs.emplace_back(ptr);
+
+			/*****************************/
+
+			trss.emplace_back(pos_lt, pos_rt, pos_lb, pos_rb, roll, pitch, yaw);
+		}
+	}
+
+	for (int i = 0; i < trss.size(); i++)
+	{
+		trig_sc_container.emplace(ptr2scs.at(i).c_str(), std::make_unique<Trigger>(trss.at(i), gfx));
+	}
+
+	dataFile.close();
+}
+#endif // IS_ENGINE_MODE
 
 SceneTriggersContainer::~SceneTriggersContainer()
 {}
@@ -99,10 +180,12 @@ void SceneTriggersContainer::LinkTechniques(Rgph::RenderGraph &rg)
 		it->second->LinkTechniques(rg);
 		it->second->SetDefault();
 
+#if IS_ENGINE_MODE
 		std::ostringstream oss;
 		oss << "Добавлено к рендеру [" << std::string(it->first) << "]\n";
 
 		applog->AddLog(TRIGGER_LOG, oss.str().c_str());
+#endif // IS_ENGINE_MODE
 	}
 }
 
@@ -122,10 +205,12 @@ std::pair<const char*, bool> SceneTriggersContainer::CheckTriggers(dx::XMFLOAT3 
 		{
 			const char* HittedTriggerGoal = it->first;
 
+#if IS_ENGINE_MODE
 			std::ostringstream oss;
 			oss << "Касание [" << static_cast<std::string>(HittedTriggerGoal) << "]\n";
 
 			applog->AddLog(TRIGGER_LOG, oss.str().c_str());
+#endif // IS_ENGINE_MODE
 
 			return std::make_pair(HittedTriggerGoal, true);
 		}
@@ -134,6 +219,7 @@ std::pair<const char*, bool> SceneTriggersContainer::CheckTriggers(dx::XMFLOAT3 
 	return std::make_pair("NULL", false);
 }
 
+#if IS_ENGINE_MODE
 void SceneTriggersContainer::ShowTrigInformation()
 {
 	bool IsAdd = false;
@@ -252,6 +338,7 @@ void SceneTriggersContainer::ShowTrigSettings()
 
 	ImGui::End();
 }
+#endif // IS_ENGINE_MODE
 
 void SceneTriggersContainer::LoadTrigger(std::string name, std::string ptr, TriggerStruct& trs)
 {

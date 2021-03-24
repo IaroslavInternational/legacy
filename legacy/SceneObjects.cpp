@@ -7,10 +7,16 @@ SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx,
 						   Rgph::BlurOutlineRenderGraph& rg)
 	:
 	sdr(pathToObjectsData),
+#if IS_ENGINE_MODE
 	cameras(&applog),
 	models(sdr.GetPaths().at(0).c_str(), gfx, &applog),
 	pointLights(sdr.GetPaths().at(2).c_str(), gfx, &applog),
 	triggersScene(sdr.GetPaths().at(1).c_str(), gfx, &applog)
+#else
+	models(sdr.GetPaths().at(0).c_str(), gfx),
+	pointLights(sdr.GetPaths().at(2).c_str(), gfx),
+	triggersScene(sdr.GetPaths().at(1).c_str(), gfx)
+#endif // IS_ENGINE_MODE
 {
 	cameras.AddCamera(std::make_shared<Camera>(gfx, "A", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));
 	cameras.AddCamera(std::make_shared<Camera>(gfx, "B", dx::XMFLOAT3{ -13.5f,28.8f,-6.4f }, PI / 180.0f * 13.0f, PI / 180.0f * 61.0f));
@@ -39,6 +45,7 @@ void SceneObjects::Submit(size_t channels)
 	models.Submit(channels);
 }
 
+#if IS_ENGINE_MODE
 void SceneObjects::DrawLog()
 {
 	ImGui::Begin("ÀÓ„", NULL, ImGuiWindowFlags_NoMove |
@@ -49,3 +56,4 @@ void SceneObjects::DrawLog()
 	applog.Draw("ÀÓ„", NULL);
 	ImGui::End();
 }
+#endif

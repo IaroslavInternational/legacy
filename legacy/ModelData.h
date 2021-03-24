@@ -1,7 +1,12 @@
 #pragma once
 
+#include "EngineConverter.h"
+
 #include "Model.h"
+
+#if IS_ENGINE_MODE
 #include "AppLog.h"
+#endif
 
 #include <sstream>
 #include <fstream>
@@ -12,12 +17,17 @@
 class ModelData
 {
 public:
+#if IS_ENGINE_MODE
 	ModelData(const char* path, Graphics& gfx, AppLog* aLog);
+#else
+	ModelData(const char* path, Graphics& gfx);
+#endif // IS_ENGINE_MODE
 	~ModelData();
 
 	void LinkTechniques(Rgph::RenderGraph& rg);
 	void Submit(size_t channels);
 
+#if IS_ENGINE_MODE
 	// Показать модели *Левая панель*
 	void ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg);
 
@@ -26,6 +36,7 @@ public:
 
 	// Открыть диалоговое окно для добавления модели на сцену
 	void OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg);
+#endif
 private:
 	std::vector<std::string> modelsName;			// Имена моделей 
 	std::vector<std::unique_ptr<Model>> models;		// Указатели на модели
@@ -45,6 +56,7 @@ private:
 	// Путь к файлу с данными о моделях
 	const char* path;
 
+#if IS_ENGINE_MODE
 	// Выбранные элемент в списке моделей
 	const char* selected = "";
 
@@ -52,4 +64,5 @@ private:
 	bool isSave = false;
 
 	AppLog* applog;
+#endif
 };

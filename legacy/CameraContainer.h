@@ -1,6 +1,9 @@
 #pragma once
+#include "EngineConverter.h"
 
+#if IS_ENGINE_MODE
 #include "AppLog.h"
+#endif
 
 #include <vector>
 #include <memory>
@@ -18,7 +21,9 @@ class CameraContainer
 public:
 	Camera* operator->();
 	
+#if IS_ENGINE_MODE
 	CameraContainer(AppLog* aLog);
+#endif
 	~CameraContainer();
 	
 	void LinkTechniques( Rgph::RenderGraph& rg );
@@ -36,6 +41,7 @@ private:
 	
 	int active = 0;
 	int controlled = 0;
-
+#if IS_ENGINE_MODE
 	AppLog* applog;
+#endif
 };
