@@ -444,7 +444,7 @@
     <ResourceCompile Include="legacy.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="chili.ico" />
+    <Image Include="ARGS_32.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DXGetErrorDescription.inl" />

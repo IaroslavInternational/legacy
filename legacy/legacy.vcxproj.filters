@@ -762,7 +762,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="chili.ico">
+    <Image Include="ARGS_32.ico">
       <Filter>Файлы ресурсов</Filter>
     </Image>
   </ItemGroup>

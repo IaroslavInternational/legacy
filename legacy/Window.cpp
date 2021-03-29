@@ -9,7 +9,7 @@ Window::WindowClass Window::WindowClass::wndClass;
 
 Window::WindowClass::WindowClass() noexcept
 	:
-	hInst(GetModuleHandle( nullptr ))
+	hInst(GetModuleHandle(nullptr))
 {
 	WNDCLASSEX wc = { 0 };
 	wc.cbSize = sizeof(wc);
@@ -29,7 +29,7 @@ Window::WindowClass::WindowClass() noexcept
 	wc.lpszClassName = GetName();
 	wc.hIconSm = static_cast<HICON>(LoadImage(
 		GetInstance(), MAKEINTRESOURCE(IDI_ICON1),
-		IMAGE_ICON, 16, 16, 0
+		IMAGE_ICON, 32, 32, 0
 	));
 
 	RegisterClassEx(&wc);
