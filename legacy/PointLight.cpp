@@ -1,5 +1,9 @@
 #include "PointLight.h"
+
+#if IS_ENGINE_MODE
 #include "imgui/imgui.h"
+#endif // IS_ENGINE_MODE
+
 #include "Camera.h"
 #include "EngineMath.h"
 
@@ -21,6 +25,7 @@ PointLight::PointLight( Graphics& gfx, std::string name, DirectX::XMFLOAT3 pos, 
 	pCamera = std::make_shared<Camera>(gfx, name, cbData.pos);
 }
 
+#if IS_ENGINE_MODE
 void PointLight::SpawnControlWindow() noexcept
 {
 	if( ImGui::BeginChild( "Light" ) )
@@ -55,6 +60,7 @@ void PointLight::SpawnControlWindow() noexcept
 	}
 	ImGui::EndChild();
 }
+#endif // IS_ENGINE_MODE
 
 void PointLight::Reset() noexcept
 {

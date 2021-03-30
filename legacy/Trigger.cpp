@@ -25,6 +25,7 @@ float CalcHeight(float y1, float y2)
 	}
 }
 
+#if IS_ENGINE_MODE
 Trigger::Trigger(TriggerStruct& trs, Graphics& gfx)
 	:
 	Trigger(trs.PosTopLeft, trs.PosTopRight, trs.PosBottomLeft, trs.PosBottomRight, trs.Roll, trs.Pitch, trs.Yaw, gfx)
@@ -48,11 +49,33 @@ Trigger::Trigger(dx::XMFLOAT3 PosTopLeft, dx::XMFLOAT3 PosTopRight,
 	triggerOrien.triggerPitch = pitch;
 	triggerOrien.triggerYaw = yaw;
 }
+#else
+
+Trigger::Trigger(TriggerStruct& trs)
+	:
+	Trigger(trs.PosTopLeft, trs.PosTopRight, trs.PosBottomLeft, trs.PosBottomRight, trs.Roll, trs.Pitch, trs.Yaw)
+{}
+
+Trigger::Trigger(dx::XMFLOAT3 PosTopLeft, dx::XMFLOAT3 PosTopRight,
+				 dx::XMFLOAT3 PosBottomLeft, dx::XMFLOAT3 PosBottomRight, 
+				 float roll, float pitch, float yaw)
+{
+	triggerPos.triggerPosTopLeft = PosTopLeft;
+	triggerPos.triggerPosTopRight = PosTopRight;
+	triggerPos.triggerPosBottomLeft = PosBottomLeft;
+	triggerPos.triggerPosBottomRight = PosBottomRight;
+
+	triggerOrien.triggerRoll = roll;
+	triggerOrien.triggerPitch = pitch;
+	triggerOrien.triggerYaw = yaw;
+}
+#endif // IS_ENGINE_MODE
 
 Trigger::~Trigger()
 {
 }
 
+#if IS_ENGINE_MODE
 void Trigger::LinkTechniques(Rgph::RenderGraph& rg)
 {
 	plate.LinkTechniques(rg);
@@ -78,28 +101,29 @@ void Trigger::SetDefault()
 	plate.SetPos(triggerPos.triggerPosTopLeft);
 	plate.SetRotation(triggerOrien.triggerRoll, triggerOrien.triggerPitch, triggerOrien.triggerYaw);
 }
+#endif // IS_ENGINE_MODE
 
-bool Trigger::Check(dx::XMFLOAT3 CameraPos)
+bool Trigger::Check(dx::XMFLOAT3 ObjPos)
 {
-	return (CameraPos.x >= this->triggerPos.triggerPosTopLeft.x 
-		    && CameraPos.x <= this->triggerPos.triggerPosTopLeft.x + deep) &&
-		    CameraPos.y <= this->triggerPos.triggerPosTopLeft.y &&
-		    CameraPos.z <= this->triggerPos.triggerPosTopLeft.z &&
+	return (ObjPos.x >= this->triggerPos.triggerPosTopLeft.x 
+		    && ObjPos.x <= this->triggerPos.triggerPosTopLeft.x + deep) &&
+		    ObjPos.y <= this->triggerPos.triggerPosTopLeft.y &&
+		    ObjPos.z <= this->triggerPos.triggerPosTopLeft.z &&
 		    
-		    (CameraPos.x >= this->triggerPos.triggerPosTopRight.x
-		    && CameraPos.x <= this->triggerPos.triggerPosTopRight.x + deep) &&
-		    CameraPos.y <= this->triggerPos.triggerPosTopRight.y &&
-		    CameraPos.z >= this->triggerPos.triggerPosTopRight.z &&
+		    (ObjPos.x >= this->triggerPos.triggerPosTopRight.x
+		    && ObjPos.x <= this->triggerPos.triggerPosTopRight.x + deep) &&
+		    ObjPos.y <= this->triggerPos.triggerPosTopRight.y &&
+		    ObjPos.z >= this->triggerPos.triggerPosTopRight.z &&
 		    
-		    (CameraPos.x >= this->triggerPos.triggerPosBottomLeft.x
-		    && CameraPos.x <= this->triggerPos.triggerPosBottomLeft.x + deep) &&
-		    CameraPos.y >= this->triggerPos.triggerPosBottomLeft.y &&
-		    CameraPos.z <= this->triggerPos.triggerPosBottomLeft.z &&
+		    (ObjPos.x >= this->triggerPos.triggerPosBottomLeft.x
+		    && ObjPos.x <= this->triggerPos.triggerPosBottomLeft.x + deep) &&
+		    ObjPos.y >= this->triggerPos.triggerPosBottomLeft.y &&
+		    ObjPos.z <= this->triggerPos.triggerPosBottomLeft.z &&
 		    
-		    (CameraPos.x >= this->triggerPos.triggerPosBottomRight.x 
-		    && CameraPos.x <= this->triggerPos.triggerPosBottomRight.x + deep) &&
-		    CameraPos.y >= this->triggerPos.triggerPosBottomRight.y &&
-		    CameraPos.z >= this->triggerPos.triggerPosBottomRight.z;
+		    (ObjPos.x >= this->triggerPos.triggerPosBottomRight.x 
+		    && ObjPos.x <= this->triggerPos.triggerPosBottomRight.x + deep) &&
+		    ObjPos.y >= this->triggerPos.triggerPosBottomRight.y &&
+		    ObjPos.z >= this->triggerPos.triggerPosBottomRight.z;
 }
 
 void Trigger::SetDeep(float TriggerDeep)

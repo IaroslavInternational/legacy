@@ -1,5 +1,9 @@
 #include "Camera.h"
+
+#if IS_ENGINE_MODE
 #include "imgui/imgui.h"
+#endif // IS_ENGINE_MODE
+
 #include "EngineMath.h"
 #include "Graphics.h"
 
@@ -52,6 +56,7 @@ DirectX::XMMATRIX Camera::GetProjection() const noexcept
 	return proj.GetMatrix();
 }
 
+#if IS_ENGINE_MODE
 void Camera::SpawnControlWidgets( Graphics& gfx ) noexcept
 {
 	bool rotDirty = false;
@@ -87,6 +92,7 @@ void Camera::SpawnControlWidgets( Graphics& gfx ) noexcept
 		proj.SetPos( pos );
 	}
 }
+#endif // IS_ENGINE_MODE
 
 void Camera::Reset( Graphics& gfx ) noexcept
 {

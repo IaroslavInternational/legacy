@@ -6,7 +6,6 @@
 #include "Stencil.h"
 #include "Channels.h"
 
-
 SolidSphere::SolidSphere( Graphics& gfx,float radius )
 {
 	using namespace Bind;

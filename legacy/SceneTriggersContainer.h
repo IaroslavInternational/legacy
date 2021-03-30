@@ -18,12 +18,13 @@ public:
 #if IS_ENGINE_MODE
 	SceneTriggersContainer(const char* path, Graphics& gfx, AppLog* aLog);
 #else
-	SceneTriggersContainer(const char* path, Graphics& gfx);
+	SceneTriggersContainer(const char* path);
 #endif // IS_ENGINE_MODE
 	~SceneTriggersContainer();
-	
+#if IS_ENGINE_MODE
 	void LinkTechniques(Rgph::RenderGraph& rg);
 	void Submit(size_t channels);
+#endif // IS_ENGINE_MODE
 
 	// Имя цели, статус | Проверка на пересечение триггера
 	std::pair<const char*, bool> CheckTriggers(dx::XMFLOAT3 pos);
@@ -47,7 +48,7 @@ private:
 
 #if IS_ENGINE_MODE
 	/* Данные для нового триггера */
-	
+
 	mutable char name[128];
 	mutable char goal[128];
 
@@ -57,13 +58,13 @@ private:
 	mutable float pos_rb[3] = { 0.0f, 0.0f, 0.0f };
 
 	mutable float orient[3] = { 0.0f, 0.0f, 0.0f };
-	
+
 	/******************************/
-#endif // IS_ENGINE_MODE
+
 private:
 	void LoadTrigger(std::string name, std::string ptr, TriggerStruct& trs);
 private:
-#if IS_ENGINE_MODE
+
 	AppLog* applog;
-#endif
+#endif // IS_ENGINE_MODE
 };

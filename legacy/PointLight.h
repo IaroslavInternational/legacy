@@ -16,7 +16,11 @@ class PointLight
 {
 public:
 	PointLight( Graphics& gfx, std::string name, DirectX::XMFLOAT3 pos = { 10.0f,9.0f,2.5f }, float radius = 0.5f);
+
+#if IS_ENGINE_MODE
 	void SpawnControlWindow() noexcept;
+#endif // IS_ENGINE_MODE
+
 	void Reset() noexcept;
 	void Submit( size_t channels ) const noxnd;
 	void Bind( Graphics& gfx,DirectX::FXMMATRIX view ) const noexcept;

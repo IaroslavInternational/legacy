@@ -30,9 +30,12 @@ public:
 	{
 	public:
 		HrException( int line,const char* file,HRESULT hr,std::vector<std::string> infoMsgs = {} ) noexcept;
+		
 		const char* what() const noexcept override;
 		const char* GetType() const noexcept override;
+		
 		HRESULT GetErrorCode() const noexcept;
+		
 		std::string GetErrorString() const noexcept;
 		std::string GetErrorDescription() const noexcept;
 		std::string GetErrorInfo() const noexcept;
@@ -44,8 +47,10 @@ public:
 	{
 	public:
 		InfoException( int line,const char* file,std::vector<std::string> infoMsgs ) noexcept;
+		
 		const char* what() const noexcept override;
 		const char* GetType() const noexcept override;
+		
 		std::string GetErrorInfo() const noexcept;
 	private:
 		std::string info;
@@ -61,27 +66,42 @@ public:
 public:
 	Graphics( HWND hWnd,int width,int height );
 	Graphics( const Graphics& ) = delete;
+	
 	Graphics& operator=( const Graphics& ) = delete;
+	
 	~Graphics();
+	
 	void EndFrame();
 	void BeginFrame( float red,float green,float blue ) noexcept;
+	
 	void DrawIndexed( UINT count ) noxnd;
+	
 	void SetProjection( DirectX::FXMMATRIX proj ) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
+	
 	void SetCamera( DirectX::FXMMATRIX cam ) noexcept;
 	DirectX::XMMATRIX GetCamera() const noexcept;
+
+#if IS_ENGINE_MODE
 	void EnableImgui() noexcept;
 	void DisableImgui() noexcept;
 	bool IsImguiEnabled() const noexcept;
+#endif //IS_ENGINE_MODE
+
 	UINT GetWidth() const noexcept;
 	UINT GetHeight() const noexcept;
+	
 	std::shared_ptr<Bind::RenderTarget> GetTarget();
 private:
 	UINT width;
 	UINT height;
+	
 	DirectX::XMMATRIX projection;
 	DirectX::XMMATRIX camera;
+
+#if IS_ENGINE_MODE
 	bool imguiEnabled = true;
+#endif //IS_ENGINE_MODE
 #ifndef NDEBUG
 	DxgiInfoManager infoManager;
 #endif

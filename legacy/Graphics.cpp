@@ -6,19 +6,20 @@
 #include <DirectXMath.h>
 #include <array>
 #include "GraphicsThrowMacros.h"
+
+#if IS_ENGINE_MODE
 #include "imgui/imgui_impl_dx11.h"
 #include "imgui/imgui_impl_win32.h"
+#endif // IS_ENGINE_MODE
+
 #include "DepthStencil.h"
 #include "RenderTarget.h"
-
-//#include "AdapterData.h"
 
 namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
 
 #pragma comment(lib,"d3d11.lib")
 #pragma comment(lib,"D3DCompiler.lib")
-
 
 Graphics::Graphics( HWND hWnd,int width,int height )
 	:
@@ -81,23 +82,29 @@ Graphics::Graphics( HWND hWnd,int width,int height )
 	vp.TopLeftY = 0.0f;
 	pContext->RSSetViewports( 1u,&vp );
 	
+#if IS_ENGINE_MODE
 	// init imgui d3d impl
 	ImGui_ImplDX11_Init( pDevice.Get(),pContext.Get() );
+#endif // IS_ENGINE_MODE
 }
 
 Graphics::~Graphics()
 {
+#if IS_ENGINE_MODE
 	ImGui_ImplDX11_Shutdown();
+#endif // IS_ENGINE_MODE
 }
 
 void Graphics::EndFrame()
 {
+#if IS_ENGINE_MODE
 	// imgui frame end
 	if( imguiEnabled )
 	{
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData( ImGui::GetDrawData() );
 	}
+#endif // IS_ENGINE_MODE
 
 	HRESULT hr;
 #ifndef NDEBUG
@@ -118,6 +125,7 @@ void Graphics::EndFrame()
 
 void Graphics::BeginFrame( float red,float green,float blue ) noexcept
 {
+#if IS_ENGINE_MODE
 	// imgui begin frame
 	if( imguiEnabled )
 	{
@@ -125,6 +133,8 @@ void Graphics::BeginFrame( float red,float green,float blue ) noexcept
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 	}
+#endif // IS_ENGINE_MODE
+
 	// clearing shader inputs to prevent simultaneous in/out bind carried over from prev frame
 	ID3D11ShaderResourceView* const pNullTex = nullptr;
 	pContext->PSSetShaderResources( 0,1,&pNullTex ); // fullscreen input texture
@@ -156,6 +166,7 @@ DirectX::XMMATRIX Graphics::GetCamera() const noexcept
 	return camera;
 }
 
+#if IS_ENGINE_MODE
 void Graphics::EnableImgui() noexcept
 {
 	imguiEnabled = true;
@@ -170,6 +181,7 @@ bool Graphics::IsImguiEnabled() const noexcept
 {
 	return imguiEnabled;
 }
+#endif // IS_ENGINE_MODE
 
 UINT Graphics::GetWidth() const noexcept
 {
@@ -209,13 +221,13 @@ const char* Graphics::HrException::what() const noexcept
 {
 	std::ostringstream oss;
 	oss << GetType() << std::endl
-		<< "[Error Code] 0x" << std::hex << std::uppercase << GetErrorCode()
+		<< "[Код ошибки] 0x" << std::hex << std::uppercase << GetErrorCode()
 		<< std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl
-		<< "[Error String] " << GetErrorString() << std::endl
-		<< "[Description] " << GetErrorDescription() << std::endl;
+		<< "[Строка ошибки] " << GetErrorString() << std::endl
+		<< "[Описание] " << GetErrorDescription() << std::endl;
 	if( !info.empty() )
 	{
-		oss << "\n[Error Info]\n" << GetErrorInfo() << std::endl << std::endl;
+		oss << "\n[Информация]\n" << GetErrorInfo() << std::endl << std::endl;
 	}
 	oss << GetOriginString();
 	whatBuffer = oss.str();
@@ -249,11 +261,11 @@ std::string Graphics::HrException::GetErrorInfo() const noexcept
 	return info;
 }
 
-
 const char* Graphics::DeviceRemovedException::GetType() const noexcept
 {
 	return "Engine Graphics Exception [Device Removed] (DXGI_ERROR_DEVICE_REMOVED)";
 }
+
 Graphics::InfoException::InfoException( int line,const char * file,std::vector<std::string> infoMsgs ) noexcept
 	:
 	Exception( line,file )
@@ -275,7 +287,7 @@ const char* Graphics::InfoException::what() const noexcept
 {
 	std::ostringstream oss;
 	oss << GetType() << std::endl
-		<< "\n[Error Info]\n" << GetErrorInfo() << std::endl << std::endl;
+		<< "\n[Информация]\n" << GetErrorInfo() << std::endl << std::endl;
 	oss << GetOriginString();
 	whatBuffer = oss.str();
 	return whatBuffer.c_str();

@@ -15,7 +15,7 @@ SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx,
 #else
 	models(sdr.GetPaths().at(0).c_str(), gfx),
 	pointLights(sdr.GetPaths().at(2).c_str(), gfx),
-	triggersScene(sdr.GetPaths().at(1).c_str(), gfx)
+	triggersScene(sdr.GetPaths().at(1).c_str())
 #endif // IS_ENGINE_MODE
 {
 	cameras.AddCamera(std::make_shared<Camera>(gfx, "A", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));
@@ -29,6 +29,7 @@ SceneObjects::~SceneObjects()
 {
 }
 
+#if IS_ENGINE_MODE
 void SceneObjects::LinkTechniques(Rgph::RenderGraph& rg)
 {
 	pointLights.LinkTechniques(rg);
@@ -44,6 +45,22 @@ void SceneObjects::Submit(size_t channels)
 	triggersScene.Submit(channels);
 	models.Submit(channels);
 }
+#else
+
+void SceneObjects::LinkTechniques(Rgph::RenderGraph& rg)
+{
+	pointLights.LinkTechniques(rg);
+	cameras.LinkTechniques(rg);
+	models.LinkTechniques(rg);
+}
+
+void SceneObjects::Submit(size_t channels)
+{
+	pointLights.Submit(channels);
+	cameras.Submit(channels);
+	models.Submit(channels);
+}
+#endif // IS_ENGINE_MODE
 
 #if IS_ENGINE_MODE
 void SceneObjects::DrawLog()

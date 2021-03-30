@@ -93,7 +93,7 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx, 
 	dataFile.close();
 }
 #else
-SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx)
+SceneTriggersContainer::SceneTriggersContainer(const char* path)
 	:
 	filePath(path)
 {
@@ -163,7 +163,7 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx)
 
 	for (int i = 0; i < trss.size(); i++)
 	{
-		trig_sc_container.emplace(ptr2scs.at(i).c_str(), std::make_unique<Trigger>(trss.at(i), gfx));
+		trig_sc_container.emplace(ptr2scs.at(i).c_str(), std::make_unique<Trigger>(trss.at(i)));
 	}
 
 	dataFile.close();
@@ -173,6 +173,7 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx)
 SceneTriggersContainer::~SceneTriggersContainer()
 {}
 
+#if IS_ENGINE_MODE
 void SceneTriggersContainer::LinkTechniques(Rgph::RenderGraph &rg)
 {
 	for (auto it = trig_sc_container.begin(); it != trig_sc_container.end(); ++it)
@@ -196,6 +197,7 @@ void SceneTriggersContainer::Submit(size_t channels)
 		it->second->Submit(channels);
 	}
 }
+#endif // IS_ENGINE_MODE
 
 std::pair<const char*, bool> SceneTriggersContainer::CheckTriggers(dx::XMFLOAT3 pos)
 {
@@ -338,7 +340,6 @@ void SceneTriggersContainer::ShowTrigSettings()
 
 	ImGui::End();
 }
-#endif // IS_ENGINE_MODE
 
 void SceneTriggersContainer::LoadTrigger(std::string name, std::string ptr, TriggerStruct& trs)
 {
@@ -411,3 +412,4 @@ void SceneTriggersContainer::LoadTrigger(std::string name, std::string ptr, Trig
 	// Закрытие файла
 	ostr.close();
 }
+#endif // IS_ENGINE_MODE

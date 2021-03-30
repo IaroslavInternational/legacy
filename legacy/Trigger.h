@@ -1,7 +1,13 @@
 #pragma once
 
+#include "EngineConverter.h"
+
 #include "TriggerStruct.h"
+
+#if IS_ENGINE_MODE
 #include "Plate.h"
+#endif // IS_ENGINE_MODE
+
 #include "BlurOutlineRenderGraph.h"
 
 #include <DirectXMath.h>
@@ -12,15 +18,25 @@ namespace dx = DirectX;
 class Trigger
 {
 public:
+#if IS_ENGINE_MODE
 	Trigger(TriggerStruct& trs, Graphics& gfx);
-	Trigger(dx::XMFLOAT3 PosTopLeft,	dx::XMFLOAT3 PosTopRight,
-			dx::XMFLOAT3 PosBottomLeft, dx::XMFLOAT3 PosBottomRight,
-			float roll, float pitch, float yaw, Graphics& gfx);
+	Trigger(dx::XMFLOAT3 PosTopLeft, dx::XMFLOAT3 PosTopRight,
+		dx::XMFLOAT3 PosBottomLeft, dx::XMFLOAT3 PosBottomRight,
+		float roll, float pitch, float yaw, Graphics& gfx);
+#else
+	Trigger(TriggerStruct& trs);
+	Trigger(dx::XMFLOAT3 PosTopLeft, dx::XMFLOAT3 PosTopRight,
+		dx::XMFLOAT3 PosBottomLeft, dx::XMFLOAT3 PosBottomRight,
+		float roll, float pitch, float yaw);
+#endif // IS_ENGINE_MODE
+
 	~Trigger();
 
+#if IS_ENGINE_MODE
 	void LinkTechniques(Rgph::RenderGraph& rg);
 
 	void Submit(size_t channels);
+#endif // IS_ENGINE_MODE
 
 	// Установка позиции
 	void SetPosition(dx::XMFLOAT3 pos);
@@ -32,7 +48,7 @@ public:
 	void SetDefault();
 
 	// Проверка на касание триггера через координаты
-	bool Check(dx::XMFLOAT3 CameraPos);
+	bool Check(dx::XMFLOAT3 ObjPos);
 
 	// Установка ширины триггера
 	void SetDeep(float TriggerDeep);
@@ -58,6 +74,7 @@ private:
 		float triggerYaw;
 	} triggerOrien;
 
+#if IS_ENGINE_MODE
 	/* Визуальный контур триггера */
 
 	float platew;
@@ -66,4 +83,5 @@ private:
 	Plate plate;
 	
 	/*********************/
+#endif // IS_ENGINE_MODE
 };

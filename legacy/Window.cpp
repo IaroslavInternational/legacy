@@ -2,7 +2,10 @@
 #include <sstream>
 #include "resource.h"
 #include "WindowsThrowMacros.h"
+
+#if IS_ENGINE_MODE
 #include "imgui/imgui_impl_win32.h"
+#endif // IS_ENGINE_MODE
 
 // Window Class stuff
 Window::WindowClass Window::WindowClass::wndClass;
@@ -74,11 +77,14 @@ Window::Window(const char* name)
 	// Созданное окно изначально спрятно, здесь его показываем
 	ShowWindow(hWnd, SW_SHOWMAXIMIZED);
 
+#if IS_ENGINE_MODE
 	// Инициализация ImGui Win32 Impl
 	ImGui_ImplWin32_Init( hWnd );
 
 	ImGui::GetIO().Fonts->AddFontFromFileTTF("Fonts\\Ubuntu-L.ttf", 14.0F, NULL,
-											ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
+		ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
+#endif // IS_ENGINE_MODE
+
 	// Создание графического объекта
 	pGfx = std::make_unique<Graphics>(hWnd, width, height);
 
@@ -97,7 +103,10 @@ Window::Window(const char* name)
 
 Window::~Window()
 {
+#if IS_ENGINE_MODE
 	ImGui_ImplWin32_Shutdown();
+#endif // IS_ENGINE_MODE
+
 	DestroyWindow(hWnd);
 }
 
@@ -114,7 +123,11 @@ void Window::EnableCursor() noexcept
 	cursorEnabled = true;
 
 	ShowCursor();
+
+#if IS_ENGINE_MODE
 	EnableImGuiMouse();
+#endif // IS_ENGINE_MODE
+
 	FreeCursor();
 }
 
@@ -123,7 +136,11 @@ void Window::DisableCursor() noexcept
 	cursorEnabled = false;
 
 	HideCursor();
+
+#if IS_ENGINE_MODE
 	DisableImGuiMouse();
+#endif // IS_ENGINE_MODE
+
 	ConfineCursor();
 }
 
@@ -189,6 +206,7 @@ void Window::ShowCursor() noexcept
 	while(::ShowCursor(TRUE) < 0 );
 }
 
+#if IS_ENGINE_MODE
 void Window::EnableImGuiMouse() noexcept
 {
 	ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
@@ -198,6 +216,7 @@ void Window::DisableImGuiMouse() noexcept
 {
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
 }
+#endif // IS_ENGINE_MODE
 
 LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
@@ -234,12 +253,14 @@ LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
+#if IS_ENGINE_MODE
 	if( ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
 	{
 		return true;
 	}
 
 	const auto& imio = ImGui::GetIO();
+#endif // IS_ENGINE_MODE
 
 	switch( msg )
 	{
@@ -274,11 +295,13 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_KEYDOWN:
 	// Команды syskey должны быть обработаны для отслеживания клавиши ALT (VK_MENU) и F10
 	case WM_SYSKEYDOWN:
+#if IS_ENGINE_MODE
 		// Подавление этого сообщения клавиатуры, если imgui хочет захватить его
 		if(imio.WantCaptureKeyboard)
 		{
 			break;
 		}
+#endif // IS_ENGINE_MODE
 		if(!(lParam & 0x40000000) || kbd.AutorepeatIsEnabled()) // Фильтр автоповтора
 		{
 			kbd.OnKeyPressed( static_cast<unsigned char>(wParam) );
@@ -286,22 +309,26 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		break;
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
+#if IS_ENGINE_MODE
 		// Подавление этого сообщения клавиатуры, если imgui хочет захватить его
 		if(imio.WantCaptureKeyboard)
 		{
 			break;
 		}
+#endif // IS_ENGINE_MODE
 
 		kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
 		
 		break;
 	case WM_CHAR:
+#if IS_ENGINE_MODE
 		// Подавление этого сообщения клавиатуры, если imgui хочет захватить его
 		if(imio.WantCaptureKeyboard)
 		{
 			break;
 		}
-		
+#endif // IS_ENGINE_MODE
+
 		kbd.OnChar(static_cast<unsigned char>(wParam));
 		
 		break;
@@ -324,11 +351,13 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 			break;
 		}
 
+#if IS_ENGINE_MODE
 		// Подавление этого сообщения мыши, если imgui хочет захватить её
 		if(imio.WantCaptureMouse)
 		{
 			break;
 		}
+#endif // IS_ENGINE_MODE
 
 		if(pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height)
 		{
@@ -364,11 +393,13 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 			HideCursor();
 		}
 
+#if IS_ENGINE_MODE
 		// Подавление этого сообщения мыши, если imgui хочет захватить её
 		if( imio.WantCaptureMouse )
 		{
 			break;
 		}
+#endif // IS_ENGINE_MODE
 
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnLeftPressed(pt.x, pt.y);
@@ -377,11 +408,13 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_RBUTTONDOWN:
 	{
+#if IS_ENGINE_MODE
 		// Подавление этого сообщения мыши, если imgui хочет захватить её
 		if( imio.WantCaptureMouse )
 		{
 			break;
 		}
+#endif // IS_ENGINE_MODE
 
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnRightPressed(pt.x, pt.y);
@@ -390,11 +423,13 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_LBUTTONUP:
 	{
+#if IS_ENGINE_MODE
 		// Подавление этого сообщения мыши, если imgui хочет захватить её
 		if(imio.WantCaptureMouse)
 		{
 			break;
 		}
+#endif // IS_ENGINE_MODE
 
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnLeftReleased(pt.x, pt.y);
@@ -410,12 +445,13 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_RBUTTONUP:
 	{
+#if IS_ENGINE_MODE
 		// Подавление этого сообщения мыши, если imgui хочет захватить её
 		if( imio.WantCaptureMouse )
 		{
 			break;
 		}
-
+#endif // IS_ENGINE_MODE
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnRightReleased(pt.x, pt.y);
 
@@ -430,11 +466,13 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_MOUSEWHEEL:
 	{
+#if IS_ENGINE_MODE
 		// Подавление этого сообщения мыши, если imgui хочет захватить её
 		if( imio.WantCaptureMouse )
 		{
 			break;
 		}
+#endif // IS_ENGINE_MODE
 
 		const POINTS pt = MAKEPOINTS(lParam);
 		const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
@@ -557,7 +595,6 @@ std::string Window::HrException::GetErrorDescription() const noexcept
 {
 	return Exception::TranslateErrorCode( hr );
 }
-
 
 const char* Window::NoGfxException::GetType() const noexcept
 {

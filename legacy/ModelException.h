@@ -1,4 +1,5 @@
 #pragma once
+
 #include "EngineException.h"
 
 class ModelException : public EngineException
