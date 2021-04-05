@@ -156,6 +156,7 @@ const std::string& Camera::GetName() const noexcept
 	return name;
 }
 
+#if IS_ENGINE_MODE
 void Camera::LinkTechniques( Rgph::RenderGraph& rg )
 {
 	indicator.LinkTechniques( rg );
@@ -173,3 +174,4 @@ void Camera::Submit( size_t channels ) const
 		proj.Submit( channels );
 	}
 }
+#endif // IS_ENGINE_MODE

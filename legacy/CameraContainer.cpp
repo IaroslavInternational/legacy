@@ -75,6 +75,12 @@ Camera& CameraContainer::GetActiveCamera()
 	return *cameras[active];
 }
 
+// Test ?
+std::shared_ptr<Camera> CameraContainer::GetPtr2ActiveCamera()
+{
+	return cameras[active];
+}
+
 #if IS_ENGINE_MODE
 void CameraContainer::ShowCamsInformationAndSettings(Graphics& gfx)
 {

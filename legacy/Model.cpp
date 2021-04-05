@@ -8,6 +8,10 @@
 #include "Material.h"
 #include "EngineXM.h"
 
+#if IS_ENGINE_MODE
+#include "imgui\imgui.h"
+#endif //IS_ENGINE_MODE
+
 namespace dx = DirectX;
 
 Model::Model( Graphics& gfx,const std::string& pathString,const float scale )
@@ -44,6 +48,9 @@ Model::Model( Graphics& gfx,const std::string& pathString,const float scale )
 	pRoot = ParseNode( nextId,*pScene->mRootNode,scale );
 }
 
+Model::~Model() noexcept
+{}
+
 void Model::Submit( size_t channels ) const noxnd
 {
 	pRoot->Submit( channels,dx::XMMatrixIdentity() );
@@ -66,9 +73,6 @@ void Model::LinkTechniques( Rgph::RenderGraph& rg )
 		pMesh->LinkTechniques( rg );
 	}
 }
-
-Model::~Model() noexcept
-{}
 
 std::unique_ptr<Node> Model::ParseNode( int& nextId,const aiNode& node,float scale ) noexcept
 {
@@ -93,3 +97,65 @@ std::unique_ptr<Node> Model::ParseNode( int& nextId,const aiNode& node,float sca
 
 	return pNode;
 }
+
+void Model::ConnectCamera(std::shared_ptr<Camera> cam)
+{
+	this->cam = std::move(cam);
+
+	isCamAdded = true;
+}
+
+void Model::MoveX(float delta)
+{
+	pos.x += delta;
+
+	if (isCamAdded)
+		cam->SetPos(DirectX::XMFLOAT3(pos.x - 35.0f, 35.0f, -5.1f));
+}
+
+DirectX::XMFLOAT3 Model::GetCurrentPosition()
+{
+	return pos;
+}
+
+DirectX::XMFLOAT3 Model::GetCurrentOrientation()
+{
+	return DirectX::XMFLOAT3(roll, pitch, yaw);
+}
+
+#if IS_ENGINE_MODE
+void Model::SpawnDefaultControl()
+{
+	if (ImGui::BeginChild(""))
+	{
+		bool rotDirty = false;
+		bool posDirty = false;
+
+		const auto dcheck = [](bool d, bool& carry) { carry = carry || d; };
+
+		ImGui::Text("Позиция");
+		dcheck(ImGui::SliderFloat("X", &pos.x, -80.0f, 80.0f, "%.01f"), posDirty);
+		dcheck(ImGui::SliderFloat("Y", &pos.y, -80.0f, 80.0f, "%.01f"), posDirty);
+		dcheck(ImGui::SliderFloat("Z", &pos.z, -80.0f, 80.0f, "%.01f"), posDirty);
+
+		ImGui::Text("Ориентация");
+		dcheck(ImGui::SliderAngle("Крен", &roll, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
+		dcheck(ImGui::SliderAngle("Тангаш", &pitch, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
+		dcheck(ImGui::SliderAngle("Расканье", &yaw, -180.0f, 180.0f), rotDirty);
+
+		SetRootTransform
+		(
+			DirectX::XMMatrixRotationX(roll) *
+			DirectX::XMMatrixRotationY(pitch) *
+			DirectX::XMMatrixRotationZ(yaw) *
+			DirectX::XMMatrixTranslation(
+				pos.x,
+				pos.y,
+				pos.z
+			)
+		);
+	}
+
+	ImGui::EndChild();
+}
+#endif //IS_ENGINE_MODE

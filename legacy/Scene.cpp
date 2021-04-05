@@ -69,6 +69,7 @@ void Scene::ProcessInput(float dt)
 		if (wnd->kbd.KeyIsPressed('W'))
 		{
 			objects.cameras->Translate({ 0.0f,0.0f,dt });
+			objects.testModel.MoveX(0.5f); // Test !
 		}
 		if (wnd->kbd.KeyIsPressed('A'))
 		{
@@ -125,6 +126,8 @@ void Scene::Render(float dt)
 	ShowRightSide();
 	ShowLeftBottomSide();
 	ShowBottomPanel();
+
+	objects.testModel.SpawnDefaultControl(); // Test !
 
 	//ShowImguiDemoWindow();
 #endif

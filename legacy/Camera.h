@@ -36,9 +36,10 @@ public:
 	void SetPos(const DirectX::XMFLOAT3& pos) noexcept;
 
 	const std::string& GetName() const noexcept;
-
+#if IS_ENGINE_MODE
 	void LinkTechniques(Rgph::RenderGraph& rg);
 	void Submit(size_t channel) const;
+#endif // IS_ENGINE_MODE
 private:
 	bool tethered;
 
@@ -52,10 +53,11 @@ private:
 
 	static constexpr float travelSpeed = 12.0f;
 	static constexpr float rotationSpeed = 0.004f;
-
+#if IS_ENGINE_MODE
 	bool enableCameraIndicator = false;
 	bool enableFrustumIndicator = false;
 
 	Projection proj;
 	CameraIndicator indicator;
+#endif // IS_ENGINE_MODE
 };

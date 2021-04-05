@@ -1,0 +1,21 @@
+# Blender MTL File: 'PalashTextur.blend'
+# Material Count: 2
+
+newmtl None
+Ns 500
+Ka 0.8 0.8 0.8
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+
+newmtl Материал
+Ns 602.479353
+Ka 0.386364 0.386364 0.386364
+Kd 0.800000 0.800000 0.800000
+Ks 0.322727 0.322727 0.322727
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd Textures\\metal-10.jpg

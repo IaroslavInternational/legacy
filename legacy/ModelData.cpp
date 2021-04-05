@@ -367,13 +367,15 @@ void ModelData::ShowModelsProperties()
 		{
 			if (modelsName.at(k) == selected)
 			{
-				static MP probe{ modelsName.at(k) };
-				probe.SpawnChildWindow(*models.at(k));
+				// static MP probe{ modelsName.at(k) };
+				// probe.SpawnChildWindow(*models.at(k));
+
+				models.at(k)->SpawnDefaultControl();
 
 				if (isSave)
 				{
-					auto pos = probe.GetCurrentPosition();
-					auto orient = probe.GetCurrentOrientation();
+					auto pos = models.at(k)->GetCurrentPosition();
+					auto orient = models.at(k)->GetCurrentOrientation();
 
 					applog->AddLog(MODEL_LOG, "Сохранение позиции\n");
 

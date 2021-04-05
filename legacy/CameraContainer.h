@@ -32,6 +32,7 @@ public:
 	void AddCamera(std::shared_ptr<Camera> pCam);
 
 	Camera& GetActiveCamera();
+	std::shared_ptr<Camera> GetPtr2ActiveCamera();
 
 	void ShowCamsInformationAndSettings(Graphics& gfx);
 private:

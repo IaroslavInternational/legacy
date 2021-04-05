@@ -41,6 +41,8 @@ public:
 	// Модели сцены
 	ModelData models;
 
+	Model testModel;
+
 	// Триггеры сцены
 	SceneTriggersContainer triggersScene;
 
