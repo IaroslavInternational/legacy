@@ -1,7 +1,9 @@
 #include "Model.h"
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+
 #include "ModelException.h"
 #include "Node.h"
 #include "Mesh.h"
@@ -14,7 +16,7 @@
 
 namespace dx = DirectX;
 
-Model::Model( Graphics& gfx,const std::string& pathString,const float scale )
+Model::Model(Graphics& gfx, const std::string& pathString, const float scale)
 {
 	Assimp::Importer imp;
 	const auto pScene = imp.ReadFile( pathString.c_str(),
@@ -51,76 +53,27 @@ Model::Model( Graphics& gfx,const std::string& pathString,const float scale )
 Model::~Model() noexcept
 {}
 
-void Model::Submit( size_t channels ) const noxnd
+void Model::LinkTechniques(Rgph::RenderGraph& rg)
 {
-	pRoot->Submit( channels,dx::XMMatrixIdentity() );
-}
-
-void Model::SetRootTransform( DirectX::FXMMATRIX tf ) noexcept
-{
-	pRoot->SetAppliedTransform( tf );
-}
-
-void Model::Accept( ModelProbe & probe )
-{
-	pRoot->Accept( probe );
-}
-
-void Model::LinkTechniques( Rgph::RenderGraph& rg )
-{
-	for( auto& pMesh : meshPtrs )
+	for (auto& pMesh : meshPtrs)
 	{
-		pMesh->LinkTechniques( rg );
+		pMesh->LinkTechniques(rg);
 	}
 }
 
-std::unique_ptr<Node> Model::ParseNode( int& nextId,const aiNode& node,float scale ) noexcept
+void Model::Submit(size_t channels) const noxnd
 {
-	namespace dx = DirectX;
-	const auto transform = ScaleTranslation( dx::XMMatrixTranspose( dx::XMLoadFloat4x4(
-		reinterpret_cast<const dx::XMFLOAT4X4*>(&node.mTransformation)
-	) ),scale );
-
-	std::vector<Mesh*> curMeshPtrs;
-	curMeshPtrs.reserve( node.mNumMeshes );
-	for( size_t i = 0; i < node.mNumMeshes; i++ )
-	{
-		const auto meshIdx = node.mMeshes[i];
-		curMeshPtrs.push_back( meshPtrs.at( meshIdx ).get() );
-	}
-
-	auto pNode = std::make_unique<Node>( nextId++,node.mName.C_Str(),std::move( curMeshPtrs ),transform );
-	for( size_t i = 0; i < node.mNumChildren; i++ )
-	{
-		pNode->AddChild( ParseNode( nextId,*node.mChildren[i],scale ) );
-	}
-
-	return pNode;
+	pRoot->Submit(channels, dx::XMMatrixIdentity());
 }
 
-void Model::ConnectCamera(std::shared_ptr<Camera> cam)
+void Model::Accept(ModelProbe& probe)
 {
-	this->cam = std::move(cam);
-
-	isCamAdded = true;
+	pRoot->Accept(probe);
 }
 
-void Model::MoveX(float delta)
+void Model::SetRootTransform(DirectX::FXMMATRIX tf) noexcept
 {
-	pos.x += delta;
-
-	if (isCamAdded)
-		cam->SetPos(DirectX::XMFLOAT3(pos.x - 35.0f, 35.0f, -5.1f));
-}
-
-DirectX::XMFLOAT3 Model::GetCurrentPosition()
-{
-	return pos;
-}
-
-DirectX::XMFLOAT3 Model::GetCurrentOrientation()
-{
-	return DirectX::XMFLOAT3(roll, pitch, yaw);
+	pRoot->SetAppliedTransform(tf);
 }
 
 #if IS_ENGINE_MODE
@@ -159,3 +112,93 @@ void Model::SpawnDefaultControl()
 	ImGui::EndChild();
 }
 #endif //IS_ENGINE_MODE
+
+DirectX::XMFLOAT3 Model::GetCurrentPosition()
+{
+	return pos;
+}
+
+DirectX::XMFLOAT3 Model::GetCurrentOrientation()
+{
+	return DirectX::XMFLOAT3(roll, pitch, yaw);
+}
+
+void Model::ConnectCamera(std::shared_ptr<Camera> cam)
+{
+	if (!isCamAdded)
+	{
+		this->cam = std::move(cam);
+		isCamAdded = true;
+	}
+#if IS_ENGINE_MODE
+	else
+	{
+		if (ImGui::BeginPopup("Ошибка"))
+		{
+			ImGui::Text("Камера уже добавлена:");
+			ImGui::Text("Камера: ", cam->GetName());
+
+			if (ImGui::Button("ОК"))
+			{
+				ImGui::CloseCurrentPopup();
+			}
+		}
+
+		ImGui::EndPopup();
+
+		ImGui::OpenPopup("Ошибка");
+	}
+#endif // IS_ENGINE_MODE
+}
+
+void Model::DisconnectCamera()
+{
+	if (isCamAdded)
+	{
+		cam = nullptr;
+		isCamAdded = false;
+	}
+#if IS_ENGINE_MODE
+	else
+	{
+		if(ImGui::BeginPopup("Ошибка"))
+		{
+			ImGui::Text("Невозможно удалить несуществующий объект !");
+			
+			if (ImGui::Button("ОК"))
+			{
+				ImGui::CloseCurrentPopup();
+			}
+		}
+
+		ImGui::EndPopup();
+
+		ImGui::OpenPopup("Ошибка");
+	}
+#endif // IS_ENGINE_MODE
+}
+
+std::unique_ptr<Node> Model::ParseNode(int& nextId, const aiNode& node, float scale) noexcept
+{
+	const auto transform = ScaleTranslation(dx::XMMatrixTranspose(dx::XMLoadFloat4x4(
+		reinterpret_cast<const dx::XMFLOAT4X4*>(&node.mTransformation)
+	)), scale);
+
+	std::vector<Mesh*> curMeshPtrs;
+	curMeshPtrs.reserve( node.mNumMeshes );
+	
+	for (size_t i = 0; i < node.mNumMeshes; i++)
+	{
+		const auto meshIdx = node.mMeshes[i];
+		curMeshPtrs.push_back(meshPtrs.at(meshIdx).get());
+	}
+
+	auto pNode = std::make_unique<Node>(nextId++, node.mName.C_Str(), std::move(curMeshPtrs), transform);
+
+	for (size_t i = 0; i < node.mNumChildren; i++)
+	{
+		pNode->AddChild(ParseNode(nextId, *node.mChildren[i], scale));
+	}
+
+	return pNode;
+}

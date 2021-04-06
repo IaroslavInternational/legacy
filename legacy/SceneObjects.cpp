@@ -11,8 +11,7 @@ SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx,
 	cameras(&applog),
 	models(sdr.GetPaths().at(0).c_str(), gfx, &applog),
 	pointLights(sdr.GetPaths().at(2).c_str(), gfx, &applog),
-	triggersScene(sdr.GetPaths().at(1).c_str(), gfx, &applog),
-	testModel(gfx, "C:/Users/Yaros/source/repos/legacy/legacy/Scenes/Scene 1/Models/nano_textured/nanosuit.obj")
+	triggersScene(sdr.GetPaths().at(1).c_str(), gfx, &applog)
 #else
 	models(sdr.GetPaths().at(0).c_str(), gfx),
 	pointLights(sdr.GetPaths().at(2).c_str(), gfx),
@@ -22,8 +21,6 @@ SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx,
 	cameras.AddCamera(std::make_shared<Camera>(gfx, "A", dx::XMFLOAT3{ -13.5f,6.0f,3.5f }, 0.0f, PI / 2.0f));
 	cameras.AddCamera(std::make_shared<Camera>(gfx, "B", dx::XMFLOAT3{ -13.5f,28.8f,-6.4f }, PI / 180.0f * 13.0f, PI / 180.0f * 61.0f));
 	pointLights.AddCamerasToLight(&cameras);	// Важно !	
-
-	testModel.ConnectCamera(cameras.GetPtr2ActiveCamera());
 
 	pointLights.RgBindShadowCamera(rg);
 }
@@ -39,8 +36,6 @@ void SceneObjects::LinkTechniques(Rgph::RenderGraph& rg)
 	cameras.LinkTechniques(rg);
 	triggersScene.LinkTechniques(rg);
 	models.LinkTechniques(rg);
-
-	testModel.LinkTechniques(rg);
 }
 
 void SceneObjects::Submit(size_t channels)
@@ -49,8 +44,6 @@ void SceneObjects::Submit(size_t channels)
 	cameras.Submit(channels);
 	triggersScene.Submit(channels);
 	models.Submit(channels);
-
-	testModel.Submit(channels);
 }
 #else
 

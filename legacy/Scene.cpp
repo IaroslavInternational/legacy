@@ -13,12 +13,12 @@
 
 #include <sstream>
 
-Scene::Scene(const char* SceneName,		  std::shared_ptr<Window> _wnd, 
-			 const char* Data)
+Scene::Scene(const char* sceneName,		  std::shared_ptr<Window> _wnd, 
+			 const char* data)
 	:
 	wnd(_wnd),
-	objects(Data, wnd->Gfx(), rg),
-	sceneName(SceneName)
+	objects(data, wnd->Gfx(), rg),
+	sceneName(sceneName)
 {	
 	objects.LinkTechniques(rg);
 
@@ -69,7 +69,6 @@ void Scene::ProcessInput(float dt)
 		if (wnd->kbd.KeyIsPressed('W'))
 		{
 			objects.cameras->Translate({ 0.0f,0.0f,dt });
-			objects.testModel.MoveX(0.5f); // Test !
 		}
 		if (wnd->kbd.KeyIsPressed('A'))
 		{
@@ -104,6 +103,7 @@ void Scene::ProcessInput(float dt)
 
 void Scene::Render(float dt)
 {
+	// Начало кадра
 	wnd->Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
 
 	objects.pointLights.Bind(wnd->Gfx(), objects.cameras->GetMatrix());
@@ -126,13 +126,9 @@ void Scene::Render(float dt)
 	ShowRightSide();
 	ShowLeftBottomSide();
 	ShowBottomPanel();
+#endif // IS_ENGINE_MODE
 
-	objects.testModel.SpawnDefaultControl(); // Test !
-
-	//ShowImguiDemoWindow();
-#endif
-
-	// present
+	// Конец кадра
 	wnd->Gfx().EndFrame();
 	rg.Reset();
 }

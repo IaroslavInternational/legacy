@@ -17,8 +17,8 @@ class Scene
 {
 public:
 	Scene() = default;
-	Scene(const char* SceneName,	   std::shared_ptr<Window> _wnd, 
-		  const char* Data);
+	Scene(const char* sceneName,	   std::shared_ptr<Window> _wnd, 
+		  const char* data);
 	~Scene();
 
 	/***** /Методы сцены\ *****/

@@ -22,13 +22,15 @@ public:
 
 #if IS_ENGINE_MODE
 	void DrawLog();
-#endif
+#endif // IS_ENGINE_MODE
 private:
+	// Считыватель путей к файлам с данными для контейнеров
 	SceneDataReader sdr;
 	
 #if IS_ENGINE_MODE
+	// Лог
 	AppLog applog;
-#endif
+#endif // IS_ENGINE_MODE
 public:
 	/***** -Объекты- *****/
 	
@@ -40,8 +42,6 @@ public:
 
 	// Модели сцены
 	ModelData models;
-
-	Model testModel;
 
 	// Триггеры сцены
 	SceneTriggersContainer triggersScene;
