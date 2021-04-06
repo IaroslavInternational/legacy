@@ -7,11 +7,16 @@
 #include "AdapterData.h"
 #include "imgui/imgui.h"
 #include "imgui/ImGuiFileDialog.h"
+
+#include "imgui/imgui_node_editor.h"
 #endif // IS_ENGINE_MODE
 
 #include "Camera.h"
 
 #include <sstream>
+
+namespace ed = ax::NodeEditor;
+static ed::EditorContext* g_Context = nullptr;
 
 Scene::Scene(const char* sceneName,		  std::shared_ptr<Window> _wnd, 
 			 const char* data)
@@ -126,9 +131,33 @@ void Scene::Render(float dt)
 	ShowRightSide();
 	ShowLeftBottomSide();
 	ShowBottomPanel();
+
+	/*Test*/
+	g_Context = ed::CreateEditor();
+	ed::SetCurrentEditor(g_Context);
+
+	ed::Begin("My Editor");
+
+	int uniqueId = 1;
+
+	// Start drawing nodes.
+	ed::BeginNode(uniqueId++);
+	ImGui::Text("Node A");
+	ed::BeginPin(uniqueId++, ed::PinKind::Input);
+	ImGui::Text("-> In");
+	ed::EndPin();
+	ImGui::SameLine();
+	ed::BeginPin(uniqueId++, ed::PinKind::Output);
+	ImGui::Text("Out ->");
+	ed::EndPin();
+	ed::EndNode();
+
+	ed::End();
+	/*end test*/
 #endif // IS_ENGINE_MODE
 
 	// Конец кадра
+	ed::DestroyEditor(g_Context);
 	wnd->Gfx().EndFrame();
 	rg.Reset();
 }
