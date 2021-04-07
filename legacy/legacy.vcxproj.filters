@@ -112,9 +112,6 @@
     <Filter Include="Исходные файлы\Сцена\Объекты\Камера">
       <UniqueIdentifier>{3d9f99f9-abaa-44ec-8b2c-b11af0dd1623}</UniqueIdentifier>
     </Filter>
-    <Filter Include="imgui\nodes">
-      <UniqueIdentifier>{4cce5a9a-bae9-4c05-aec8-c0536028261a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -390,17 +387,8 @@
     <ClCompile Include="SceneObjects.cpp">
       <Filter>Исходные файлы\Сцена\Объекты</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\imgui_canvas.cpp">
-      <Filter>imgui\nodes</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_node_editor.cpp">
-      <Filter>imgui\nodes</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_node_editor_api.cpp">
-      <Filter>imgui\nodes</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\crude_json.cpp">
-      <Filter>imgui\nodes</Filter>
+    <ClCompile Include="imgui\imnodes.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -794,23 +782,8 @@
     <ClInclude Include="SceneObjects.h">
       <Filter>Заголовочные файлы\Сцена\Объекты</Filter>
     </ClInclude>
-    <ClInclude Include="imgui\imgui_canvas.h">
-      <Filter>imgui\nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_extra_math.h">
-      <Filter>imgui\nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_node_editor.h">
-      <Filter>imgui\nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_node_editor_internal.h">
-      <Filter>imgui\nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\crude_json.h">
-      <Filter>imgui\nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_bezier_math.h">
-      <Filter>imgui\nodes</Filter>
+    <ClInclude Include="imgui\imnodes.h">
+      <Filter>imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -861,15 +834,6 @@
       <Filter>Шейдеры\Заголовки</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
-    <None Include="imgui\imgui_bezier_math.inl">
-      <Filter>imgui\nodes</Filter>
-    </None>
-    <None Include="imgui\imgui_extra_math.inl">
-      <Filter>imgui\nodes</Filter>
-    </None>
-    <None Include="imgui\imgui_node_editor_internal.inl">
-      <Filter>imgui\nodes</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PhongDifMskSpcNrm_PS.hlsl">

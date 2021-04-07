@@ -80,6 +80,9 @@ private:
 	// Отключить все панели
 	void DisableAll();
 
+	// Показать интерфейс
+	void ShowGui();
+
 	// Цветовая гамма ImGui
 	void SetGuiColors();
 

@@ -7,16 +7,12 @@
 #include "AdapterData.h"
 #include "imgui/imgui.h"
 #include "imgui/ImGuiFileDialog.h"
-
-#include "imgui/imgui_node_editor.h"
+#include "imgui/imnodes.h"
 #endif // IS_ENGINE_MODE
 
 #include "Camera.h"
 
 #include <sstream>
-
-namespace ed = ax::NodeEditor;
-static ed::EditorContext* g_Context = nullptr;
 
 Scene::Scene(const char* sceneName,		  std::shared_ptr<Window> _wnd, 
 			 const char* data)
@@ -110,6 +106,7 @@ void Scene::Render(float dt)
 {
 	// Начало кадра
 	wnd->Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
+	imnodes::CreateContext();
 
 	objects.pointLights.Bind(wnd->Gfx(), objects.cameras->GetMatrix());
 	rg.BindMainCamera(objects.cameras.GetActiveCamera());
@@ -126,38 +123,28 @@ void Scene::Render(float dt)
 		savingDepth = false;
 	}
 
-	ShowMenu();
-	ShowLeftSide();
-	ShowRightSide();
-	ShowLeftBottomSide();
-	ShowBottomPanel();
+	const int hardcoded_node_id = 1;
 
-	/*Test*/
-	g_Context = ed::CreateEditor();
-	ed::SetCurrentEditor(g_Context);
+	imnodes::BeginNodeEditor();
 
-	ed::Begin("My Editor");
+	imnodes::BeginNode(hardcoded_node_id);
 
-	int uniqueId = 1;
+	const int output_attr_id = 2;
+	imnodes::BeginOutputAttribute(output_attr_id);
+	// in between Begin|EndAttribute calls, you can call ImGui
+	// UI functions
+	ImGui::Text("output pin");
+	imnodes::EndOutputAttribute();
 
-	// Start drawing nodes.
-	ed::BeginNode(uniqueId++);
-	ImGui::Text("Node A");
-	ed::BeginPin(uniqueId++, ed::PinKind::Input);
-	ImGui::Text("-> In");
-	ed::EndPin();
-	ImGui::SameLine();
-	ed::BeginPin(uniqueId++, ed::PinKind::Output);
-	ImGui::Text("Out ->");
-	ed::EndPin();
-	ed::EndNode();
+	imnodes::EndNode();
 
-	ed::End();
-	/*end test*/
+	imnodes::EndNodeEditor();
+
+	ShowGui();
 #endif // IS_ENGINE_MODE
 
 	// Конец кадра
-	ed::DestroyEditor(g_Context);
+	imnodes::DestroyContext();
 	wnd->Gfx().EndFrame();
 	rg.Reset();
 }
@@ -502,6 +489,15 @@ void Scene::DisableAll()
 	
 	ShowHardwareInfo = false;
 	ShowLogs = false;
+}
+
+void Scene::ShowGui()
+{
+	ShowMenu();
+	ShowLeftSide();
+	ShowRightSide();
+	ShowLeftBottomSide();
+	ShowBottomPanel();
 }
 
 void Scene::SetGuiColors()
