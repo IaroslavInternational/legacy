@@ -26,50 +26,48 @@ void NodeEditor::EndFrame()
 	imnodes::DestroyContext();
 }
 
-void NodeEditor::Show()
+void NodeEditor::Show(bool *IsShown)
 {
-    if (IsShown)
+    ImGuiIO& io = ImGui::GetIO();
+
+    const float width = 0.85f;
+    const float height = 0.85f;
+
+    float PanelW = round(io.DisplaySize.x * width);
+    float PanelH = io.DisplaySize.y * height;
+
+    ImVec2 PanelPos = ImVec2(
+        io.DisplaySize.x * (1.0f - width) / 2.0f,
+        io.DisplaySize.y * (1.0f - height) / 2.0f
+    );
+
+    ImGui::SetNextWindowPos(PanelPos, ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(PanelW, PanelH));
+
+    if (ImGui::Begin("Редактор узлов", IsShown,
+        ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings |
+        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_MenuBar))
     {
-        ImGuiIO& io = ImGui::GetIO();
-
-        const float width = 0.85f;
-        const float height = 0.85f;
-
-        float PanelW = round(io.DisplaySize.x * width);
-        float PanelH = io.DisplaySize.y * height;
-
-        ImGui::SetNextWindowSize(ImVec2(PanelW, PanelH));
-
-        if (ImGui::Begin("Node Editor", NULL,
-            ImGuiWindowFlags_NoMove |
-            ImGuiWindowFlags_NoResize |
-            ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse |
-            ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_MenuBar))
+        // Меню
+        if (ImGui::BeginMenuBar())
         {
-            if (ImGui::BeginMenuBar())
+            if (ImGui::BeginMenu("Редактор"))
             {
-                if (ImGui::BeginMenu("Editor"))
-                {
-                    if (ImGui::MenuItem("Закрыть"))
-                    {
-                        IsShown = false;
-                    }
-
-                    ImGui::EndMenu();
-                }
+                ImGui::EndMenu();
             }
-
-            ImGui::EndMenuBar();
-
-            ShowLeftPanel(ImVec2(PanelW * 0.2f, PanelH));
-
-            ImGui::SameLine();
-
-            ShowRightPanel(ImVec2(PanelW * 0.8f, PanelH));
         }
 
-        ImGui::End();
+        ImGui::EndMenuBar();
+
+        ShowLeftPanel(ImVec2(PanelW * 0.2f, PanelH));
+
+        ImGui::SameLine();
+
+        ShowRightPanel(ImVec2(PanelW * 0.8f, PanelH));
     }
+
+    ImGui::End();
 }
 
 void NodeEditor::Init()

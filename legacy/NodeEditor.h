@@ -22,7 +22,7 @@ public:
 	void EndFrame();
 
 	// Показать Editor
-	void Show();
+	void Show(bool *IsShown);
 
 	// Инициализация
 	void Init();
@@ -84,10 +84,6 @@ private:
 
 	// Статус инициализации
 	bool IsInit = false;
-
-	// Статус отрисовки
-	bool IsShown = true;
-
 private:
 	/* Контейнеры */
 

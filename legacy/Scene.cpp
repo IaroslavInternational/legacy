@@ -127,8 +127,7 @@ void Scene::Render(float dt)
 	}
 
 	objects.nEditor.Init();
-	objects.nEditor.Show();
-	ShowImguiDemoWindow();
+
 	ShowGui();
 #endif // IS_ENGINE_MODE
 
@@ -198,6 +197,11 @@ void Scene::ShowMenu()
 
 		if (ImGui::BeginMenu("Окна"))
 		{
+			if (ImGui::MenuItem("Редактор узлов"))
+			{
+				ShowNodeEditorWnd ? ShowNodeEditorWnd = false : ShowNodeEditorWnd = true;
+			}
+
 			if (ImGui::BeginMenu("Объекты"))
 			{
 				if (ImGui::MenuItem("Точечные источники света"))
@@ -465,6 +469,14 @@ void Scene::ShowLog()
 	objects.DrawLog();
 }
 
+void Scene::ShowNodeEditor()
+{
+	if (ShowNodeEditorWnd)
+	{
+		objects.nEditor.Show(&ShowNodeEditorWnd);
+	}
+}
+
 void Scene::DisableSides()
 {
 	ShowModelsList = false;
@@ -490,6 +502,8 @@ void Scene::ShowGui()
 	ShowRightSide();
 	ShowLeftBottomSide();
 	ShowBottomPanel();
+
+	ShowNodeEditor();
 }
 
 void Scene::SetGuiColors()

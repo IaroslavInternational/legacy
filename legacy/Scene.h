@@ -40,7 +40,6 @@ public:
 	/***** \Методы сцены/ *****/
 private:
 #if IS_ENGINE_MODE
-
 	/* -- Интерфейс -- */
 
 	/**** Панели ****/
@@ -73,6 +72,9 @@ private:
 
 	// Показать лог *Нижняя панель*
 	void ShowLog();
+
+	// Показать редактор узлов *Отдельное окно*
+	void ShowNodeEditor();
 
 	// Отключить боковые панели
 	void DisableSides();
@@ -108,7 +110,6 @@ private:
 	bool cursorState = false;
 
 #if IS_ENGINE_MODE
-
 	/* Интерфейс */
 
 	// Левая панель моделей на сцене
@@ -138,8 +139,10 @@ private:
 	// Левая панель камер на сцене с настройками
 	bool ShowCamsList = false;
 
-	/*************/
+	// Редактор узлов
+	bool ShowNodeEditorWnd = false;
 
+	/*************/
 #endif // IS_ENGINE_MODE
 private:
 	// Указатель на главное окно 
