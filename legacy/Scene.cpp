@@ -104,9 +104,12 @@ void Scene::ProcessInput(float dt)
 
 void Scene::Render(float dt)
 {
-	// Начало кадра
+	/* Начало кадра */
+	
 	wnd->Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
-	imnodes::CreateContext();
+	objects.nEditor.BeginFrame();
+
+	/****************/
 
 	objects.pointLights.Bind(wnd->Gfx(), objects.cameras->GetMatrix());
 	rg.BindMainCamera(objects.cameras.GetActiveCamera());
@@ -123,30 +126,17 @@ void Scene::Render(float dt)
 		savingDepth = false;
 	}
 
-	const int hardcoded_node_id = 1;
-
-	imnodes::BeginNodeEditor();
-
-	imnodes::BeginNode(hardcoded_node_id);
-
-	const int output_attr_id = 2;
-	imnodes::BeginOutputAttribute(output_attr_id);
-	// in between Begin|EndAttribute calls, you can call ImGui
-	// UI functions
-	ImGui::Text("output pin");
-	imnodes::EndOutputAttribute();
-
-	imnodes::EndNode();
-
-	imnodes::EndNodeEditor();
-
+	objects.nEditor.Show();
 	ShowGui();
 #endif // IS_ENGINE_MODE
 
-	// Конец кадра
-	imnodes::DestroyContext();
+	/* Конец кадра */
+	
+	objects.nEditor.EndFrame();
 	wnd->Gfx().EndFrame();
 	rg.Reset();
+
+	/***************/
 }
 
 std::pair<const char*, bool> Scene::IsOnTheSceneTrigger()

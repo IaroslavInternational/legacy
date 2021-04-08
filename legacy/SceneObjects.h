@@ -7,6 +7,7 @@
 
 #if IS_ENGINE_MODE
 #include "AppLog.h"
+#include "NodeEditor.h"
 #endif
 
 #include "SceneDataReader.h"
@@ -47,4 +48,8 @@ public:
 	SceneTriggersContainer triggersScene;
 
 	/*********************/
+
+#if IS_ENGINE_MODE
+	NodeEditor nEditor;
+#endif // IS_ENGINE_MODE
 };
