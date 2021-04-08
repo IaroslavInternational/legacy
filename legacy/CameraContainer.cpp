@@ -118,6 +118,16 @@ void CameraContainer::ShowCamsInformationAndSettings(Graphics& gfx)
 	}
 	ImGui::End();
 }
+
+size_t CameraContainer::CamerasAmount()
+{
+	return cameras.size();
+}
+
+const char* CameraContainer::GetCameraNameByIndex(size_t index)
+{
+	return cameras.at(index)->GetName().c_str();
+}
 #endif // IS_ENGINE_MODE
 
 Camera& CameraContainer::GetControlledCamera()

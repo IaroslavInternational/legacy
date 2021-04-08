@@ -433,4 +433,14 @@ void ModelData::OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg)
 		ImGuiFileDialog::Instance()->Close();
 	}
 }
+
+size_t ModelData::ModelsAmount()
+{
+	return models.size();
+}
+
+const char* ModelData::GetModelNameByIndex(size_t index)
+{
+	return modelsName.at(index).c_str();
+}
 #endif // IS_ENGINE_MODE

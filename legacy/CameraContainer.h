@@ -23,7 +23,7 @@ public:
 	
 #if IS_ENGINE_MODE
 	CameraContainer(AppLog* aLog);
-#endif
+#endif // IS_ENGINE_MODE
 	~CameraContainer();
 	
 	void LinkTechniques( Rgph::RenderGraph& rg );
@@ -35,6 +35,12 @@ public:
 	std::shared_ptr<Camera> GetPtr2ActiveCamera();
 
 	void ShowCamsInformationAndSettings(Graphics& gfx);
+
+#if IS_ENGINE_MODE
+	size_t CamerasAmount();
+
+	const char* GetCameraNameByIndex(size_t index);
+#endif // IS_ENGINE_MODE
 private:
 	Camera& GetControlledCamera();
 private:

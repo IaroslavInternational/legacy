@@ -64,22 +64,23 @@ void Camera::SpawnControlWidgets( Graphics& gfx ) noexcept
 	const auto dcheck = []( bool d,bool& carry ) { carry = carry || d; };
 	if( !tethered )
 	{
-		ImGui::Text( "Position" );
+		ImGui::Text( "Позиция" );
 		dcheck( ImGui::SliderFloat( "X",&pos.x,-80.0f,80.0f,"%.1f" ),posDirty );
 		dcheck( ImGui::SliderFloat( "Y",&pos.y,-80.0f,80.0f,"%.1f" ),posDirty );
 		dcheck( ImGui::SliderFloat( "Z",&pos.z,-80.0f,80.0f,"%.1f" ),posDirty );
 	}
-	ImGui::Text( "Orientation" );
+	ImGui::Text( "Ориентация" );
 	dcheck( ImGui::SliderAngle( "Pitch",&pitch,0.995f * -90.0f,0.995f * 90.0f ), rotDirty );
 	dcheck( ImGui::SliderAngle( "Yaw",&yaw,-180.0f,180.0f ), rotDirty );
 	proj.RenderWidgets( gfx );
-	ImGui::Checkbox( "Camera Indicator",&enableCameraIndicator );
-	ImGui::Checkbox( "Frustum Indicator",&enableFrustumIndicator );
+	ImGui::Checkbox( "Индикатор",&enableCameraIndicator );
+	ImGui::Checkbox( "Отображение",&enableFrustumIndicator );
 	if( ImGui::Button( "Reset" ) )
 	{
-		Reset( gfx );
+		Reset(gfx);
 	}
 
+#if IS_ENGINE_MODE
 	if( rotDirty )
 	{
 		const dx::XMFLOAT3 angles = { pitch,yaw,0.0f };
@@ -91,6 +92,7 @@ void Camera::SpawnControlWidgets( Graphics& gfx ) noexcept
 		indicator.SetPos( pos );
 		proj.SetPos( pos );
 	}
+#endif // IS_ENGINE_MODE
 }
 #endif // IS_ENGINE_MODE
 
@@ -105,10 +107,12 @@ void Camera::Reset( Graphics& gfx ) noexcept
 	pitch = homePitch;
 	yaw = homeYaw;
 
+#if IS_ENGINE_MODE
 	const dx::XMFLOAT3 angles = { pitch,yaw,0.0f };
 	indicator.SetRotation( angles );
 	proj.SetRotation( angles );
 	proj.Reset( gfx );
+#endif // IS_ENGINE_MODE
 }
 
 void Camera::Rotate( float dx,float dy ) noexcept
@@ -147,8 +151,11 @@ DirectX::XMFLOAT3 Camera::GetPos() const noexcept
 void Camera::SetPos( const DirectX::XMFLOAT3& pos ) noexcept
 {
 	this->pos = pos;
+
+#if IS_ENGINE_MODE
 	indicator.SetPos( pos );
 	proj.SetPos( pos );
+#endif // IS_ENGINE_MODE
 }
 
 const std::string& Camera::GetName() const noexcept

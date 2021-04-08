@@ -36,6 +36,12 @@ public:
 
 	// Открыть диалоговое окно для добавления модели на сцену
 	void OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg);
+
+	// Кол-во моделей
+	size_t ModelsAmount();
+
+	// Имя модели по индексу
+	const char* GetModelNameByIndex(size_t index);
 #endif
 private:
 	std::vector<std::string> modelsName;			// Имена моделей 
@@ -63,6 +69,7 @@ private:
 	// Если нажата кнопка сохранить
 	bool isSave = false;
 
+	// Лог
 	AppLog* applog;
 #endif
 };

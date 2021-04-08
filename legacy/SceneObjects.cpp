@@ -11,7 +11,8 @@ SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx,
 	cameras(&applog),
 	models(sdr.GetPaths().at(0).c_str(), gfx, &applog),
 	pointLights(sdr.GetPaths().at(2).c_str(), gfx, &applog),
-	triggersScene(sdr.GetPaths().at(1).c_str(), gfx, &applog)
+	triggersScene(sdr.GetPaths().at(1).c_str(), gfx, &applog),
+	nEditor(cameras, models)
 #else
 	models(sdr.GetPaths().at(0).c_str(), gfx),
 	pointLights(sdr.GetPaths().at(2).c_str(), gfx),
