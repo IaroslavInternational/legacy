@@ -47,6 +47,8 @@ public:
 	// Получение ориентации
 	DirectX::XMFLOAT3 GetCurrentOrientation();
 
+	bool IsCamConnceted();
+
 	// Присоединить камеру
 	void ConnectCamera(std::shared_ptr<Camera> cam);
 

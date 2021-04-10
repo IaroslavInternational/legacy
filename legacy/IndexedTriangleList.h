@@ -13,8 +13,8 @@ public:
 		vertices( std::move( verts_in ) ),
 		indices( std::move( indices_in ) )
 	{
-		assert( vertices.Size() > 2 );
-		assert( indices.size() % 3 == 0 );
+		//assert( vertices.Size() > 2 );
+		//assert( indices.size() % 3 == 0 );
 	}
 	void Transform( DirectX::FXMMATRIX matrix )
 	{

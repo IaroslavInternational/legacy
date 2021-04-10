@@ -54,6 +54,12 @@ void NodeEditor::Show(bool *IsShown)
         {
             if (ImGui::BeginMenu("Редактор"))
             {
+                if (ImGui::MenuItem("Закрыть"))
+                {
+                    *IsShown = false;
+                    ImGui::EndMenu();
+                }
+
                 ImGui::EndMenu();
             }
         }
@@ -145,7 +151,7 @@ void NodeEditor::RenderNodes()
         imnodes::EndNode();
     }
 
-    for (const Link& link : links)
+    for (const auto& link : links)
     {
         imnodes::Link(link.id, link.start_attr, link.end_attr);
     }
@@ -201,6 +207,26 @@ void NodeEditor::ShowLeftPanel(ImVec2 size)
         ImGui::EndCombo();
     }
 
+    if (ImGui::Button("Сохранить"))
+    {
+        if (links.size() != 0)
+        {
+            for (auto& link : links)
+            {
+                int link_start = link.start_attr;   // cam out id
+                int link_end = link.end_attr;       // mod in id
+
+                int camId = link.start_attr >> 24;  // cam id
+                int modId = link.end_attr >> 8;     // mod id
+
+                if (!mData.GetPtr2ModelByName(FindModNodeById(modId)->name)->get()->IsCamConnceted())
+                {
+                    mData.GetPtr2ModelByName(FindModNodeById(modId)->name)->get()->ConnectCamera(camcon.GetPtr2CameraByName(FindCamNodeById(camId)->name));
+                }
+            }
+        }
+    }
+
     ImGui::EndChild();
 }
 
@@ -243,10 +269,32 @@ void NodeEditor::ShowRightPanel(ImVec2 size)
                 return link.id == link_id;
             });
 
-            assert(iter != editor.links.end());
+            assert(iter != links.end());
             links.erase(iter);
         }
     }
 
     ImGui::EndChild();
+}
+
+NodeEditor::CameraNode* NodeEditor::FindCamNodeById(int id)
+{
+    for (auto& node : cNodes)
+    {
+        if (node.id == id)
+        {
+            return &node;
+        }
+    }
+}
+
+NodeEditor::ModelNode* NodeEditor::FindModNodeById(int id)
+{
+    for (auto& node : mNodes)
+    {
+        if (node.id == id)
+        {
+            return &node;
+        }
+    }
 }

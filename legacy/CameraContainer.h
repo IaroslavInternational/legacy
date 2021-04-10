@@ -29,10 +29,14 @@ public:
 	void LinkTechniques( Rgph::RenderGraph& rg );
 	void Submit( size_t channels ) const;
 	void Bind(Graphics& gfx);
+
 	void AddCamera(std::shared_ptr<Camera> pCam);
 
 	Camera& GetActiveCamera();
+
 	std::shared_ptr<Camera> GetPtr2ActiveCamera();
+
+	std::shared_ptr<Camera> GetPtr2CameraByName(const char* name);
 
 	void ShowCamsInformationAndSettings(Graphics& gfx);
 

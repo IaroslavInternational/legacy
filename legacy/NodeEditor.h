@@ -115,5 +115,9 @@ private:
 
 	// Показать модели *Правая панель*
 	void ShowRightPanel(ImVec2 size);
+
+	CameraNode* FindCamNodeById(int id);
+
+	ModelNode* FindModNodeById(int id);
 };
 

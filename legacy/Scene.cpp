@@ -62,6 +62,8 @@ void Scene::ProcessInput(float dt)
 			savingDepth = true;
 #endif // IS_ENGINE_MODE
 			break;
+		default:
+			break;
 		}
 	}
 

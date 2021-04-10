@@ -27,6 +27,11 @@ public:
 	void LinkTechniques(Rgph::RenderGraph& rg);
 	void Submit(size_t channels);
 
+	// Имя модели по индексу
+	const char* GetModelNameByIndex(size_t index);
+
+	std::unique_ptr<Model>* GetPtr2ModelByName(const char* name);
+
 #if IS_ENGINE_MODE
 	// Показать модели *Левая панель*
 	void ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg);
@@ -39,9 +44,6 @@ public:
 
 	// Кол-во моделей
 	size_t ModelsAmount();
-
-	// Имя модели по индексу
-	const char* GetModelNameByIndex(size_t index);
 #endif
 private:
 	std::vector<std::string> modelsName;			// Имена моделей 

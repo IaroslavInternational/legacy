@@ -81,6 +81,17 @@ std::shared_ptr<Camera> CameraContainer::GetPtr2ActiveCamera()
 	return cameras[active];
 }
 
+std::shared_ptr<Camera> CameraContainer::GetPtr2CameraByName(const char* name)
+{
+	for (auto& cam : cameras)
+	{
+		if (cam->GetName() == name)
+		{
+			return cam;
+		}
+	}
+}
+
 #if IS_ENGINE_MODE
 void CameraContainer::ShowCamsInformationAndSettings(Graphics& gfx)
 {

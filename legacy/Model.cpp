@@ -96,6 +96,16 @@ void Model::SpawnDefaultControl()
 		dcheck(ImGui::SliderAngle("Тангаш", &pitch, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
 		dcheck(ImGui::SliderAngle("Расканье", &yaw, -180.0f, 180.0f), rotDirty);
 
+		if (isCamAdded)
+		{
+			cam->SetPos(DirectX::XMFLOAT3(pos.x - 30.0f, pos.y + 20, pos.z - 5.0f));
+
+			ImGui::Separator();
+
+			ImGui::Text("Привязанная камера:");			
+			ImGui::Text(cam->GetName().c_str());
+		}
+
 		SetRootTransform
 		(
 			DirectX::XMMatrixRotationX(roll) *
@@ -123,11 +133,16 @@ DirectX::XMFLOAT3 Model::GetCurrentOrientation()
 	return DirectX::XMFLOAT3(roll, pitch, yaw);
 }
 
+bool Model::IsCamConnceted()
+{
+	return isCamAdded;
+}
+
 void Model::ConnectCamera(std::shared_ptr<Camera> cam)
 {
 	if (!isCamAdded)
 	{
-		this->cam = std::move(cam);
+		this->cam = cam;
 		isCamAdded = true;
 	}
 #if IS_ENGINE_MODE

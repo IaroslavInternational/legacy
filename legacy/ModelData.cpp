@@ -182,6 +182,22 @@ void ModelData::Submit(size_t channels)
 	}
 }
 
+const char* ModelData::GetModelNameByIndex(size_t index)
+{
+	return modelsName.at(index).c_str();
+}
+
+std::unique_ptr<Model>* ModelData::GetPtr2ModelByName(const char* name)
+{
+	for (int i = 0; i < modelsName.size(); i++)
+	{
+		if (modelsName[i] == name)
+		{
+			return &models[i];
+		}
+	}
+}
+
 void ModelData::AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path, const char* name)
 {
 	modelsName.push_back(name);
@@ -437,10 +453,5 @@ void ModelData::OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg)
 size_t ModelData::ModelsAmount()
 {
 	return models.size();
-}
-
-const char* ModelData::GetModelNameByIndex(size_t index)
-{
-	return modelsName.at(index).c_str();
 }
 #endif // IS_ENGINE_MODE

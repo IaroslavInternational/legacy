@@ -70,6 +70,7 @@ public:
 					indices.push_back( indexArray[1] ); //1
 					indices.push_back( indexArray[1] ); //1
 					indices.push_back( indexArray[3] ); //2
+					indices.push_back( indexArray[0] ); //2
 				}
 			}
 		}
