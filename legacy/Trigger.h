@@ -19,8 +19,8 @@ class Trigger
 {
 public:
 #if IS_ENGINE_MODE
-	Trigger(TriggerStruct& trs, Graphics& gfx);
-	Trigger(dx::XMFLOAT3 PosTopLeft, dx::XMFLOAT3 PosTopRight,
+	Trigger(std::string, TriggerStruct trs, Graphics& gfx);
+	Trigger(std::string, dx::XMFLOAT3 PosTopLeft, dx::XMFLOAT3 PosTopRight,
 		dx::XMFLOAT3 PosBottomLeft, dx::XMFLOAT3 PosBottomRight,
 		float roll, float pitch, float yaw, Graphics& gfx);
 #else
@@ -55,9 +55,13 @@ public:
 
 	// Получение позиции триггера
 	const DirectX::XMFLOAT3* GetPosition() const;
+
+	std::string GetName();
 private:
 	// Глубина триггера по x
 	float deep = 1.0f;
+
+	std::string name;
 private:
 	struct
 	{

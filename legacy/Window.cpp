@@ -59,9 +59,7 @@ Window::Window(const char* name)
 	width = GetDeviceCaps(CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL), HORZRES);
 	height = GetDeviceCaps(CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL), VERTRES);
 
-	#define mode 0
-
-#if mode == 0
+#if ENGINE_WINDOW == 0
 		// Создание окна
 	hWnd = CreateWindowEx(
 		WS_EX_TOPMOST, WindowClass::GetName(), name, WS_POPUP | WS_MAXIMIZE,

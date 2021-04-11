@@ -29,7 +29,7 @@ public:
 	// Отрисовка сцены
 	void Render(float dt);
 
-	std::pair<const char*, bool> IsOnTheSceneTrigger();
+	std::pair<std::string, bool> IsOnTheSceneTrigger();
 
 	// Возращение камеры на исходное положение
 	void ResetPos();

@@ -140,7 +140,7 @@ void Scene::Render(float dt)
 	/***************/
 }
 
-std::pair<const char*, bool> Scene::IsOnTheSceneTrigger()
+std::pair<std::string, bool> Scene::IsOnTheSceneTrigger()
 {
 	return objects.triggersScene.CheckTriggers(objects.cameras.GetActiveCamera().GetPos());
 }
@@ -326,7 +326,7 @@ void Scene::ShowLeftSide()
 	}
 	else if (ShowTriggersList)
 	{
-		objects.triggersScene.ShowTrigInformation();
+		objects.triggersScene.ShowTrigInformation(wnd->Gfx(), rg);
 	}
 	else if (ShowPLightsList)
 	{

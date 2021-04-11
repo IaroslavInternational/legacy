@@ -27,11 +27,11 @@ public:
 #endif // IS_ENGINE_MODE
 
 	// Имя цели, статус | Проверка на пересечение триггера
-	std::pair<const char*, bool> CheckTriggers(dx::XMFLOAT3 pos);
+	std::pair<std::string, bool> CheckTriggers(dx::XMFLOAT3 pos);
 
 #if IS_ENGINE_MODE
 	// Показать триггеры *Левая панель*
-	void ShowTrigInformation();
+	void ShowTrigInformation(Graphics& gfx, Rgph::RenderGraph& rg);
 
 	// Показать триггеры *Правая панель*
 	void ShowTrigSettings();
@@ -39,12 +39,13 @@ public:
 private:
 	const char* filePath;
 
-	const char* selected = "";
+	std::string selected = "";
 
 	std::vector<std::string> ptr2scs;
+	std::vector<std::string> names;
 	std::vector<TriggerStruct> trss;
 
-	std::map<const char*, std::unique_ptr<Trigger>> trig_sc_container;
+	std::map<std::string, std::unique_ptr<Trigger>> trig_sc_container;
 
 #if IS_ENGINE_MODE
 	/* Данные для нового триггера */
@@ -62,9 +63,12 @@ private:
 	/******************************/
 
 private:
-	void LoadTrigger(std::string name, std::string ptr, TriggerStruct& trs);
+	// Добавить триггер
+	void LoadTrigger(Graphics& gfx, std::string name, std::string ptr, TriggerStruct& trs,
+		Rgph::RenderGraph& rg);
 private:
 
+	// Лог
 	AppLog* applog;
 #endif // IS_ENGINE_MODE
 };

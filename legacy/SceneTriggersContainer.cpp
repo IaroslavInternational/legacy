@@ -76,18 +76,26 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx, 
 
 			/* Запись указателя триггера */
 
-			std::string ptr = obj.at("ptr");
-			ptr2scs.emplace_back(ptr);
+			std::string Ptr = obj.at("ptr");
+			ptr2scs.emplace_back(Ptr);
+
+			std::string Name = obj.at("name");
+			names.emplace_back(Name);
 
 			/*****************************/
 
 			trss.emplace_back(pos_lt, pos_rt, pos_lb, pos_rb, roll, pitch, yaw);
-		}
-	}
 
-	for (int i = 0; i < trss.size(); i++)
-	{
-		trig_sc_container.emplace(ptr2scs.at(i).c_str(), std::make_unique<Trigger>(trss.at(i), gfx));
+			trig_sc_container.emplace(
+				Ptr, 
+				std::make_unique<Trigger>
+				(
+					Name,
+					TriggerStruct(pos_lt, pos_rt, pos_lb, pos_rb, roll, pitch, yaw), 
+					gfx
+				)
+			);
+		}
 	}
 
 	dataFile.close();
@@ -199,13 +207,13 @@ void SceneTriggersContainer::Submit(size_t channels)
 }
 #endif // IS_ENGINE_MODE
 
-std::pair<const char*, bool> SceneTriggersContainer::CheckTriggers(dx::XMFLOAT3 pos)
+std::pair<std::string, bool> SceneTriggersContainer::CheckTriggers(dx::XMFLOAT3 pos)
 {
 	for (auto it = trig_sc_container.begin(); it != trig_sc_container.end(); it++)
 	{
 		if (it->second->Check(pos))
 		{
-			const char* HittedTriggerGoal = it->first;
+			auto HittedTriggerGoal = it->first;
 
 #if IS_ENGINE_MODE
 			std::ostringstream oss;
@@ -222,7 +230,7 @@ std::pair<const char*, bool> SceneTriggersContainer::CheckTriggers(dx::XMFLOAT3 
 }
 
 #if IS_ENGINE_MODE
-void SceneTriggersContainer::ShowTrigInformation()
+void SceneTriggersContainer::ShowTrigInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 {
 	bool IsAdd = false;
 
@@ -236,12 +244,12 @@ void SceneTriggersContainer::ShowTrigInformation()
 		{
 			char label[128];
 
-			sprintf_s(label, key, selected);
+			sprintf_s(label, value->GetName().c_str(), selected.c_str());
 
 			ImGui::Bullet();
-			if (ImGui::Selectable(label, selected == key))
+			if (ImGui::Selectable(label, selected == value->GetName().c_str()))
 			{
-				selected = key;
+				selected = std::move(value->GetName());
 			}
 		}
 
@@ -285,7 +293,7 @@ void SceneTriggersContainer::ShowTrigInformation()
 				trs.Pitch = orient[1];
 				trs.Yaw = orient[2];
 
-				LoadTrigger(std::string(name), std::string(goal), trs);
+				LoadTrigger(gfx, std::string(name), std::string(goal), trs, rg);
 
 				IsAdd = true;
 
@@ -316,7 +324,7 @@ void SceneTriggersContainer::ShowTrigSettings()
 	{
 		for (const auto& [key, value] : trig_sc_container)
 		{
-			if (key == selected)
+			if (value->GetName() == selected)
 			{
 				auto pos = value->GetPosition();
 
@@ -331,7 +339,7 @@ void SceneTriggersContainer::ShowTrigSettings()
 					pos[3].x, pos[3].y, pos[3].z);
 
 				ImGui::Separator();
-				ImGui::Text("Триггер указывает на: %s", selected);
+				ImGui::Text("Триггер указывает на: %s", key);
 
 				break;
 			}
@@ -341,12 +349,9 @@ void SceneTriggersContainer::ShowTrigSettings()
 	ImGui::End();
 }
 
-void SceneTriggersContainer::LoadTrigger(std::string name, std::string ptr, TriggerStruct& trs)
+void SceneTriggersContainer::LoadTrigger(Graphics& gfx, std::string name, std::string ptr, TriggerStruct& trs,
+	Rgph::RenderGraph& rg)
 {
-	// TO DO:
-	// Исправить баги
-	// Реализовать лог
-
 	using std::to_string;
 
 	// Открытие файла с триггерами
@@ -367,35 +372,36 @@ void SceneTriggersContainer::LoadTrigger(std::string name, std::string ptr, Trig
 	size_t triggerIndex = trig_sc_container.size() + 1;
 
 	// Новый триггер
-	std::string newTrigger = "\"Trigger " + to_string(triggerIndex);
+	std::ostringstream newTrigger;
+	newTrigger << "\"Trigger " << triggerIndex;
 	
-	newTrigger += "\": [{\"name\": \"" + name + "\",";
+	newTrigger << "\": [{\"name\": \"" + name + "\",";
 
-	newTrigger += "\"pos-lt\" :";
-	newTrigger += "[{\"pos-x\": " + to_string(trs.PosTopLeft.x) + ",";
-	newTrigger += "\"pos-y\" : " + to_string(trs.PosTopLeft.y) + ",";
-	newTrigger += "\"pos-z\" : " + to_string(trs.PosTopLeft.z) + "}],";
+	newTrigger << "\"pos-lt\" :";
+	newTrigger << "[{\"pos-x\": " << trs.PosTopLeft.x << ",";
+	newTrigger << "\"pos-y\" : " << trs.PosTopLeft.y << ",";
+	newTrigger << "\"pos-z\" : " << trs.PosTopLeft.z << "}],";
 
-	newTrigger += "\"pos-rt\" :";
-	newTrigger += "[{\"pos-x\": " + to_string(trs.PosTopRight.x) + ",";
-	newTrigger += "\"pos-y\" : " + to_string(trs.PosTopRight.y) + ",";
-	newTrigger += "\"pos-z\" : " + to_string(trs.PosTopRight.z) + "}],";
+	newTrigger << "\"pos-rt\" :";
+	newTrigger << "[{\"pos-x\": " << trs.PosTopRight.x << ",";
+	newTrigger << "\"pos-y\" : " << trs.PosTopRight.y << ",";
+	newTrigger << "\"pos-z\" : " << trs.PosTopRight.z << "}],";
 
-	newTrigger += "\"pos-lb\" :";
-	newTrigger += "[{\"pos-x\": " + to_string(trs.PosBottomLeft.x) + ",";
-	newTrigger += "\"pos-y\" : " + to_string(trs.PosBottomLeft.y) + ",";
-	newTrigger += "\"pos-z\" : " + to_string(trs.PosBottomLeft.z) + "}],";
+	newTrigger << "\"pos-lb\" :";
+	newTrigger << "[{\"pos-x\": " << trs.PosBottomLeft.x << ",";
+	newTrigger << "\"pos-y\" : " << trs.PosBottomLeft.y << ",";
+	newTrigger << "\"pos-z\" : " << trs.PosBottomLeft.z << "}],";
 	
-	newTrigger += "\"pos-rb\" :";
-	newTrigger += "[{\"pos-x\": " + to_string(trs.PosBottomRight.x) + ",";
-	newTrigger += "\"pos-y\" : " + to_string(trs.PosBottomRight.y) + ",";
-	newTrigger += "\"pos-z\" : " + to_string(trs.PosBottomRight.z) + "}],";
+	newTrigger << "\"pos-rb\" :";
+	newTrigger << "[{\"pos-x\": " << trs.PosBottomRight.x << ",";
+	newTrigger << "\"pos-y\" : " << trs.PosBottomRight.y << ",";
+	newTrigger << "\"pos-z\" : " << trs.PosBottomRight.z << "}],";
 
-	newTrigger += "\"ptr\": \"" + ptr + "\",";
+	newTrigger << "\"ptr\": \"" << ptr << "\",";
 
-	newTrigger += "\"roll\": " + to_string(trs.Roll) + ",";
-	newTrigger += "\"pitch\": " + to_string(trs.Pitch) + ",";
-	newTrigger += "\"yaw\": " + to_string(trs.Yaw) + "}]";
+	newTrigger << "\"roll\": " << trs.Roll << ",";
+	newTrigger << "\"pitch\": " << trs.Pitch << ",";
+	newTrigger << "\"yaw\": " << trs.Yaw << "}]";
 
 	// Подготовка к вставке в файл
 	std::string json_str = j.dump();
@@ -407,9 +413,31 @@ void SceneTriggersContainer::LoadTrigger(std::string name, std::string ptr, Trig
 
 	// Запись в файл нового триггера
 	std::ofstream ostr(filePath);
-	ostr << json_str + newTrigger + '}';
+	ostr << json_str << newTrigger.str() << '}';
 
 	// Закрытие файла
 	ostr.close();
+
+	trig_sc_container.emplace(ptr, std::make_unique<Trigger>(name, trs, gfx));
+
+	ptr2scs.push_back(ptr);
+	names.push_back(name);
+	trss.push_back(trs);	
+
+	for (auto& [key, value] : trig_sc_container)
+	{
+		if (value->GetName() == name)
+		{
+			value->LinkTechniques(rg);
+			value->SetDefault();
+
+#if IS_ENGINE_MODE
+			std::ostringstream oss;
+			oss << "Добавлено к рендеру [" << name << "]\n";
+
+			applog->AddLog(TRIGGER_LOG, oss.str().c_str());
+#endif // IS_ENGINE_MODE
+		}
+	}
 }
 #endif // IS_ENGINE_MODE

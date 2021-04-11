@@ -26,19 +26,20 @@ float CalcHeight(float y1, float y2)
 }
 
 #if IS_ENGINE_MODE
-Trigger::Trigger(TriggerStruct& trs, Graphics& gfx)
+Trigger::Trigger(std::string name, TriggerStruct trs, Graphics& gfx)
 	:
-	Trigger(trs.PosTopLeft, trs.PosTopRight, trs.PosBottomLeft, trs.PosBottomRight, trs.Roll, trs.Pitch, trs.Yaw, gfx)
+	Trigger(name, trs.PosTopLeft, trs.PosTopRight, trs.PosBottomLeft, trs.PosBottomRight, trs.Roll, trs.Pitch, trs.Yaw, gfx)
 {}
 
-Trigger::Trigger(dx::XMFLOAT3 PosTopLeft, dx::XMFLOAT3 PosTopRight,
+Trigger::Trigger(std::string name, dx::XMFLOAT3 PosTopLeft, dx::XMFLOAT3 PosTopRight,
 				 dx::XMFLOAT3 PosBottomLeft, dx::XMFLOAT3 PosBottomRight,
 				 float roll, float pitch, float yaw,
 				 Graphics& gfx)
 	:
 	platew(CalcWidth(PosTopLeft.x, PosTopRight.x, PosTopLeft.z, PosTopRight.z)),
 	plateh(CalcHeight(PosTopLeft.y, PosBottomLeft.y)),
-	plate(gfx, platew, plateh)
+	plate(gfx, platew, plateh),
+	name(name)
 {
 	triggerPos.triggerPosTopLeft = PosTopLeft;
 	triggerPos.triggerPosTopRight = PosTopRight;
@@ -140,4 +141,9 @@ const DirectX::XMFLOAT3* Trigger::GetPosition() const
 	};
 
 	return arr;
+}
+
+std::string Trigger::GetName()
+{
+	return name;
 }

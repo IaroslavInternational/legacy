@@ -7,20 +7,11 @@ namespace dx = DirectX;
 // Структура координат триггера
 struct TriggerStruct
 {
-	dx::XMFLOAT3 PosTopLeft;	 // Позиция левого верхнего угла
-	dx::XMFLOAT3 PosTopRight;	 // Позиция правого верхнего угла
-	dx::XMFLOAT3 PosBottomLeft;  // Позиция левого нижнего угла
-	dx::XMFLOAT3 PosBottomRight; // Позиция правого нижнего угла
-
-	float Roll;
-	float Pitch;
-	float Yaw;
-
 	TriggerStruct() = default;
 
-	TriggerStruct(dx::XMFLOAT3 &ptl, dx::XMFLOAT3 &ptr,
-				  dx::XMFLOAT3 &pbl, dx::XMFLOAT3 &pbr,
-				  float &r, float&p, float &y)
+	TriggerStruct(dx::XMFLOAT3 & ptl, dx::XMFLOAT3 & ptr,
+		dx::XMFLOAT3 & pbl, dx::XMFLOAT3 & pbr,
+		float& r, float& p, float& y)
 	{
 		PosTopLeft = ptl;
 		PosTopRight = ptr;
@@ -31,6 +22,15 @@ struct TriggerStruct
 		Pitch = p;
 		Yaw = y;
 	}
+	
+	dx::XMFLOAT3 PosTopLeft;	 // Позиция левого верхнего угла
+	dx::XMFLOAT3 PosTopRight;	 // Позиция правого верхнего угла
+	dx::XMFLOAT3 PosBottomLeft;  // Позиция левого нижнего угла
+	dx::XMFLOAT3 PosBottomRight; // Позиция правого нижнего угла
+
+	float Roll;
+	float Pitch;
+	float Yaw;
 
 	// Оператор присваивания
 	TriggerStruct& operator=(const TriggerStruct& rhs)
