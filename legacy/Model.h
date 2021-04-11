@@ -50,7 +50,7 @@ public:
 	bool IsCamConnceted();
 
 	// Присоединить камеру
-	void ConnectCamera(std::shared_ptr<Camera> cam);
+	void ConnectCamera(std::shared_ptr<Camera> cam, DirectX::XMFLOAT3 offset);
 
 	// Отвязать камеру
 	void DisconnectCamera();
@@ -86,6 +86,10 @@ private:
 	
 	// Указатель на камеру
 	mutable std::shared_ptr<Camera> cam;
+
+	float offset_x = 0.0f;	// Отступ камеры от модели по Оx 
+	float offset_y = 0.0f;	// Отступ камеры от модели по Оy
+	float offset_z = 0.0f;	// Отступ камеры от модели по Оz
 	
 	// Если камера привязанна
 	bool isCamAdded = false;

@@ -23,8 +23,10 @@ public:
 
 	void Reset() noexcept;
 	void Submit( size_t channels ) const noxnd;
+	
 	void Bind( Graphics& gfx,DirectX::FXMMATRIX view ) const noexcept;
 	void LinkTechniques( Rgph::RenderGraph& );
+
 	std::shared_ptr<Camera> ShareCamera() const noexcept;
 private:
 	struct PointLightCBuf

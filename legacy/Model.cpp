@@ -98,7 +98,7 @@ void Model::SpawnDefaultControl()
 
 		if (isCamAdded)
 		{
-			cam->SetPos(DirectX::XMFLOAT3(pos.x - 30.0f, pos.y + 20, pos.z - 5.0f));
+			cam->SetPos(DirectX::XMFLOAT3(pos.x + offset_x, pos.y + offset_y, pos.z + offset_z));
 
 			ImGui::Separator();
 
@@ -138,12 +138,16 @@ bool Model::IsCamConnceted()
 	return isCamAdded;
 }
 
-void Model::ConnectCamera(std::shared_ptr<Camera> cam)
+void Model::ConnectCamera(std::shared_ptr<Camera> cam, DirectX::XMFLOAT3 offset)
 {
 	if (!isCamAdded)
 	{
 		this->cam = cam;
 		isCamAdded = true;
+
+		offset_x = offset.x;
+		offset_y = offset.y;
+		offset_z = offset.z;
 	}
 #if IS_ENGINE_MODE
 	else

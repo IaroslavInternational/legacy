@@ -390,6 +390,9 @@
     <ClCompile Include="imgui\imnodes.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="NodeEditor.cpp">
+      <Filter>Исходные файлы\Интерфейс\Модули интерфейса</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -784,6 +787,9 @@
     </ClInclude>
     <ClInclude Include="imgui\imnodes.h">
       <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor.h">
+      <Filter>Заголовочные файлы\Интерфейс\Модули интерфейса</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

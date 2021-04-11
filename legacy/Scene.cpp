@@ -128,8 +128,6 @@ void Scene::Render(float dt)
 		savingDepth = false;
 	}
 
-	objects.nEditor.Init();
-
 	ShowGui();
 #endif // IS_ENGINE_MODE
 

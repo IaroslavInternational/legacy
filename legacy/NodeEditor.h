@@ -27,30 +27,50 @@ public:
 	// Инициализация
 	void Init();
 private:
+	struct TransformStruct
+	{
+		TransformStruct(DirectX::XMFLOAT3 pos)
+			:
+			x(pos.x),
+			y(pos.y),
+			z(pos.z)
+		{}
+
+		float x;
+		float y;
+		float z;
+	};
+	
 	// Структура блока камеры
 	struct CameraNode
 	{
-		CameraNode(const int i, const char* n)
+		CameraNode(const int i, const char* n, DirectX::XMFLOAT3 pos)
 			:
 			id(i),
-			name(n)
+			name(n),
+			pos(pos),
+			offset(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f))
 		{}
 
 		int id;
-		const char* name;		
+		const char* name;
+		TransformStruct pos;
+		TransformStruct offset;
 	};
 
 	// Структура блока модели
 	struct ModelNode
 	{
-		ModelNode(const int i, const char* n)
+		ModelNode(const int i, const char* n, DirectX::XMFLOAT3 pos)
 			:
 			id(i),
-			name(n)
+			name(n),
+			pos(pos)
 		{}
 
 		int id;
 		const char* name;
+		TransformStruct pos;
 	};
 
 	// Структура связи блоков
@@ -69,7 +89,7 @@ private:
 
 	// nodes моделей
 	std::vector<ModelNode> mNodes;
-	
+
 	// Связи между node
 	std::vector<Link> links;
 
@@ -119,5 +139,7 @@ private:
 	CameraNode* FindCamNodeById(int id);
 
 	ModelNode* FindModNodeById(int id);
-};
 
+	template <typename T>
+	const char* AttachStrings(T str1, T str2);
+};
