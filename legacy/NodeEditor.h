@@ -1,3 +1,4 @@
+#if IS_ENGINE_MODE
 #pragma once
 
 #include "imgui\imnodes.h"
@@ -143,3 +144,4 @@ private:
 	template <typename T>
 	const char* AttachStrings(T str1, T str2);
 };
+#endif // IS_ENGINE_MODE

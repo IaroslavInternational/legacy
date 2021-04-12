@@ -34,9 +34,9 @@ void PointLight::SpawnControlWindow() noexcept
 		const auto d = [&dirtyPos]( bool dirty ){dirtyPos = dirtyPos || dirty;};
 
 		ImGui::Text( "Position" );
-		d( ImGui::SliderFloat( "X",&cbData.pos.x,-60.0f,60.0f,"%.1f" ) );
-		d( ImGui::SliderFloat( "Y",&cbData.pos.y,-60.0f,60.0f,"%.1f" ) );
-		d( ImGui::SliderFloat( "Z",&cbData.pos.z,-60.0f,60.0f,"%.1f" ) );
+		d( ImGui::SliderFloat( "X",&cbData.pos.x,-500.0f,500.0f,"%.1f" ) );
+		d( ImGui::SliderFloat( "Y",&cbData.pos.y,-500.0f,500.0f,"%.1f" ) );
+		d( ImGui::SliderFloat( "Z",&cbData.pos.z,-500.0f,500.0f,"%.1f" ) );
 
 		if( dirtyPos )
 		{

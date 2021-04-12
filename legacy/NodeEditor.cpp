@@ -1,3 +1,7 @@
+#include "EngineConverter.h"
+
+#if IS_ENGINE_MODE
+
 #include "NodeEditor.h"
 
 #include "imgui\imgui.h"
@@ -332,3 +336,5 @@ const char* NodeEditor::AttachStrings(T str1, T str2)
 
     return oss.str().c_str();
 }
+
+#endif // IS_ENGINE_MODE

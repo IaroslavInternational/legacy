@@ -1,1 +1,15 @@
-{"sponza":[{"name":"main scene 1","path":"Scenes\\Scene 1\\Models\\Sponza\\sponza.obj","pitch":0.0,"pos-x":0.0,"pos-y":0.0,"pos-z":0.0,"roll":0.0,"scale":0.05,"yaw":0.0}],"HouseRock1.obj":[{"name": "HouseRock1.obj","path": "C:/Users/Yaros/source/repos/legacy/legacy/Scenes/Scene 1/Models/HouseSimple/HouseRock1.obj","scale": 1,"pos-x": 0,"pos-y" : 0,"pos-z" : 0,"roll": 0,"pitch": 0,"yaw": 0}]}
+{
+  "Scene": [
+    {
+      "name": "Sponza.obj",
+      "path": "C:/Users/Yaros/source/repos/legacy/legacy/Scenes/Scene 1/Models/Sponza/sponza.obj",
+      "scale": 0.05,
+      "pos-x": 0,
+      "pos-y": 0,
+      "pos-z": 0,
+      "roll": 0,
+      "pitch": 0,
+      "yaw": 0
+    }
+  ]
+}

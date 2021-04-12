@@ -51,14 +51,12 @@ void SceneObjects::Submit(size_t channels)
 void SceneObjects::LinkTechniques(Rgph::RenderGraph& rg)
 {
 	pointLights.LinkTechniques(rg);
-	cameras.LinkTechniques(rg);
 	models.LinkTechniques(rg);
 }
 
 void SceneObjects::Submit(size_t channels)
 {
 	pointLights.Submit(channels);
-	cameras.Submit(channels);
 	models.Submit(channels);
 }
 #endif // IS_ENGINE_MODE

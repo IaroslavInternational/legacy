@@ -109,7 +109,9 @@ void Scene::Render(float dt)
 	/* Начало кадра */
 	
 	wnd->Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
+#if IS_ENGINE_MODE
 	objects.nEditor.BeginFrame();
+#endif
 
 	/****************/
 
@@ -132,8 +134,9 @@ void Scene::Render(float dt)
 #endif // IS_ENGINE_MODE
 
 	/* Конец кадра */
-	
+#if IS_ENGINE_MODE
 	objects.nEditor.EndFrame();
+#endif
 	wnd->Gfx().EndFrame();
 	rg.Reset();
 
