@@ -1,8 +1,6 @@
 #include "App.h"
 
-#include "imgui/imgui.h"
 #include "EngineUtil.h"
-#include "Channels.h"
 
 namespace dx = DirectX;
 
@@ -16,7 +14,7 @@ App::App(const std::string& commandLine)
 	scenes.emplace(std::make_unique<Scene>("Scene 2", wnd, "Scenes\\Scene 2\\scene_2.json"), false);
 }
 
-void App::HandleInput( float dt )
+void App::HandleInput(float dt)
 {
 	for (auto& s : scenes)
 	{
@@ -27,7 +25,7 @@ void App::HandleInput( float dt )
 	}
 }
 
-void App::DoFrame( float dt )
+void App::DoFrame(float dt)
 {
 	for (auto& s : scenes)
 	{
