@@ -14,23 +14,24 @@
 
 #include "json.hpp"
 
-class ModelData
+class ModelContainer
 {
 public:
 #if IS_ENGINE_MODE
-	ModelData(const char* path, Graphics& gfx, AppLog* aLog);
+	ModelContainer(const char* path, Graphics& gfx, AppLog* aLog);
 #else
-	ModelData(const char* path, Graphics& gfx);
+	ModelContainer(const char* path, Graphics& gfx);
 #endif // IS_ENGINE_MODE
-	~ModelData();
+	~ModelContainer();
 
 	void LinkTechniques(Rgph::RenderGraph& rg);
+
 	void Submit(size_t channels);
 
 	// Имя модели по индексу
-	const char* GetModelNameByIndex(size_t index);
+	std::string GetModelNameByIndex(size_t index);
 
-	std::unique_ptr<Model>* GetPtr2ModelByName(const char* name);
+	std::unique_ptr<Model>* GetPtr2ModelByName(std::string name);
 
 #if IS_ENGINE_MODE
 	// Показать модели *Левая панель*
@@ -46,13 +47,10 @@ public:
 	size_t ModelsAmount();
 #endif
 private:
-	std::vector<std::string> modelsName;			// Имена моделей 
 	std::vector<std::unique_ptr<Model>> models;		// Указатели на модели
-	std::vector<DirectX::XMFLOAT3> modelsPos;		// Позиции  моделей
-	std::vector<DirectX::XMFLOAT3> modelsOrien;		// Ориентация моделей
 private:
 	// Добавить модель
-	void AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path, const char* name);
+	void LoadModel(std::string name, std::string path, Graphics& gfx, Rgph::RenderGraph& rg);
 
 	// Установить положение и ориентацию модели
 	void Init();
@@ -66,7 +64,7 @@ private:
 
 #if IS_ENGINE_MODE
 	// Выбранные элемент в списке моделей
-	const char* selected = "";
+	std::string selected = "";
 
 	// Если нажата кнопка сохранить
 	bool isSave = false;

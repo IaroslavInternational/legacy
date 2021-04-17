@@ -64,7 +64,7 @@ private:
 
 private:
 	// Добавить триггер
-	void LoadTrigger(Graphics& gfx, std::string name, std::string ptr, TriggerStruct& trs,
+	void AddTrigger(Graphics& gfx, std::string name, std::string ptr, TriggerStruct& trs,
 		Rgph::RenderGraph& rg);
 private:
 

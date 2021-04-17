@@ -4,7 +4,8 @@
 #include "imgui\imnodes.h"
 
 #include "CameraContainer.h"
-#include "ModelData.h"
+#include "ModelContainer.h"
+#include "AppLog.h"
 
 #include <algorithm>
 #include <vector>
@@ -13,7 +14,7 @@
 class NodeEditor
 {
 public:
-	NodeEditor(CameraContainer& camcon, ModelData& mData);
+	NodeEditor(CameraContainer& camcon, ModelContainer& mcon, AppLog* log);
 	~NodeEditor();
 public:
 	// Инициализация нового кадра
@@ -112,7 +113,7 @@ private:
 	CameraContainer& camcon;
 
 	// Адрес контейнера моделей
-	ModelData& mData;
+	ModelContainer& mcon;
 
 	// Индекс выбранной камеры
 	size_t activeCam = 0;
@@ -120,6 +121,14 @@ private:
 	// Индекс выбранной модели
 	size_t activeModel = 0;
 
+	// id блока камеры при перезаписи
+	mutable int camIdToPopup = 0;
+
+	// id блока модели при перезаписи
+	mutable int modIdToPopup = 0;
+
+	// Если вызвано модальное окно подтверждения
+	bool isPopup = false;
 	/**************/
 private:
 	// Отрисовка nodes
@@ -141,7 +150,12 @@ private:
 
 	ModelNode* FindModNodeById(int id);
 
+	void ConncetCam2Model(int cam_id, int mod_id);
+
 	template <typename T>
 	const char* AttachStrings(T str1, T str2);
+private:
+	// Лог
+	AppLog* applog;
 };
 #endif // IS_ENGINE_MODE

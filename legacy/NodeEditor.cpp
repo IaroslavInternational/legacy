@@ -6,17 +6,17 @@
 
 #include "imgui\imgui.h"
 
-NodeEditor::NodeEditor(CameraContainer& camcon, ModelData& mData)
+NodeEditor::NodeEditor(CameraContainer& camcon, ModelContainer& mcon, AppLog* log)
     :
     camcon(camcon),
-    mData(mData)
+    mcon(mcon),
+    applog(log)
 {
     context = imnodes::EditorContextCreate();
 }
 
 NodeEditor::~NodeEditor()
 {
-    //imnodes::PopAttributeFlag();
     imnodes::EditorContextFree(context);
 }
 
@@ -61,6 +61,22 @@ void NodeEditor::Show(bool *IsShown)
                 if (ImGui::MenuItem("Закрыть"))
                 {
                     *IsShown = false;
+                    ImGui::EndMenu();
+                }
+
+                if (ImGui::BeginMenu("Поле"))
+                {
+                    if (ImGui::MenuItem("Очистить"))
+                    {
+                        links.clear();
+
+                        cNodes.clear();
+                        mNodes.clear();
+
+                        current_id = 0;
+                        ImGui::EndMenu();
+                    }
+
                     ImGui::EndMenu();
                 }
 
@@ -200,7 +216,7 @@ void NodeEditor::AddModelNode(int id, const char* name)
     current_delta_model += 10.0f;
 
     imnodes::SetNodeEditorSpacePos(id, ImVec2(100.0f, current_delta_model));
-    mNodes.emplace_back(ModelNode(id, name, mData.GetPtr2ModelByName(name)->get()->GetCurrentPosition()));
+    mNodes.emplace_back(ModelNode(id, name, mcon.GetPtr2ModelByName(name)->get()->GetPosition()));
 }
 
 void NodeEditor::ShowLeftPanel(ImVec2 size)
@@ -223,15 +239,15 @@ void NodeEditor::ShowLeftPanel(ImVec2 size)
     }
 
     // Список моделей
-    if (ImGui::BeginCombo("Модели", mData.GetModelNameByIndex(0)))
+    if (ImGui::BeginCombo("Модели", mcon.GetModelNameByIndex(0).c_str()))
     {
-        for (size_t i = 0; i < mData.ModelsAmount(); i++)
+        for (size_t i = 0; i < mcon.ModelsAmount(); i++)
         {
             const bool isSelected = i == activeModel;
-            if (ImGui::Selectable(mData.GetModelNameByIndex(i), isSelected))
+            if (ImGui::Selectable(mcon.GetModelNameByIndex(i).c_str(), isSelected))
             {
                 activeModel = i;
-                AddModelNode(i + 100, mData.GetModelNameByIndex(i));
+                AddModelNode(i + 100, mcon.GetModelNameByIndex(i).c_str());
             }
         }
         ImGui::EndCombo();
@@ -249,17 +265,54 @@ void NodeEditor::ShowLeftPanel(ImVec2 size)
                 int camId = link.start_attr >> 24;  // cam id
                 int modId = link.end_attr >> 8;     // mod id
 
-                if (!mData.GetPtr2ModelByName(FindModNodeById(modId)->name)->get()->IsCamConnceted())
+                if (!mcon.GetPtr2ModelByName(FindModNodeById(modId)->name)->get()->IsCamConnceted())
                 {
-                    mData.GetPtr2ModelByName(FindModNodeById(modId)->name)->get()->ConnectCamera(
-                        camcon.GetPtr2CameraByName(FindCamNodeById(camId)->name), 
-                        DirectX::XMFLOAT3(
-                            FindCamNodeById(camId)->offset.x,
-                            FindCamNodeById(camId)->offset.y,
-                            FindCamNodeById(camId)->offset.z
-                    ));
+                    ConncetCam2Model(camId, modId);
+
+                    break;
+                }
+                else
+                {
+                    camIdToPopup = camId;
+                    modIdToPopup = modId;
+
+                    isPopup = true;
+                    
+                    break;
                 }
             }
+        }
+    }
+
+    if (isPopup)
+    {
+        ImGui::OpenPopup("Подтверждение");
+        if (ImGui::BeginPopup("Подтверждение"),
+            ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings)
+        {
+            ImGui::Text("Перезаписать камеру?");
+            ImGui::Text(AttachStrings<const char*>("Текущая камера: ", FindCamNodeById(camIdToPopup)->name));
+
+            if (ImGui::Button("Добавить"))
+            {
+                mcon.GetPtr2ModelByName(FindModNodeById(modIdToPopup)->name)->get()->DisconnectCamera();
+
+                ConncetCam2Model(camIdToPopup, modIdToPopup);
+                isPopup = false;
+
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Отмена"))
+            {
+                isPopup = false;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
         }
     }
 
@@ -326,6 +379,27 @@ NodeEditor::ModelNode* NodeEditor::FindModNodeById(int id)
             return &node;
         }
     }
+}
+
+void NodeEditor::ConncetCam2Model(int cam_id, int mod_id)
+{
+    mcon.GetPtr2ModelByName(FindModNodeById(mod_id)->name)->get()->ConnectCamera(
+        camcon.GetPtr2CameraByName(FindCamNodeById(cam_id)->name),
+        DirectX::XMFLOAT3(
+            FindCamNodeById(cam_id)->offset.x,
+            FindCamNodeById(cam_id)->offset.y,
+            FindCamNodeById(cam_id)->offset.z
+        ));
+
+    std::ostringstream oss;
+
+    oss << NODE_EDITOR_LOG << "Камера " << FindCamNodeById(cam_id)->name <<
+        "привязана к модели " << FindModNodeById(mod_id)->name << " с отступами: \n" <<
+        "[отступ по x] " << std::to_string(FindCamNodeById(cam_id)->offset.x) << "\n" <<
+        "[отступ по y] " << std::to_string(FindCamNodeById(cam_id)->offset.y) << "\n" <<
+        "[отступ по z] " << std::to_string(FindCamNodeById(cam_id)->offset.z) << "\n";
+
+    applog->AddLog(oss.str().c_str());
 }
 
 template<typename T>

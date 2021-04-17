@@ -7,6 +7,9 @@
 #include "imgui/imgui_impl_win32.h"
 #endif // IS_ENGINE_MODE
 
+// Мод запуска окна
+#define ENGINE_WINDOW 0
+
 // Window Class stuff
 Window::WindowClass Window::WindowClass::wndClass;
 

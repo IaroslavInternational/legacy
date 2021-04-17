@@ -16,10 +16,18 @@
 
 namespace dx = DirectX;
 
-Model::Model(Graphics& gfx, const std::string& pathString, const float scale)
+Model::Model(std::string name, const std::string& path, Graphics& gfx,
+			 DirectX::XMFLOAT3 position,
+			 DirectX::XMFLOAT3 orientation,
+			 float scale)
+	:
+	name(name),
+	scale(scale),
+	position(position),
+	orientation(orientation)
 {
 	Assimp::Importer imp;
-	const auto pScene = imp.ReadFile( pathString.c_str(),
+	const auto pScene = imp.ReadFile(path.c_str(),
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_ConvertToLeftHanded |
@@ -29,25 +37,25 @@ Model::Model(Graphics& gfx, const std::string& pathString, const float scale)
 
 	if( pScene == nullptr )
 	{
-		throw ModelException( __LINE__,__FILE__,imp.GetErrorString() );
+		throw ModelException(__LINE__, __FILE__, imp.GetErrorString());
 	}
 
 	// parse materials
 	std::vector<Material> materials;
 	materials.reserve( pScene->mNumMaterials );
-	for( size_t i = 0; i < pScene->mNumMaterials; i++ )
+	for (size_t i = 0; i < pScene->mNumMaterials; i++)
 	{
-		materials.emplace_back( gfx,*pScene->mMaterials[i],pathString );
+		materials.emplace_back(gfx, *pScene->mMaterials[i], path);
 	}
 
-	for( size_t i = 0; i < pScene->mNumMeshes; i++ )
+	for (size_t i = 0; i < pScene->mNumMeshes; i++)
 	{
 		const auto& mesh = *pScene->mMeshes[i];
-		meshPtrs.push_back( std::make_unique<Mesh>( gfx,materials[mesh.mMaterialIndex],mesh,scale ) );
+		meshPtrs.push_back(std::make_unique<Mesh>(gfx, materials[mesh.mMaterialIndex], mesh, scale));
 	}
 
 	int nextId = 0;
-	pRoot = ParseNode( nextId,*pScene->mRootNode,scale );
+	pRoot = ParseNode(nextId, *pScene->mRootNode, scale);
 }
 
 Model::~Model() noexcept
@@ -87,18 +95,18 @@ void Model::SpawnDefaultControl()
 		const auto dcheck = [](bool d, bool& carry) { carry = carry || d; };
 
 		ImGui::Text("Позиция");
-		dcheck(ImGui::SliderFloat("X", &pos.x, -80.0f, 80.0f, "%.01f"), posDirty);
-		dcheck(ImGui::SliderFloat("Y", &pos.y, -80.0f, 80.0f, "%.01f"), posDirty);
-		dcheck(ImGui::SliderFloat("Z", &pos.z, -80.0f, 80.0f, "%.01f"), posDirty);
+		dcheck(ImGui::SliderFloat("X", &position.x, -80.0f, 80.0f, "%.01f"), posDirty);
+		dcheck(ImGui::SliderFloat("Y", &position.y, -80.0f, 80.0f, "%.01f"), posDirty);
+		dcheck(ImGui::SliderFloat("Z", &position.z, -80.0f, 80.0f, "%.01f"), posDirty);
 
 		ImGui::Text("Ориентация");
-		dcheck(ImGui::SliderAngle("Крен", &roll, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
-		dcheck(ImGui::SliderAngle("Тангаш", &pitch, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
-		dcheck(ImGui::SliderAngle("Расканье", &yaw, -180.0f, 180.0f), rotDirty);
+		dcheck(ImGui::SliderAngle("Крен", &orientation.x, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
+		dcheck(ImGui::SliderAngle("Тангаш",	&orientation.y, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
+		dcheck(ImGui::SliderAngle("Расканье", &orientation.z, -180.0f, 180.0f), rotDirty);
 
 		if (isCamAdded)
 		{
-			cam->SetPos(DirectX::XMFLOAT3(pos.x + offset_x, pos.y + offset_y, pos.z + offset_z));
+			cam->SetPos(DirectX::XMFLOAT3(position.x + offset_x, position.y + offset_y, position.z + offset_z));
 
 			ImGui::Separator();
 
@@ -108,13 +116,13 @@ void Model::SpawnDefaultControl()
 
 		SetRootTransform
 		(
-			DirectX::XMMatrixRotationX(roll) *
-			DirectX::XMMatrixRotationY(pitch) *
-			DirectX::XMMatrixRotationZ(yaw) *
+			DirectX::XMMatrixRotationX(orientation.x) *
+			DirectX::XMMatrixRotationY(orientation.y) *
+			DirectX::XMMatrixRotationZ(orientation.z) *
 			DirectX::XMMatrixTranslation(
-				pos.x,
-				pos.y,
-				pos.z
+				position.x,
+				position.y,
+				position.z
 			)
 		);
 	}
@@ -123,14 +131,19 @@ void Model::SpawnDefaultControl()
 }
 #endif //IS_ENGINE_MODE
 
-DirectX::XMFLOAT3 Model::GetCurrentPosition()
+std::string Model::GetName()
 {
-	return pos;
+	return name;
 }
 
-DirectX::XMFLOAT3 Model::GetCurrentOrientation()
+DirectX::XMFLOAT3 Model::GetPosition()
 {
-	return DirectX::XMFLOAT3(roll, pitch, yaw);
+	return position;
+}
+
+DirectX::XMFLOAT3 Model::GetOrientation()
+{
+	return orientation;
 }
 
 bool Model::IsCamConnceted()
@@ -140,61 +153,22 @@ bool Model::IsCamConnceted()
 
 void Model::ConnectCamera(std::shared_ptr<Camera> cam, DirectX::XMFLOAT3 offset)
 {
-	if (!isCamAdded)
-	{
-		this->cam = cam;
-		isCamAdded = true;
+	this->cam = cam;
+	isCamAdded = true;
 
-		offset_x = offset.x;
-		offset_y = offset.y;
-		offset_z = offset.z;
-	}
-#if IS_ENGINE_MODE
-	else
-	{
-		if (ImGui::BeginPopup("Ошибка"))
-		{
-			ImGui::Text("Камера уже добавлена:");
-			ImGui::Text("Камера: ", cam->GetName());
-
-			if (ImGui::Button("ОК"))
-			{
-				ImGui::CloseCurrentPopup();
-			}
-		}
-
-		ImGui::EndPopup();
-
-		ImGui::OpenPopup("Ошибка");
-	}
-#endif // IS_ENGINE_MODE
+	offset_x = offset.x;
+	offset_y = offset.y;
+	offset_z = offset.z;
 }
 
 void Model::DisconnectCamera()
 {
 	if (isCamAdded)
 	{
-		cam = nullptr;
+		cam.reset();
+		
 		isCamAdded = false;
 	}
-#if IS_ENGINE_MODE
-	else
-	{
-		if(ImGui::BeginPopup("Ошибка"))
-		{
-			ImGui::Text("Невозможно удалить несуществующий объект !");
-			
-			if (ImGui::Button("ОК"))
-			{
-				ImGui::CloseCurrentPopup();
-			}
-		}
-
-		ImGui::EndPopup();
-
-		ImGui::OpenPopup("Ошибка");
-	}
-#endif // IS_ENGINE_MODE
 }
 
 std::unique_ptr<Node> Model::ParseNode(int& nextId, const aiNode& node, float scale) noexcept
@@ -204,7 +178,7 @@ std::unique_ptr<Node> Model::ParseNode(int& nextId, const aiNode& node, float sc
 	)), scale);
 
 	std::vector<Mesh*> curMeshPtrs;
-	curMeshPtrs.reserve( node.mNumMeshes );
+	curMeshPtrs.reserve(node.mNumMeshes);
 	
 	for (size_t i = 0; i < node.mNumMeshes; i++)
 	{

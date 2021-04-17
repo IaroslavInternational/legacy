@@ -293,7 +293,7 @@ void SceneTriggersContainer::ShowTrigInformation(Graphics& gfx, Rgph::RenderGrap
 				trs.Pitch = orient[1];
 				trs.Yaw = orient[2];
 
-				LoadTrigger(gfx, std::string(name), std::string(goal), trs, rg);
+				AddTrigger(gfx, std::string(name), std::string(goal), trs, rg);
 
 				IsAdd = true;
 
@@ -303,7 +303,7 @@ void SceneTriggersContainer::ShowTrigInformation(Graphics& gfx, Rgph::RenderGrap
 			ImGui::SetItemDefaultFocus();
 			ImGui::SameLine();
 
-			if (ImGui::Button("Закрыть", ImVec2(120, 0)))
+			if (ImGui::Button("Отмена", ImVec2(120, 0)))
 			{
 				ImGui::CloseCurrentPopup();
 			}
@@ -349,7 +349,7 @@ void SceneTriggersContainer::ShowTrigSettings()
 	ImGui::End();
 }
 
-void SceneTriggersContainer::LoadTrigger(Graphics& gfx, std::string name, std::string ptr, TriggerStruct& trs,
+void SceneTriggersContainer::AddTrigger(Graphics& gfx, std::string name, std::string ptr, TriggerStruct& trs,
 	Rgph::RenderGraph& rg)
 {
 	using std::to_string;

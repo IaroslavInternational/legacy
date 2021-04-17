@@ -1,4 +1,4 @@
-#include "ModelData.h"
+#include "ModelContainer.h"
 
 #if IS_ENGINE_MODE
 #include "imgui\imgui.h"
@@ -11,86 +11,21 @@ using json = nlohmann::json;
 using namespace std::string_literals;
 
 #if IS_ENGINE_MODE
-ModelData::ModelData(const char* path, Graphics& gfx, AppLog* aLog)
+ModelContainer::ModelContainer(const char* path, Graphics& gfx, AppLog* aLog)
 	:
 	path(path),
 	applog(aLog)
-{
-	applog->AddLog(MODEL_LOG, "Инициализация\n");
-
-	const auto dataPath = path;
-
-	std::ifstream dataFile(dataPath);
-	if (!dataFile.is_open())
-	{
-		throw ("Не удаётся открыть файл с данными о моделях");
-	}
-
-	json j;
-	dataFile >> j;
-
-	for (json::iterator m = j.begin(); m != j.end(); ++m)
-	{
-		auto d = m.key();
-		
-		for (const auto& obj : j.at(d))
-		{
-			/* Запись имени объекта */
-
-			std::string name = obj.at("name");
-			modelsName.push_back(name);
-
-			/************************/
-
-			/* Запись модели, инициализируя по пути и размеру */
-
-			std::string modelPath = obj.at("path");
-			float modelScale = obj.at("scale");
-			models.emplace_back(std::make_unique<Model>(gfx, modelPath, modelScale));
-
-			/**************************************************/
-
-			/* Запись позиции */
-
-			float pos_x = obj.at("pos-x");
-			float pos_y = obj.at("pos-y");
-			float pos_z = obj.at("pos-z");
-
-			DirectX::XMFLOAT3 position = { pos_x, pos_y, pos_z };
-
-			modelsPos.emplace_back(position);
-
-			/******************/
-
-			/* Запись ориентации */
-
-			float roll = obj.at("roll");
-			float pitch = obj.at("pitch");
-			float yaw = obj.at("yaw");
-
-			DirectX::XMFLOAT3 orientation = { roll, pitch, yaw };
-
-			modelsOrien.emplace_back(orientation);
-
-			/*********************/
-		}
-	}
-
-	models.shrink_to_fit();
-	modelsPos.shrink_to_fit();
-	modelsOrien.shrink_to_fit();
-	modelsName.shrink_to_fit();
-
-	Init();
-}
 #else
-ModelData::ModelData(const char* path, Graphics& gfx)
+ModelContainer::ModelContainer(const char* path, Graphics& gfx)
 	:
 	path(path)
+#endif // IS_ENGINE_MODE
 {
-	const auto dataPath = path;
+#if IS_ENGINE_MODE
+	applog->AddLog(MODEL_LOG, "Инициализация\n");
+#endif // IS_ENGINE_MODE
 
-	std::ifstream dataFile(dataPath);
+	std::ifstream dataFile(path);
 	if (!dataFile.is_open())
 	{
 		throw ("Не удаётся открыть файл с данными о моделях");
@@ -99,28 +34,21 @@ ModelData::ModelData(const char* path, Graphics& gfx)
 	json j;
 	dataFile >> j;
 
+	dataFile.close();
+
 	for (json::iterator m = j.begin(); m != j.end(); ++m)
 	{
 		auto d = m.key();
 
 		for (const auto& obj : j.at(d))
 		{
-			/* Запись имени объекта */
+			/* Получение имени объекта */
 
 			std::string name = obj.at("name");
-			modelsName.push_back(name);
 
 			/************************/
 
-			/* Запись модели, инициализируя по пути и размеру */
-
-			std::string modelPath = obj.at("path");
-			float modelScale = obj.at("scale");
-			models.emplace_back(std::make_unique<Model>(gfx, modelPath, modelScale));
-
-			/**************************************************/
-
-			/* Запись позиции */
+			/* Получение позиции */
 
 			float pos_x = obj.at("pos-x");
 			float pos_y = obj.at("pos-y");
@@ -128,11 +56,9 @@ ModelData::ModelData(const char* path, Graphics& gfx)
 
 			DirectX::XMFLOAT3 position = { pos_x, pos_y, pos_z };
 
-			modelsPos.emplace_back(position);
-
 			/******************/
 
-			/* Запись ориентации */
+			/* Получение ориентации */
 
 			float roll = obj.at("roll");
 			float pitch = obj.at("pitch");
@@ -140,26 +66,38 @@ ModelData::ModelData(const char* path, Graphics& gfx)
 
 			DirectX::XMFLOAT3 orientation = { roll, pitch, yaw };
 
-			modelsOrien.emplace_back(orientation);
-
 			/*********************/
+
+			/* Получение пути к модели */
+
+			std::string modelPath = obj.at("path");
+
+			/***************************/
+
+			/* Получение множителя размера */
+
+			float modelScale = obj.at("scale");
+
+			/*******************************/
+
+			/* Инициализация модели */
+
+			models.emplace_back(std::make_unique<Model>(name, modelPath, gfx, position, orientation, modelScale));
+
+			/**************************************************/
 		}
 	}
 
 	models.shrink_to_fit();
-	modelsPos.shrink_to_fit();
-	modelsOrien.shrink_to_fit();
-	modelsName.shrink_to_fit();
 
 	Init();
 }
-#endif // IS_ENGINE_MODE
 
-ModelData::~ModelData()
+ModelContainer::~ModelContainer()
 {
 }
 
-void ModelData::LinkTechniques(Rgph::RenderGraph& rg)
+void ModelContainer::LinkTechniques(Rgph::RenderGraph& rg)
 {
 	for (int i = 0; i < models.size(); i++)
 	{
@@ -167,14 +105,14 @@ void ModelData::LinkTechniques(Rgph::RenderGraph& rg)
 
 #if IS_ENGINE_MODE
 		std::ostringstream oss;
-		oss << "Добавлено к рендеру [" << modelsName[i] << "]\n";
+		oss << "Добавлено к рендеру [" << models[i]->GetName() << "]\n";
 
 		applog->AddLog(MODEL_LOG, oss.str().c_str());
 #endif // IS_ENGINE_MODE
 	}
 }
 
-void ModelData::Submit(size_t channels)
+void ModelContainer::Submit(size_t channels)
 {
 	for (auto& m : models)
 	{
@@ -182,32 +120,27 @@ void ModelData::Submit(size_t channels)
 	}
 }
 
-const char* ModelData::GetModelNameByIndex(size_t index)
+std::string ModelContainer::GetModelNameByIndex(size_t index)
 {
-	return modelsName.at(index).c_str();
+	return models[index]->GetName();
 }
 
-std::unique_ptr<Model>* ModelData::GetPtr2ModelByName(const char* name)
+std::unique_ptr<Model>* ModelContainer::GetPtr2ModelByName(std::string name)
 {
-	for (int i = 0; i < modelsName.size(); i++)
+	for (int i = 0; i < models.size(); i++)
 	{
-		if (modelsName[i] == name)
+		if (models[i]->GetName() == name)
 		{
 			return &models[i];
 		}
 	}
+
+	return nullptr;
 }
 
-void ModelData::AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path, const char* name)
+void ModelContainer::LoadModel(std::string name, std::string path, Graphics& gfx, Rgph::RenderGraph& rg)
 {
-	modelsName.push_back(name);
-	models.emplace_back(std::make_unique<Model>(gfx, path, 1.0f));
-	
-	DirectX::XMFLOAT3 pos = {0.0f, 0.0f, 0.0f};
-	modelsPos.emplace_back(pos);
-
-	DirectX::XMFLOAT3 ori = { 0.0f, 0.0f, 0.0f };
-	modelsOrien.emplace_back(ori);
+	models.emplace_back(std::make_unique<Model>(name, path, gfx));
 
 	models.back()->LinkTechniques(rg);
 
@@ -277,25 +210,25 @@ void ModelData::AddModel(Graphics& gfx, Rgph::RenderGraph& rg, const char* path,
 #endif // IS_ENGINE_MODE
 }
 
-void ModelData::Init()
+void ModelContainer::Init()
 {
 	for (int i = 0; i < models.size(); i++)
 	{
 		models[i]->SetRootTransform
 		(
-			dx::XMMatrixRotationX(modelsOrien[i].x) *
-			dx::XMMatrixRotationY(modelsOrien[i].y) *
-			dx::XMMatrixRotationZ(modelsOrien[i].z) *
+			dx::XMMatrixRotationX(models[i]->GetOrientation().x) *
+			dx::XMMatrixRotationY(models[i]->GetOrientation().y) *
+			dx::XMMatrixRotationZ(models[i]->GetOrientation().z) *
 			dx::XMMatrixTranslation(
-				modelsPos[i].x,
-				modelsPos[i].y,
-				modelsPos[i].z
+				models[i]->GetPosition().x,
+				models[i]->GetPosition().y,
+				models[i]->GetPosition().z
 			)
 		);
 
 #if IS_ENGINE_MODE
 		std::ostringstream oss;
-		oss << "Установка положения [" << modelsName[i] << "]\n";
+		oss << "Установка положения [" << models[i]->GetName() << "]\n";
 
 		applog->AddLog(MODEL_LOG, oss.str().c_str());
 #endif // IS_ENGINE_MODE
@@ -303,7 +236,7 @@ void ModelData::Init()
 }
 
 template<typename T>
-void ModelData::SetNewValue(const char* modelName, const char* param, T val)
+void ModelContainer::SetNewValue(const char* modelName, const char* param, T val)
 {
 	// Открытие файла с триггерами
 	std::ifstream dataFile(this->path);
@@ -343,23 +276,25 @@ void ModelData::SetNewValue(const char* modelName, const char* param, T val)
 }
 
 #if IS_ENGINE_MODE
-void ModelData::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
+void ModelContainer::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 {
 	if (ImGui::Begin("Объекты", NULL,
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus))
 	{
-		for (auto& m_name : modelsName)
+		for (auto& model : models)
 		{
 			char label[128];
-			sprintf_s(label, m_name.c_str(), selected);
+			sprintf_s(label, model->GetName().c_str(), selected);
 
 			ImGui::Bullet();
-			if (ImGui::Selectable(label, selected == m_name))
+			if (ImGui::Selectable(label, selected == model->GetName().c_str()))
 			{
-				selected = m_name.c_str();
+				selected = model->GetName();
 			}
 		}
+
+		ImGui::NewLine();
 
 		if (ImGui::Button("Добавить"))
 		{
@@ -373,15 +308,15 @@ void ModelData::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 	ImGui::End();
 }
 
-void ModelData::ShowModelsProperties()
+void ModelContainer::ShowModelsProperties()
 {
 	if (ImGui::Begin("Опции", NULL,
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus))
 	{
-		for (int k = 0; k < modelsName.size(); k++)
+		for (int k = 0; k < models.size(); k++)
 		{
-			if (modelsName.at(k) == selected)
+			if (models[k]->GetName().c_str() == selected)
 			{
 				// static MP probe{ modelsName.at(k) };
 				// probe.SpawnChildWindow(*models.at(k));
@@ -390,20 +325,21 @@ void ModelData::ShowModelsProperties()
 
 				if (isSave)
 				{
-					auto pos = models.at(k)->GetCurrentPosition();
-					auto orient = models.at(k)->GetCurrentOrientation();
+					auto position = models.at(k)->GetPosition();
+					auto orientation = models.at(k)->GetOrientation();
+					auto name = models[k]->GetName();
 
 					applog->AddLog(MODEL_LOG, "Сохранение позиции\n");
 
-					SetNewValue<float>(modelsName.at(k).c_str(), "pos-x", pos.x);
-					SetNewValue<float>(modelsName.at(k).c_str(), "pos-y", pos.y);
-					SetNewValue<float>(modelsName.at(k).c_str(), "pos-z", pos.z);
+					SetNewValue<float>(name.c_str(), "pos-x", position.x);
+					SetNewValue<float>(name.c_str(), "pos-y", position.y);
+					SetNewValue<float>(name.c_str(), "pos-z", position.z);
 
 					applog->AddLog(MODEL_LOG, "Сохранение ориентации\n");
 
-					SetNewValue<float>(modelsName.at(k).c_str(), "roll", orient.x);
-					SetNewValue<float>(modelsName.at(k).c_str(), "pitch", orient.y);
-					SetNewValue<float>(modelsName.at(k).c_str(), "yaw", orient.z);
+					SetNewValue<float>(name.c_str(), "roll", orientation.x);
+					SetNewValue<float>(name.c_str(), "pitch", orientation.y);
+					SetNewValue<float>(name.c_str(), "yaw", orientation.z);
 
 					isSave = false;
 				}
@@ -411,6 +347,8 @@ void ModelData::ShowModelsProperties()
 				break;
 			}
 		}
+
+		ImGui::NewLine();
 
 		if (ImGui::Button("Сохранить"))
 		{
@@ -421,7 +359,7 @@ void ModelData::ShowModelsProperties()
 	ImGui::End();
 }
 
-void ModelData::OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg)
+void ModelContainer::OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg)
 {
 	if (ImGuiFileDialog::Instance()->Display("ModelOD"))
 	{
@@ -433,7 +371,7 @@ void ModelData::OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg)
 			std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
 			std::string copy2 = filePath;
 
-			std::string test = copy1.replace(0, copy2.size() + 1, "");
+			std::string name = copy1.replace(0, copy2.size() + 1, "");
 
 			for (int i = 0; i != filePathName.size(); i++)
 			{
@@ -443,14 +381,14 @@ void ModelData::OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg)
 				}
 			}
 
-			AddModel(gfx, rg, filePathName.c_str(), test.c_str());
+			LoadModel(name.c_str(), filePathName.c_str(), gfx, rg);
 		}
 
 		ImGuiFileDialog::Instance()->Close();
 	}
 }
 
-size_t ModelData::ModelsAmount()
+size_t ModelContainer::ModelsAmount()
 {
 	return models.size();
 }

@@ -336,9 +336,6 @@
     <ClCompile Include="Plate.cpp">
       <Filter>Исходные файлы\Drawable</Filter>
     </ClCompile>
-    <ClCompile Include="ModelData.cpp">
-      <Filter>Исходные файлы\Сцена\Объекты\Модель</Filter>
-    </ClCompile>
     <ClCompile Include="PointLightContainer.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -392,6 +389,9 @@
     </ClCompile>
     <ClCompile Include="NodeEditor.cpp">
       <Filter>Исходные файлы\Интерфейс\Модули интерфейса</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelContainer.cpp">
+      <Filter>Исходные файлы\Сцена\Объекты\Модель</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -773,9 +773,6 @@
     <ClInclude Include="TriggerStruct.h">
       <Filter>Заголовочные файлы\Сцена\Объекты\Триггер</Filter>
     </ClInclude>
-    <ClInclude Include="ModelData.h">
-      <Filter>Заголовочные файлы\Сцена\Объекты\Модель</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Заголовочные файлы\Сцена\Объекты\Камера</Filter>
     </ClInclude>
@@ -790,6 +787,9 @@
     </ClInclude>
     <ClInclude Include="NodeEditor.h">
       <Filter>Заголовочные файлы\Интерфейс\Модули интерфейса</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelContainer.h">
+      <Filter>Заголовочные файлы\Сцена\Объекты\Модель</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

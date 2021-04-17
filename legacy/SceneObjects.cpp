@@ -3,7 +3,7 @@
 
 #include "Camera.h"
 
-SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx, 
+SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx,
 						   Rgph::BlurOutlineRenderGraph& rg)
 	:
 	sdr(pathToObjectsData),
@@ -12,7 +12,7 @@ SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx,
 	models(sdr.GetPaths().at(0).c_str(), gfx, &applog),
 	pointLights(sdr.GetPaths().at(2).c_str(), gfx, &applog),
 	triggersScene(sdr.GetPaths().at(1).c_str(), gfx, &applog),
-	nEditor(cameras, models)
+	nEditor(cameras, models, &applog)
 #else
 	models(sdr.GetPaths().at(0).c_str(), gfx),
 	pointLights(sdr.GetPaths().at(2).c_str(), gfx),
