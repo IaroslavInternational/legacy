@@ -77,14 +77,10 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx, 
 			/* Запись указателя триггера */
 
 			std::string Ptr = obj.at("ptr");
-			ptr2scs.emplace_back(Ptr);
 
 			std::string Name = obj.at("name");
-			names.emplace_back(Name);
 
 			/*****************************/
-
-			trss.emplace_back(pos_lt, pos_rt, pos_lb, pos_rb, roll, pitch, yaw);
 
 			trig_sc_container.emplace(
 				Ptr, 
@@ -161,17 +157,18 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path)
 			/* Запись указателя триггера */
 
 			std::string ptr = obj.at("ptr");
-			ptr2scs.emplace_back(ptr);
 
 			/*****************************/
 
-			trss.emplace_back(pos_lt, pos_rt, pos_lb, pos_rb, roll, pitch, yaw);
+			trig_sc_container.emplace(
+				Ptr,
+				std::make_unique<Trigger>
+				(
+					Name,
+					TriggerStruct(pos_lt, pos_rt, pos_lb, pos_rb, roll, pitch, yaw)
+				)
+			);
 		}
-	}
-
-	for (int i = 0; i < trss.size(); i++)
-	{
-		trig_sc_container.emplace(ptr2scs.at(i).c_str(), std::make_unique<Trigger>(trss.at(i)));
 	}
 
 	dataFile.close();
@@ -267,21 +264,15 @@ void SceneTriggersContainer::ShowTrigInformation(Graphics& gfx, Rgph::RenderGrap
 
 			ImGui::InputText("Цель", goal, sizeof(goal));
 
-			ImGui::SliderFloat3("Левый верхний угол", pos_lt, -80.0f, 80.0f);
-			ImGui::SliderFloat3("Правый верхний угол", pos_rt, -80.0f, 80.0f);
-			ImGui::SliderFloat3("Левый нижний угол", pos_lb, -80.0f, 80.0f);
-			ImGui::SliderFloat3("Правый нижний угол", pos_rb, -80.0f, 80.0f);
-
-			ImGui::SliderAngle("Крен", &orient[0], -180.0f, 180.0f);
-			ImGui::SliderAngle("Тангаж", &orient[1], -180.0f, 180.0f);
-			ImGui::SliderAngle("Рысканье", &orient[2], -180.0f, 180.0f);
+			ImGui::InputFloat("Ширина", &new_w, -30.0f, 30.0f, "%.2f");
+			ImGui::InputFloat("Высота", &new_h, -30.0f, 30.0f, "%.2f");
 			
 			if (ImGui::Button("Добавить", ImVec2(120, 0)))
 			{
-				dx::XMFLOAT3 lt = { pos_lt[0], pos_lt[1], pos_lt[2] };;
-				dx::XMFLOAT3 rt = { pos_rt[0], pos_rt[1], pos_rt[2] };;
-				dx::XMFLOAT3 lb = { pos_lb[0], pos_lb[1], pos_lb[2] };;
-				dx::XMFLOAT3 rb = { pos_rb[0], pos_rb[1], pos_rb[2] };;
+				dx::XMFLOAT3 lt = { new_w, new_h, new_w };
+				dx::XMFLOAT3 rt = { new_w, new_h, new_w / 2 };
+				dx::XMFLOAT3 lb = { new_w, 0.0f,  new_w };
+				dx::XMFLOAT3 rb = { new_w, 0.0f,  new_w / 2 };
 
 				TriggerStruct trs;
 				trs.PosTopLeft = lt;
@@ -289,9 +280,9 @@ void SceneTriggersContainer::ShowTrigInformation(Graphics& gfx, Rgph::RenderGrap
 				trs.PosBottomLeft = lb;
 				trs.PosBottomRight = rb;
 
-				trs.Roll = orient[0];
-				trs.Pitch = orient[1];
-				trs.Yaw = orient[2];
+				trs.Roll = 0.0f;
+				trs.Pitch = 1.57f;
+				trs.Yaw = 0.0f;
 
 				AddTrigger(gfx, std::string(name), std::string(goal), trs, rg);
 
@@ -328,6 +319,10 @@ void SceneTriggersContainer::ShowTrigSettings()
 			{
 				auto pos = value->GetPosition();
 
+				value->SpawnControl();
+				
+				ImGui::NewLine();
+
 				ImGui::Text("Позиция");
 				ImGui::Text("Левый верхний угол: \n x = %.3f; y = %.3f; z = %.3f;",
 					pos[0].x, pos[0].y, pos[0].z);
@@ -340,7 +335,9 @@ void SceneTriggersContainer::ShowTrigSettings()
 
 				ImGui::Separator();
 				ImGui::Text("Триггер указывает на: %s", key);
-
+				
+				ImGui::EndChild();
+				
 				break;
 			}
 		}
@@ -419,10 +416,6 @@ void SceneTriggersContainer::AddTrigger(Graphics& gfx, std::string name, std::st
 	ostr.close();
 
 	trig_sc_container.emplace(ptr, std::make_unique<Trigger>(name, trs, gfx));
-
-	ptr2scs.push_back(ptr);
-	names.push_back(name);
-	trss.push_back(trs);	
 
 	for (auto& [key, value] : trig_sc_container)
 	{

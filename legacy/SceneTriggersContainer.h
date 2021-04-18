@@ -41,10 +41,6 @@ private:
 
 	std::string selected = "";
 
-	std::vector<std::string> ptr2scs;
-	std::vector<std::string> names;
-	std::vector<TriggerStruct> trss;
-
 	std::multimap<std::string, std::unique_ptr<Trigger>> trig_sc_container;
 
 #if IS_ENGINE_MODE
@@ -53,15 +49,12 @@ private:
 	mutable char name[128];
 	mutable char goal[128];
 
-	mutable float pos_lt[3] = { 0.0f, 0.0f, 0.0f };
-	mutable float pos_rt[3] = { 0.0f, 0.0f, 0.0f };
-	mutable float pos_lb[3] = { 0.0f, 0.0f, 0.0f };
-	mutable float pos_rb[3] = { 0.0f, 0.0f, 0.0f };
-
-	mutable float orient[3] = { 0.0f, 0.0f, 0.0f };
+	mutable float new_x = 0.0f;
+	mutable float new_y = 0.0f;
+	mutable float new_w = 0.0f;
+	mutable float new_h = 0.0f;
 
 	/******************************/
-
 private:
 	// Добавить триггер
 	void AddTrigger(Graphics& gfx, std::string name, std::string ptr, TriggerStruct& trs,

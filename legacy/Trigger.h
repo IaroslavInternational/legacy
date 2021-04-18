@@ -36,6 +36,8 @@ public:
 	void LinkTechniques(Rgph::RenderGraph& rg);
 
 	void Submit(size_t channels);
+
+	void SpawnControl();
 #endif // IS_ENGINE_MODE
 
 	// Установка позиции
@@ -65,18 +67,13 @@ private:
 private:
 	struct
 	{
-		dx::XMFLOAT3 triggerPosTopLeft;
-		dx::XMFLOAT3 triggerPosTopRight;
-		dx::XMFLOAT3 triggerPosBottomLeft;
-		dx::XMFLOAT3 triggerPosBottomRight;
-	} triggerPos;
+		dx::XMFLOAT3 PosTopLeft;
+		dx::XMFLOAT3 PosTopRight;
+		dx::XMFLOAT3 PosBottomLeft;
+		dx::XMFLOAT3 PosBottomRight;
+	} position;
 
-	struct
-	{
-		float triggerRoll;
-		float triggerPitch;
-		float triggerYaw;
-	} triggerOrien;
+	dx::XMFLOAT3 orientation;
 
 #if IS_ENGINE_MODE
 	/* Визуальный контур триггера */
