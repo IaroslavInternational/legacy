@@ -81,7 +81,7 @@ std::shared_ptr<Camera> CameraContainer::GetPtr2ActiveCamera()
 	return cameras[active];
 }
 
-std::shared_ptr<Camera> CameraContainer::GetPtr2CameraByName(const char* name)
+std::shared_ptr<Camera> CameraContainer::GetPtr2CameraByName(std::string name)
 {
 	for (auto& cam : cameras)
 	{
@@ -90,6 +90,8 @@ std::shared_ptr<Camera> CameraContainer::GetPtr2CameraByName(const char* name)
 			return cam;
 		}
 	}
+
+	return nullptr;
 }
 
 #if IS_ENGINE_MODE
@@ -135,7 +137,7 @@ size_t CameraContainer::CamerasAmount()
 	return cameras.size();
 }
 
-const char* CameraContainer::GetCameraNameByIndex(size_t index)
+std::string CameraContainer::GetCameraNameByIndex(size_t index)
 {
 	return cameras.at(index)->GetName().c_str();
 }

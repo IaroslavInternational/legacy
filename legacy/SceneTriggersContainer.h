@@ -45,7 +45,7 @@ private:
 	std::vector<std::string> names;
 	std::vector<TriggerStruct> trss;
 
-	std::map<std::string, std::unique_ptr<Trigger>> trig_sc_container;
+	std::multimap<std::string, std::unique_ptr<Trigger>> trig_sc_container;
 
 #if IS_ENGINE_MODE
 	/* Данные для нового триггера */

@@ -121,7 +121,7 @@ void NodeEditor::RenderNodes()
      
         // Заголовок
         imnodes::BeginNodeTitleBar();
-        ImGui::TextUnformatted(AttachStrings<const char*>("Камера", node.name));
+        ImGui::TextUnformatted(AttachStrings<std::string>("Камера", node.name));
         imnodes::EndNodeTitleBar();
 
         // Вход
@@ -148,6 +148,26 @@ void NodeEditor::RenderNodes()
         ImGui::SliderFloat("отступ-z", &node.offset.z, -150.0f, 150.0f, "%.3f");
         imnodes::EndStaticAttribute();
         
+        ImGui::NewLine();
+
+        ImGui::Checkbox("Текущее положение", &node.isOffset_CurrentPos);
+
+        if (ImGui::Button("Нулевое положение"))
+        {
+            node.offset.x = 0.0f;
+            node.offset.y = 0.0f;
+            node.offset.z = 0.0f;
+
+            node.isOffset_CurrentPos = false;
+        }
+
+        if (node.isOffset_CurrentPos)
+        {
+            node.offset.x = node.pos.x;
+            node.offset.y = node.pos.y;
+            node.offset.z = node.pos.z;
+        }
+
         /***********/
         
         // Выход
@@ -170,7 +190,7 @@ void NodeEditor::RenderNodes()
 
         // Заголовок
         imnodes::BeginNodeTitleBar();
-        ImGui::TextUnformatted(AttachStrings<const char*>("Модель", node.name));
+        ImGui::TextUnformatted(AttachStrings<std::string>("Модель", node.name));
         imnodes::EndNodeTitleBar();
 
         // Контент
@@ -203,7 +223,7 @@ void NodeEditor::RenderNodes()
     }
 }
 
-void NodeEditor::AddCameraNode(int id, const char* name)
+void NodeEditor::AddCameraNode(int id, std::string name)
 {
     current_delta_cam += 10.0f;
 
@@ -211,7 +231,7 @@ void NodeEditor::AddCameraNode(int id, const char* name)
     cNodes.emplace_back(CameraNode(id, name, camcon.GetPtr2CameraByName(name)->GetPos()));
 }
 
-void NodeEditor::AddModelNode(int id, const char* name)
+void NodeEditor::AddModelNode(int id, std::string name)
 {
     current_delta_model += 10.0f;
 
@@ -229,7 +249,7 @@ void NodeEditor::ShowLeftPanel(ImVec2 size)
         for (size_t i = 0; i < camcon.CamerasAmount(); i++)
         {
             const bool isSelected = i == activeCam;
-            if (ImGui::Selectable(camcon.GetCameraNameByIndex(i), isSelected))
+            if (ImGui::Selectable(camcon.GetCameraNameByIndex(i).c_str(), isSelected))
             {
                 activeCam = i;
                 AddCameraNode(i, camcon.GetCameraNameByIndex(i));
@@ -247,7 +267,7 @@ void NodeEditor::ShowLeftPanel(ImVec2 size)
             if (ImGui::Selectable(mcon.GetModelNameByIndex(i).c_str(), isSelected))
             {
                 activeModel = i;
-                AddModelNode(i + 100, mcon.GetModelNameByIndex(i).c_str());
+                AddModelNode(i + 100, mcon.GetModelNameByIndex(i));
             }
         }
         ImGui::EndCombo();
@@ -292,7 +312,7 @@ void NodeEditor::ShowLeftPanel(ImVec2 size)
             ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings)
         {
             ImGui::Text("Перезаписать камеру?");
-            ImGui::Text(AttachStrings<const char*>("Текущая камера: ", FindCamNodeById(camIdToPopup)->name));
+            ImGui::Text(AttachStrings<std::string>("Текущая камера: ", FindCamNodeById(camIdToPopup)->name));
 
             if (ImGui::Button("Добавить"))
             {

@@ -5,6 +5,7 @@
 #include "AppLog.h"
 #endif
 
+#include <string>
 #include <vector>
 #include <memory>
 
@@ -36,14 +37,14 @@ public:
 
 	std::shared_ptr<Camera> GetPtr2ActiveCamera();
 
-	std::shared_ptr<Camera> GetPtr2CameraByName(const char* name);
+	std::shared_ptr<Camera> GetPtr2CameraByName(std::string name);
 
 	void ShowCamsInformationAndSettings(Graphics& gfx);
 
 #if IS_ENGINE_MODE
 	size_t CamerasAmount();
 
-	const char* GetCameraNameByIndex(size_t index);
+	std::string GetCameraNameByIndex(size_t index);
 #endif // IS_ENGINE_MODE
 private:
 	Camera& GetControlledCamera();

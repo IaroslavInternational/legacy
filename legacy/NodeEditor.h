@@ -46,24 +46,27 @@ private:
 	// Структура блока камеры
 	struct CameraNode
 	{
-		CameraNode(const int i, const char* n, DirectX::XMFLOAT3 pos)
+		CameraNode(const int i, std::string n, DirectX::XMFLOAT3 pos)
 			:
 			id(i),
 			name(n),
 			pos(pos),
-			offset(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f))
+			offset(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f)),
+			isOffset_CurrentPos(false)
 		{}
 
 		int id;
-		const char* name;
+		std::string name;
 		TransformStruct pos;
 		TransformStruct offset;
+
+		bool isOffset_CurrentPos;
 	};
 
 	// Структура блока модели
 	struct ModelNode
 	{
-		ModelNode(const int i, const char* n, DirectX::XMFLOAT3 pos)
+		ModelNode(const int i, std::string n, DirectX::XMFLOAT3 pos)
 			:
 			id(i),
 			name(n),
@@ -71,7 +74,7 @@ private:
 		{}
 
 		int id;
-		const char* name;
+		std::string name;
 		TransformStruct pos;
 	};
 
@@ -135,10 +138,10 @@ private:
 	void RenderNodes();
 
 	// Добавить камера node
-	void AddCameraNode(int id, const char* name);
+	void AddCameraNode(int id, std::string name);
 
 	// Добавить модель node
-	void AddModelNode(int id, const char* name);
+	void AddModelNode(int id, std::string name);
 
 	// Показать модели *Левая панель*
 	void ShowLeftPanel(ImVec2 size);

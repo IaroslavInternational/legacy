@@ -4,6 +4,8 @@
 #include "EngineTimer.h"
 #include "ScriptCommander.h"
 
+#include "ImguiManager.h"
+
 #include "Scene.h"
 
 #include <map>
@@ -25,6 +27,8 @@ private:
 private:
 	// Коммандная строка
 	std::string commandLine;
+
+	ImguiManager imgui;
 
 	// Указатель на окно
 	std::shared_ptr<Window> wnd;

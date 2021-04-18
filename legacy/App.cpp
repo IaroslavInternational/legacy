@@ -1,5 +1,6 @@
 #include "App.h"
 
+#include "imgui\imgui.h"
 #include "EngineUtil.h"
 
 namespace dx = DirectX;

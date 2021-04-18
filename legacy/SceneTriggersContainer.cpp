@@ -41,7 +41,7 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx, 
 
 	for (json::iterator t = j.begin(); t != j.end(); ++t)
 	{
-		auto d = t.key();
+		auto &d = t.key();
 
 		for (const auto& obj : j.at(d))
 		{
@@ -260,7 +260,7 @@ void SceneTriggersContainer::ShowTrigInformation(Graphics& gfx, Rgph::RenderGrap
 
 		if (ImGui::BeginPopupModal("Создание триггера", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 		{
-			ImGui::Text("Введите параметры триггеры");
+			ImGui::Text("Введите параметры триггера");
 			ImGui::Separator();
 
 			ImGui::InputText("Имя", name, sizeof(name));
@@ -369,7 +369,7 @@ void SceneTriggersContainer::AddTrigger(Graphics& gfx, std::string name, std::st
 	dataFile.close();
 
 	// Число триггеров в файле + 1
-	size_t triggerIndex = trig_sc_container.size() + 1;
+	int triggerIndex = trig_sc_container.size() + 1;
 
 	// Новый триггер
 	std::ostringstream newTrigger;
