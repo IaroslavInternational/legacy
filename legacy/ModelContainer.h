@@ -52,6 +52,9 @@ private:
 	// Добавить модель
 	void LoadModel(std::string name, std::string path, Graphics& gfx, Rgph::RenderGraph& rg);
 
+	// Удалить модель
+	void DeleteModel(std::string name);
+
 	// Установить положение и ориентацию модели
 	void Init();
 
@@ -67,7 +70,10 @@ private:
 	std::string selected = "";
 
 	// Если нажата кнопка сохранить
-	bool isSave = false;
+	bool IsSave = false;
+
+	// Если нажата кнопка удалить
+	bool IsDelete = false;
 
 	// Лог
 	AppLog* applog;

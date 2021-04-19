@@ -63,15 +63,21 @@ Model::~Model() noexcept
 
 void Model::LinkTechniques(Rgph::RenderGraph& rg)
 {
-	for (auto& pMesh : meshPtrs)
+	if (IsRendered)
 	{
-		pMesh->LinkTechniques(rg);
+		for (auto& pMesh : meshPtrs)
+		{
+			pMesh->LinkTechniques(rg);
+		}
 	}
 }
 
 void Model::Submit(size_t channels) const noxnd
 {
-	pRoot->Submit(channels, dx::XMMatrixIdentity());
+	if (IsRendered)
+	{
+		pRoot->Submit(channels, dx::XMMatrixIdentity());
+	}
 }
 
 void Model::Accept(ModelProbe& probe)
@@ -104,6 +110,8 @@ void Model::SpawnDefaultControl()
 		dcheck(ImGui::SliderAngle("Тангаш",	&orientation.y, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
 		dcheck(ImGui::SliderAngle("Расканье", &orientation.z, -180.0f, 180.0f), rotDirty);
 
+		ImGui::Checkbox("Скрыть", &IsRendered);
+
 		if (isCamAdded)
 		{
 			cam->SetPos(DirectX::XMFLOAT3(position.x + offset_x, position.y + offset_y, position.z + offset_z));
@@ -127,13 +135,18 @@ void Model::SpawnDefaultControl()
 		);
 	}
 
-	ImGui::EndChild();
+	// 	ImGui::EndChild() в соответсвтующем методе контейнера
 }
 #endif //IS_ENGINE_MODE
 
 std::string Model::GetName()
 {
 	return name;
+}
+
+void Model::SetRenderStatus(bool status)
+{
+	IsRendered = status;
 }
 
 DirectX::XMFLOAT3 Model::GetPosition()

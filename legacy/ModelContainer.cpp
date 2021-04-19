@@ -10,6 +10,13 @@
 using json = nlohmann::json;
 using namespace std::string_literals;
 
+std::string StrToLowerCase(std::string s)
+{
+	std::transform(s.begin(), s.end(), s.begin(), tolower);
+
+	return s;
+}
+
 #if IS_ENGINE_MODE
 ModelContainer::ModelContainer(const char* path, Graphics& gfx, AppLog* aLog)
 	:
@@ -45,6 +52,7 @@ ModelContainer::ModelContainer(const char* path, Graphics& gfx)
 			/* Получение имени объекта */
 
 			std::string name = obj.at("name");
+			name = StrToLowerCase(name);
 
 			/************************/
 
@@ -210,6 +218,17 @@ void ModelContainer::LoadModel(std::string name, std::string path, Graphics& gfx
 #endif // IS_ENGINE_MODE
 }
 
+void ModelContainer::DeleteModel(std::string name)
+{
+	for (auto model = models.begin(); model != models.end(); ++model)
+	{
+		if (model->get()->GetName() == name)
+		{
+			models.erase(model);
+		}
+	}
+}
+
 void ModelContainer::Init()
 {
 	for (int i = 0; i < models.size(); i++)
@@ -298,7 +317,7 @@ void ModelContainer::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 
 		if (ImGui::Button("Добавить"))
 		{
-			ImGuiFileDialog::Instance()->OpenDialog("ModelOD", "Выбирете файл", ".obj,.mtl,.gltf", "");
+			ImGuiFileDialog::Instance()->OpenDialog("ModelOD", "Выбирете файл", ".obj,.mtl,.gltf,.glb", "");
 			applog->AddLog(SYSTEM_LOG, "Добавить модель\n");
 		}
 
@@ -321,9 +340,9 @@ void ModelContainer::ShowModelsProperties()
 				// static MP probe{ modelsName.at(k) };
 				// probe.SpawnChildWindow(*models.at(k));
 
-				models.at(k)->SpawnDefaultControl();
+				models[k]->SpawnDefaultControl();
 
-				if (isSave)
+				if (IsSave)
 				{
 					auto position = models.at(k)->GetPosition();
 					auto orientation = models.at(k)->GetOrientation();
@@ -341,19 +360,31 @@ void ModelContainer::ShowModelsProperties()
 					SetNewValue<float>(name.c_str(), "pitch", orientation.y);
 					SetNewValue<float>(name.c_str(), "yaw", orientation.z);
 
-					isSave = false;
+					IsSave = false;
+				}
+
+				if (IsDelete)
+				{
+					DeleteModel(selected);
+
+					IsDelete = false;
 				}
 
 				break;
 			}
 		}
 
-		ImGui::NewLine();
+		if (ImGui::Button("Удалить"))
+		{
+			IsDelete = true;
+		}
 
 		if (ImGui::Button("Сохранить"))
 		{
-			isSave = true;
+			IsSave = true;
 		}
+
+		ImGui::EndChild();
 	}
 
 	ImGui::End();

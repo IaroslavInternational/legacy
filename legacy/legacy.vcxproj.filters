@@ -166,6 +166,12 @@
     <Filter Include="Исходные файлы\Система\Утилиты">
       <UniqueIdentifier>{7c14a29b-52c0-4c98-ad9b-91f86213fbd6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Шейдеры\Попискельные шейдеры">
+      <UniqueIdentifier>{0f0812da-9684-420a-958c-719063f0f2a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Шейдеры\Повершинные шейдеры">
+      <UniqueIdentifier>{985d40fe-a202-4cd2-b96c-1a6ad14cb78e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -896,83 +902,83 @@
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="PhongDifMskSpcNrm_PS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongDifNrm_PS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongDifNrm_VS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongDif_PS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongDifSpcNrm_PS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongDifSpc_PS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongDif_VS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="Phong_PS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="Phong_VS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="Solid_PS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="Solid_VS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongDifMskSpcNrm_VS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongDifSpc_VS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="PhongDifSpcNrm_VS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="Fullscreen_VS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
     <FxCompile Include="Blur_PS.hlsl">
-      <Filter>Шейдеры</Filter>
+      <Filter>Шейдеры\Попискельные шейдеры</Filter>
     </FxCompile>
     <FxCompile Include="BlurOutline_PS.hlsl">
-      <Filter>Шейдеры</Filter>
+      <Filter>Шейдеры\Попискельные шейдеры</Filter>
     </FxCompile>
-    <FxCompile Include="PhongDifMskSpc_VS.hlsl">
-      <Filter>Шейдеры</Filter>
+    <FxCompile Include="Phong_PS.hlsl">
+      <Filter>Шейдеры\Попискельные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongDif_PS.hlsl">
+      <Filter>Шейдеры\Попискельные шейдеры</Filter>
     </FxCompile>
     <FxCompile Include="PhongDifMskSpc_PS.hlsl">
-      <Filter>Шейдеры</Filter>
+      <Filter>Шейдеры\Попискельные шейдеры</Filter>
     </FxCompile>
-    <FxCompile Include="ShadowTest_PS.hlsl">
-      <Filter>Шейдеры</Filter>
+    <FxCompile Include="PhongDifMskSpcNrm_PS.hlsl">
+      <Filter>Шейдеры\Попискельные шейдеры</Filter>
     </FxCompile>
-    <FxCompile Include="ShadowTest_VS.hlsl">
-      <Filter>Шейдеры</Filter>
+    <FxCompile Include="PhongDifNrm_PS.hlsl">
+      <Filter>Шейдеры\Попискельные шейдеры</Filter>
     </FxCompile>
-    <FxCompile Include="Offset_VS_deprecated.hlsl">
-      <Filter>Шейдеры</Filter>
+    <FxCompile Include="PhongDifSpcNrm_PS.hlsl">
+      <Filter>Шейдеры\Попискельные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongDifSpc_PS.hlsl">
+      <Filter>Шейдеры\Попискельные шейдеры</Filter>
     </FxCompile>
     <FxCompile Include="Skybox_PS.hlsl">
-      <Filter>Шейдеры</Filter>
+      <Filter>Шейдеры\Попискельные шейдеры</Filter>
     </FxCompile>
-    <FxCompile Include="Skybox_VS.hlsl">
-      <Filter>Шейдеры</Filter>
-    </FxCompile>
-    <FxCompile Include="Shadow_VS.hlsl">
-      <Filter>Шейдеры</Filter>
+    <FxCompile Include="Solid_PS.hlsl">
+      <Filter>Шейдеры\Попискельные шейдеры</Filter>
     </FxCompile>
     <FxCompile Include="Shadow_PS.hlsl">
-      <Filter>Шейдеры</Filter>
+      <Filter>Шейдеры\Попискельные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="Fullscreen_VS.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="Offset_VS_deprecated.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="Phong_VS.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongDif_VS.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongDifMskSpc_VS.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongDifMskSpcNrm_VS.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongDifNrm_VS.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongDifSpc_VS.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongDifSpcNrm_VS.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="Shadow_VS.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="ShadowTest_PS.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="ShadowTest_VS.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="Skybox_VS.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
+    </FxCompile>
+    <FxCompile Include="Solid_VS.hlsl">
+      <Filter>Шейдеры\Повершинные шейдеры</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -80,7 +80,7 @@ namespace IGFD
 #define okButtonString "OK"
 #endif // okButtonString
 #ifndef cancelButtonString
-#define cancelButtonString "Cancel"
+#define cancelButtonString "Отмена"
 #endif // cancelButtonString
 #ifndef resetButtonString
 #define resetButtonString "R"

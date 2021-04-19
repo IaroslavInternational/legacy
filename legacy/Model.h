@@ -50,6 +50,8 @@ public:
 
 	std::string GetName();
 
+	void SetRenderStatus(bool status);
+
 	// Получение позиции
 	DirectX::XMFLOAT3 GetPosition();
 
@@ -88,6 +90,9 @@ private:
 
 	// Ориентация
 	DirectX::XMFLOAT3 orientation;
+
+	// Разрешена ли  отрисовка
+	bool IsRendered = true;
 
 	/*****************/
 private:
