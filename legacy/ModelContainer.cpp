@@ -17,14 +17,18 @@ using json = nlohmann::json;
 using namespace std::string_literals;
 
 #if IS_ENGINE_MODE
-ModelContainer::ModelContainer(const char* path, Graphics& gfx, AppLog* aLog)
+ModelContainer::ModelContainer(const char* path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog)
 	:
 	path(path),
-	applog(aLog)
+	applog(aLog),
+	gfx(gfx),
+	rg(rg)
 #else
-ModelContainer::ModelContainer(const char* path, Graphics& gfx)
+ModelContainer::ModelContainer(const char* path, Graphics& gfx, Rgph::RenderGraph& rg)
 	:
-	path(path)
+	path(path),
+	gfx(gfx),
+	rg(rg)
 #endif // IS_ENGINE_MODE
 {
 #if IS_ENGINE_MODE
@@ -39,7 +43,7 @@ ModelContainer::ModelContainer(const char* path, Graphics& gfx)
 
 	json j;
 	dataFile >> j;
-
+	
 	dataFile.close();
 
 	for (json::iterator m = j.begin(); m != j.end(); ++m)
@@ -104,7 +108,7 @@ ModelContainer::~ModelContainer()
 {
 }
 
-void ModelContainer::LinkTechniques(Rgph::RenderGraph& rg)
+void ModelContainer::LinkTechniques()
 {
 	for (int i = 0; i < models.size(); i++)
 	{
@@ -145,7 +149,47 @@ std::unique_ptr<Model>* ModelContainer::GetPtr2ModelByName(std::string name)
 	return nullptr;
 }
 
-void ModelContainer::LoadModel(std::string name, std::string path, Graphics& gfx, Rgph::RenderGraph& rg)
+template<typename T>
+void ModelContainer::SetNewValue(const char* objectName, const char* param, T val)
+{
+	// Открытие файла с триггерами
+	std::ifstream dataFile(this->path);
+	if (!dataFile.is_open())
+	{
+		throw ("Не удаётся открыть файл с данными о моделях сцен");
+	}
+
+#if IS_ENGINE_MODE
+	std::ostringstream ostrlog;
+	ostrlog << "Установка [" << param << " : " << std::to_string(val) << "] " << "для [" << objectName << "]\n";
+
+	applog->AddLog(MODEL_LOG, ostrlog.str().c_str());
+#endif // IS_ENGINE_MODE
+
+	// Чтение файла
+	json j;
+	dataFile >> j;
+
+	// Закрытие файла
+	dataFile.close();
+
+	for (json::iterator m = j.begin(); m != j.end(); ++m)
+	{
+		for (auto& obj : j.at(objectName))
+		{
+			obj[param] = val;
+		}
+	}
+
+	// Запись в файл нового триггера
+	std::ofstream ostr(this->path);
+	ostr << j.dump();
+
+	// Закрытие файла
+	ostr.close();
+}
+
+void ModelContainer::LoadModel(std::string name, std::string path)
 {
 	models.emplace_back(std::make_unique<Model>(name, path, gfx));
 
@@ -253,48 +297,8 @@ void ModelContainer::Init()
 	}
 }
 
-template<typename T>
-void ModelContainer::SetNewValue(const char* modelName, const char* param, T val)
-{
-	// Открытие файла с триггерами
-	std::ifstream dataFile(this->path);
-	if (!dataFile.is_open())
-	{
-		throw ("Не удаётся открыть файл с данными о моделях сцен");
-	}
-
 #if IS_ENGINE_MODE
-	std::ostringstream ostrlog;
-	ostrlog << "Установка [" << param << " : " << std::to_string(val) << "] " << "для [" << modelName << "]\n";
-
-	applog->AddLog(MODEL_LOG, ostrlog.str().c_str());
-#endif // IS_ENGINE_MODE
-
-	// Чтение файла
-	json j;
-	dataFile >> j;
-
-	// Закрытие файла
-	dataFile.close();
-
-	for (json::iterator m = j.begin(); m != j.end(); ++m)
-	{
-		for (auto& obj : j.at(modelName))
-		{
-			obj[param] = val;
-		}
-	}
-
-	// Запись в файл нового триггера
-	std::ofstream ostr(this->path);
-	ostr << j.dump();
-
-	// Закрытие файла
-	ostr.close();
-}
-
-#if IS_ENGINE_MODE
-void ModelContainer::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
+void ModelContainer::ShowLeftPanel()
 {
 	if (ImGui::Begin("Объекты", NULL,
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
@@ -320,13 +324,13 @@ void ModelContainer::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 			applog->AddLog(SYSTEM_LOG, "Добавить модель\n");
 		}
 
-		OpenDialog(gfx, rg);
+		OpenDialog();
 	}
 
 	ImGui::End();
 }
 
-void ModelContainer::ShowModelsProperties()
+void ModelContainer::ShowRightPanel()
 {
 	if (ImGui::Begin("Опции", NULL,
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
@@ -391,7 +395,7 @@ void ModelContainer::ShowModelsProperties()
 	ImGui::End();
 }
 
-void ModelContainer::OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg)
+void ModelContainer::OpenDialog()
 {
 	if (ImGuiFileDialog::Instance()->Display("ModelOD"))
 	{
@@ -413,7 +417,7 @@ void ModelContainer::OpenDialog(Graphics& gfx, Rgph::RenderGraph& rg)
 				}
 			}
 
-			LoadModel(name.c_str(), filePathName.c_str(), gfx, rg);
+			LoadModel(name.c_str(), filePathName.c_str());
 		}
 
 		ImGuiFileDialog::Instance()->Close();

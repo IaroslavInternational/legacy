@@ -9,7 +9,7 @@ SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx,
 	sdr(pathToObjectsData),
 #if IS_ENGINE_MODE
 	cameras(sdr.GetPaths().at(3).c_str(), gfx, &applog),
-	models(sdr.GetPaths().at(0).c_str(), gfx, &applog),
+	models(sdr.GetPaths().at(0).c_str(), gfx, rg, &applog),
 	pointLights(sdr.GetPaths().at(2).c_str(), gfx, &applog),
 	triggersScene(sdr.GetPaths().at(1).c_str(), gfx, &applog),
 	nEditor(cameras, models, &applog)
@@ -34,7 +34,7 @@ void SceneObjects::LinkTechniques(Rgph::RenderGraph& rg)
 	pointLights.LinkTechniques(rg);
 	cameras.LinkTechniques(rg);
 	triggersScene.LinkTechniques(rg);
-	models.LinkTechniques(rg);
+	models.LinkTechniques();
 }
 
 void SceneObjects::Submit(size_t channels)

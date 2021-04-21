@@ -268,7 +268,7 @@ void Scene::ShowMenu()
 						ImGuiFileDialog::Instance()->OpenDialog("ModelOD", "Âûבטנועו פאיכ", ".obj,.mtl,.gltf", "");
 					}
 
-					objects.models.OpenDialog(wnd->Gfx(), rg);
+					objects.models.OpenDialog();
 
 
 					ImGui::EndMenu();
@@ -325,7 +325,7 @@ void Scene::ShowLeftSide()
 	
 	if (ShowModelsList)
 	{
-		objects.models.ShowModelsInformation(wnd->Gfx(), rg);
+		objects.models.ShowLeftPanel();
 	}
 	else if (ShowTriggersList)
 	{
@@ -369,7 +369,7 @@ void Scene::ShowRightSide()
 
 	if (ShowModelsSettings)
 	{
-		objects.models.ShowModelsProperties();
+		objects.models.ShowRightPanel();
 
 		ImGui::SetNextWindowPos({ round(io.DisplaySize.x - RightPanelW), MenuHeight }, 0, RightPanelPivot);
 		ImGui::SetNextWindowSize({ io.DisplaySize.x * 0.2f, io.DisplaySize.y * 0.2f }, ImGuiCond_FirstUseEver);
