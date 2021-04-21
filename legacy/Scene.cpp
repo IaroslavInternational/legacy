@@ -488,6 +488,7 @@ void Scene::DisableSides()
 	ShowTriggersSettings = false;	
 	ShowPLightsList = false;
 	ShowPLightsSettings = false;
+	ShowCamsList = false;
 }
 
 void Scene::DisableAll()

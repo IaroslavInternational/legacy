@@ -11,18 +11,5 @@
       "scale": 0.05,
       "yaw": 0.0
     }
-  ],
-  "DualSword.obj": [
-    {
-      "name": "DualSword.obj",
-      "path": "C:/Users/Yaros/source/repos/legacy/legacy/Scenes/Scene 2/Models/Swords/DualSword/DualSword.fbx",
-      "scale": 0.035,
-      "pos-x": 0,
-      "pos-y": 0,
-      "pos-z": 0,
-      "roll": 0,
-      "pitch": 0,
-      "yaw": 0
-    }
   ]
 }

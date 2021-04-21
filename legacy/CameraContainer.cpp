@@ -9,18 +9,85 @@
 #include "RenderGraph.h"
 
 #include <sstream>
+#include <fstream>
+#include <filesystem>
+
+#include "json.hpp"
+
+using json = nlohmann::json;
+using namespace std::string_literals;
+
+#if IS_ENGINE_MODE
+CameraContainer::CameraContainer(const char* path, Graphics& gfx, AppLog* aLog)
+	:
+	path(path),
+	applog(aLog)
+#else
+CameraContainer::CameraContainer(const char* path, Graphics& gfx)
+	:
+	path(path)
+#endif // IS_ENGINE_MODE
+{
+#if IS_ENGINE_MODE
+	applog->AddLog(CAMERAS_LOG, "Инициализация\n");
+#endif // IS_ENGINE_MODE
+
+	std::ifstream dataFile(path);
+	if (!dataFile.is_open())
+	{
+		throw ("Не удаётся открыть файл с данными о камерах");
+	}
+
+	json j;
+	dataFile >> j;
+
+	dataFile.close();
+
+	for (json::iterator m = j.begin(); m != j.end(); ++m)
+	{
+		auto& d = m.key();
+
+		for (const auto& obj : j.at(d))
+		{
+			/* Получение имени объекта */
+
+			std::string name = obj.at("name");
+			std::transform(name.begin(), name.end(), name.begin(), tolower);
+
+			/************************/
+
+			/* Получение позиции */
+
+			float pos_x = obj.at("pos-x");
+			float pos_y = obj.at("pos-y");
+			float pos_z = obj.at("pos-z");
+
+			DirectX::XMFLOAT3 position = { pos_x, pos_y, pos_z };
+
+			/******************/
+
+			/* Получение ориентации */
+
+			float pitch = obj.at("pitch");
+			float yaw = obj.at("yaw");
+
+			/*********************/
+
+			/* Инициализация камеры */
+
+			cameras.emplace_back(std::make_shared<Camera>(gfx, name, position, pitch, yaw));
+
+			/************************/
+		}
+	}
+
+	cameras.shrink_to_fit();
+}
 
 Camera* CameraContainer::operator->()
 {
 	return &GetActiveCamera();
 }
-
-#if IS_ENGINE_MODE
-CameraContainer::CameraContainer(AppLog* aLog)
-	:
-	applog(aLog)
-{}
-#endif // IS_ENGINE_MODE
 
 CameraContainer::~CameraContainer()
 {}

@@ -1,21 +1,8 @@
-{
-  "Prothet": [
-    {
-      "name": "prothet",
-      "path": "C:/Users/Yaros/source/repos/legacy/legacy/Scenes/Scene 1/Models/nano_textured/nanosuit.obj",
-      "pitch": -1.5707963705062866,
-      "pos-x": -5.0,
-      "pos-y": 0.0,
-      "pos-z": 0.0,
-      "roll": 0.0,
-      "scale": 1,
-      "yaw": 0.0
-    }
-  ],
+{ 
   "Scene": [
     {
-      "name": "scene",
-      "path": "C:/Users/Yaros/source/repos/legacy/legacy/Scenes/Scene 1/Models/Sponza/sponza.obj",
+      "name": "sponza",
+      "path": "Scenes/Scene 1/Models/Sponza/sponza.obj",
       "pitch": 0,
       "pos-x": 0,
       "pos-y": 0,

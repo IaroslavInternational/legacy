@@ -20,12 +20,15 @@ namespace Rgph
 class CameraContainer
 {
 public:
-	Camera* operator->();
-	
 #if IS_ENGINE_MODE
-	CameraContainer(AppLog* aLog);
+	CameraContainer(const char* path, Graphics& gfx, AppLog* aLog);
+#else
+	CameraContainer(const char* path, Graphics& gfx);
 #endif // IS_ENGINE_MODE
 	~CameraContainer();
+	
+public:
+	Camera* operator->();
 	
 	void LinkTechniques( Rgph::RenderGraph& rg );
 	void Submit( size_t channels ) const;
@@ -49,11 +52,20 @@ public:
 private:
 	Camera& GetControlledCamera();
 private:
+	// Путь к файлу с данными о моделях
+	const char* path;
+
+	// Камеры
 	std::vector<std::shared_ptr<Camera>> cameras;
 	
+	// Индекс активной камеры
 	int active = 0;
+
+	// Индекс управляемой камеры
 	int controlled = 0;
+
 #if IS_ENGINE_MODE
+	// Лог
 	AppLog* applog;
 #endif
 };

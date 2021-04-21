@@ -43,7 +43,9 @@ public:
 	void Accept(class ModelProbe& probe);
 
 	// Установка положения
-	void SetRootTransform(DirectX::FXMMATRIX tf) noexcept;
+	void SetRootTransform(DirectX::XMMATRIX tf) noexcept;
+
+	void SetScale(float scale);
 	
 	// Базовый интерфейс управления
 	void SpawnDefaultControl();

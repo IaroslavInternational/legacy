@@ -7,15 +7,14 @@
 
 #include "TestModelProbe.h"
 
+#include <sstream>
+#include <fstream>
+#include <filesystem>
+
+#include "json.hpp"
+
 using json = nlohmann::json;
 using namespace std::string_literals;
-
-std::string StrToLowerCase(std::string s)
-{
-	std::transform(s.begin(), s.end(), s.begin(), tolower);
-
-	return s;
-}
 
 #if IS_ENGINE_MODE
 ModelContainer::ModelContainer(const char* path, Graphics& gfx, AppLog* aLog)
@@ -52,7 +51,7 @@ ModelContainer::ModelContainer(const char* path, Graphics& gfx)
 			/* Получение имени объекта */
 
 			std::string name = obj.at("name");
-			name = StrToLowerCase(name);
+			std::transform(name.begin(), name.end(), name.begin(), tolower);
 
 			/************************/
 
@@ -317,7 +316,7 @@ void ModelContainer::ShowModelsInformation(Graphics& gfx, Rgph::RenderGraph& rg)
 
 		if (ImGui::Button("Добавить"))
 		{
-			ImGuiFileDialog::Instance()->OpenDialog("ModelOD", "Выбирете файл", ".obj,.mtl,.gltf,.glb", "");
+			ImGuiFileDialog::Instance()->OpenDialog("ModelOD", "Выбирете файл", ".obj,.mtl,.gltf,.glb,.fbx", "");
 			applog->AddLog(SYSTEM_LOG, "Добавить модель\n");
 		}
 
@@ -374,12 +373,14 @@ void ModelContainer::ShowModelsProperties()
 			}
 		}
 
-		if (ImGui::Button("Удалить"))
+		if (ImGui::Button("Удалить", ImVec2(100, 20)))
 		{
 			IsDelete = true;
 		}
 
-		if (ImGui::Button("Сохранить"))
+		ImGui::SameLine();
+
+		if (ImGui::Button("Сохранить", ImVec2(100, 20)))
 		{
 			IsSave = true;
 		}

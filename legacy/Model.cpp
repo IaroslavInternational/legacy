@@ -32,8 +32,15 @@ Model::Model(std::string name, const std::string& path, Graphics& gfx,
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_ConvertToLeftHanded |
 		aiProcess_GenNormals |
-		aiProcess_CalcTangentSpace
+		aiProcess_CalcTangentSpace |
+		aiAnimBehaviour_REPEAT
 	);
+
+	/*if (pScene->HasAnimations())
+	{
+		for(size_t i = 0; i < pScene->mNumAnimations; i++)
+			pScene->mAnimations[i]->mTicksPerSecond = 2;
+	}*/
 
 	if( pScene == nullptr )
 	{
@@ -85,9 +92,16 @@ void Model::Accept(ModelProbe& probe)
 	pRoot->Accept(probe);
 }
 
-void Model::SetRootTransform(DirectX::FXMMATRIX tf) noexcept
+void Model::SetRootTransform(DirectX::XMMATRIX tf) noexcept
 {
-	pRoot->SetAppliedTransform(tf);
+	pRoot->SetAppliedTransform(ScaleTranslation(tf, scale));
+}
+
+void Model::SetScale(float scale)
+{
+	pRoot->SetAppliedTransform(ScaleTranslation(dx::XMMatrixTranspose(dx::XMLoadFloat4x4(
+		&pRoot->GetAppliedTransform()
+	)), scale));
 }
 
 #if IS_ENGINE_MODE
@@ -97,18 +111,22 @@ void Model::SpawnDefaultControl()
 	{
 		bool rotDirty = false;
 		bool posDirty = false;
+		bool scaleDirty = false;
 
 		const auto dcheck = [](bool d, bool& carry) { carry = carry || d; };
 
 		ImGui::Text("Позиция");
-		dcheck(ImGui::SliderFloat("X", &position.x, -80.0f, 80.0f, "%.01f"), posDirty);
-		dcheck(ImGui::SliderFloat("Y", &position.y, -80.0f, 80.0f, "%.01f"), posDirty);
-		dcheck(ImGui::SliderFloat("Z", &position.z, -80.0f, 80.0f, "%.01f"), posDirty);
+		dcheck(ImGui::SliderFloat("X", &position.x, -80.0f, 80.0f, "%.1f"), posDirty);
+		dcheck(ImGui::SliderFloat("Y", &position.y, -80.0f, 80.0f, "%.1f"), posDirty);
+		dcheck(ImGui::SliderFloat("Z", &position.z, -80.0f, 80.0f, "%.1f"), posDirty);
 
 		ImGui::Text("Ориентация");
 		dcheck(ImGui::SliderAngle("Крен", &orientation.x, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
 		dcheck(ImGui::SliderAngle("Тангаш",	&orientation.y, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
 		dcheck(ImGui::SliderAngle("Расканье", &orientation.z, -180.0f, 180.0f), rotDirty);
+
+		ImGui::Text("Размер");
+		dcheck(ImGui::SliderFloat("S", &scale, 0.0001f, 10.0f, "%.4f"), scaleDirty);
 
 		ImGui::Checkbox("Скрыть", &IsRendered);
 

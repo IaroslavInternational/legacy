@@ -28,32 +28,32 @@ PointLight::PointLight( Graphics& gfx, std::string name, DirectX::XMFLOAT3 pos, 
 #if IS_ENGINE_MODE
 void PointLight::SpawnControlWindow() noexcept
 {
-	if( ImGui::BeginChild( "Light" ) )
+	if( ImGui::BeginChild( "Точечный источник освещения" ) )
 	{
 		bool dirtyPos = false;
 		const auto d = [&dirtyPos]( bool dirty ){dirtyPos = dirtyPos || dirty;};
 
-		ImGui::Text( "Position" );
-		d( ImGui::SliderFloat( "X",&cbData.pos.x,-500.0f,500.0f,"%.1f" ) );
-		d( ImGui::SliderFloat( "Y",&cbData.pos.y,-500.0f,500.0f,"%.1f" ) );
-		d( ImGui::SliderFloat( "Z",&cbData.pos.z,-500.0f,500.0f,"%.1f" ) );
+		ImGui::Text( "Позиция" );
+		d( ImGui::SliderFloat( "X",&cbData.pos.x,-80.0f,80.0f,"%.4f" ) );
+		d( ImGui::SliderFloat( "Y",&cbData.pos.y,-80.0f,80.0f,"%.4f" ) );
+		d( ImGui::SliderFloat( "Z",&cbData.pos.z,-80.0f,80.0f,"%.4f" ) );
 
 		if( dirtyPos )
 		{
 			pCamera->SetPos( cbData.pos );
 		}
 		
-		ImGui::Text( "Intensity/Color" );
-		ImGui::SliderFloat( "Intensity",&cbData.diffuseIntensity,0.01f,2.0f,"%.2f",2 );
-		ImGui::ColorEdit3( "Diffuse Color",&cbData.diffuseColor.x );
-		ImGui::ColorEdit3( "Ambient",&cbData.ambient.x );
+		ImGui::Text( "Интенсивность и йвет" );
+		ImGui::SliderFloat( "Интенсивность",&cbData.diffuseIntensity,0.01f,2.0f,"%.2f",2 );
+		ImGui::ColorEdit3( "Цвет",&cbData.diffuseColor.x );
+		ImGui::ColorEdit3( "Цвет среды",&cbData.ambient.x );
 		
-		ImGui::Text( "Falloff" );
+		ImGui::Text( "Тень" );
 		ImGui::SliderFloat( "Constant",&cbData.attConst,0.05f,10.0f,"%.2f",4 );
 		ImGui::SliderFloat( "Linear",&cbData.attLin,0.0001f,4.0f,"%.4f",8 );
-		ImGui::SliderFloat( "Quadratic",&cbData.attQuad,0.0000001f,10.0f,"%.7f",10 );
+		ImGui::SliderFloat( "Quadratic",&cbData.attQuad,0.0000001f,0.5f,"%.7f",10 );
 
-		if( ImGui::Button( "Reset" ) )
+		if( ImGui::Button( "Сбросить" ) )
 		{
 			Reset();
 		}

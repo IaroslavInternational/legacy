@@ -6,6 +6,8 @@
 
 #include "imgui\imgui.h"
 
+#include <sstream>
+
 NodeEditor::NodeEditor(CameraContainer& camcon, ModelContainer& mcon, AppLog* log)
     :
     camcon(camcon),

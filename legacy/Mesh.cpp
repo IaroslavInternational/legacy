@@ -28,3 +28,8 @@ DirectX::XMMATRIX Mesh::GetTransformXM() const noexcept
 {
 	return DirectX::XMLoadFloat4x4( &transform );
 }
+
+void Mesh::SetTransformXM(DirectX::XMMATRIX matrix)
+{
+	DirectX::XMStoreFloat4x4(&transform, matrix);
+}

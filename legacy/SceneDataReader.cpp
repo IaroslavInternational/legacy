@@ -3,6 +3,7 @@
 #include <sstream>
 #include <fstream>
 #include <filesystem>
+
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -23,7 +24,7 @@ SceneDataReader::SceneDataReader(const char* path)
 
 	for (json::iterator m = j.begin(); m != j.end(); ++m)
 	{
-		auto d = m.key();
+		auto& d = m.key();
 
 		for (const auto& obj : j.at(d))
 		{
@@ -31,19 +32,25 @@ SceneDataReader::SceneDataReader(const char* path)
 			
 			paths.emplace_back(obj.at("modelsPath"));
 
-			/******************/
+			/***********************/
 
 			/* Запись пути триггеров */
 
 			paths.emplace_back(obj.at("triggersPath"));
 
-			/******************/
+			/*************************/
 
 			/* Запись пути триггеров */
 
 			paths.emplace_back(obj.at("pLightsPath"));
 
-			/******************/
+			/*************************/
+
+			/* Запись пути камер */
+
+			paths.emplace_back(obj.at("camerasPath"));
+
+			/*************************/
 		}
 	}
 }
