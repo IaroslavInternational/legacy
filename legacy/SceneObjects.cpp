@@ -8,16 +8,16 @@ SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx,
 	:
 	sdr(pathToObjectsData),
 #if IS_ENGINE_MODE
-	cameras(sdr.GetPaths().at(3).c_str(), gfx, &applog),
-	models(sdr.GetPaths().at(0).c_str(), gfx, rg, &applog),
-	pointLights(sdr.GetPaths().at(2).c_str(), gfx, &applog),
-	triggersScene(sdr.GetPaths().at(1).c_str(), gfx, &applog),
+	cameras(sdr.GetCameraContainerPath().c_str(), gfx, &applog),
+	models(sdr.GetModelContainerPath().c_str(), gfx, rg, &applog),
+	pointLights(sdr.GetPointLightContainerPath().c_str(), gfx, &applog),
+	triggersScene(sdr.GetTriggerContainerPath().c_str(), gfx, &applog),
 	nEditor(cameras, models, &applog)
 #else
-	cameras(sdr.GetPaths().at(3).c_str(), gfx),
-	models(sdr.GetPaths().at(0).c_str(), gfx),
-	pointLights(sdr.GetPaths().at(2).c_str(), gfx),
-	triggersScene(sdr.GetPaths().at(1).c_str())
+	cameras(sdr.GetCameraContainerPath().c_str(), gfx),
+	models(sdr.GetModelContainerPath().c_str(), gfx, rg),
+	pointLights(sdr.GetPointLightContainerPath().c_str(), gfx),
+	triggersScene(sdr.GetTriggerContainerPath().c_str().c_str())
 #endif // IS_ENGINE_MODE
 {
 	pointLights.AddCamerasToLight(&cameras);	// Важно !	

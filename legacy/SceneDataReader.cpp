@@ -6,11 +6,11 @@
 
 #include "json.hpp"
 
-using json = nlohmann::json;
-using namespace std::string_literals;
-
 SceneDataReader::SceneDataReader(const char* path)
 {
+	using json = nlohmann::json;
+	using namespace std::string_literals;
+
 	const auto dataPath = path;
 
 	std::ifstream dataFile(dataPath);
@@ -57,6 +57,26 @@ SceneDataReader::SceneDataReader(const char* path)
 
 SceneDataReader::~SceneDataReader()
 {
+}
+
+std::string SceneDataReader::GetCameraContainerPath() const
+{
+	return paths[3];
+}
+
+std::string SceneDataReader::GetPointLightContainerPath() const
+{
+	return paths[2];
+}
+
+std::string SceneDataReader::GetModelContainerPath() const
+{
+	return paths[0];
+}
+
+std::string SceneDataReader::GetTriggerContainerPath() const
+{
+	return paths[1];
 }
 
 std::vector<std::string>& SceneDataReader::GetPaths()
