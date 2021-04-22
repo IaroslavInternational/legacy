@@ -156,23 +156,24 @@ void Scene::ResetPos()
 #if IS_ENGINE_MODE
 /***************** Интерфейс *****************/
 
-void Scene::SetPanelWidthAndPos(int corner, float width, float height)
+void Scene::SetPanelWidthAndPos(int corner, float width, float height, float x_offset, float y_offset)
 {
 	ImGuiIO& io = ImGui::GetIO();
 
 	float MenuHeight = ImGui::GetMenuHeight();
+	ImVec2 DispSize = io.DisplaySize;
+	
+	float PanelW = round(DispSize.x * width);
+	float PanelH = DispSize.y * height;
 
-	float PanelW = round(io.DisplaySize.x * width);
-	float PanelH = io.DisplaySize.y * height;
-
-	ImVec2 BottomPanelSize = ImVec2(
+	ImVec2 PanelSize = ImVec2(
 		PanelW,
 		PanelH
 	);
 
 	ImVec2 PanelPos = ImVec2(
-		(corner & 1) ? io.DisplaySize.x : 0.0f,
-		(corner & 2) ? io.DisplaySize.y + MenuHeight : MenuHeight
+		(corner & 1) ? DispSize.x + round(DispSize.x * x_offset) : round(DispSize.x * x_offset),
+		(corner & 2) ? DispSize.y + MenuHeight + DispSize.y * y_offset : MenuHeight + DispSize.y * y_offset
 	);
 
 	ImVec2 PanelPivot = ImVec2(
@@ -181,7 +182,7 @@ void Scene::SetPanelWidthAndPos(int corner, float width, float height)
 	);
 
 	ImGui::SetNextWindowPos(PanelPos, ImGuiCond_Always, PanelPivot);
-	ImGui::SetNextWindowSize(BottomPanelSize);
+	ImGui::SetNextWindowSize(PanelSize);
 }
 
 void Scene::ShowMenu()
@@ -270,7 +271,6 @@ void Scene::ShowMenu()
 
 					objects.models.OpenDialog();
 
-
 					ImGui::EndMenu();
 				}
 
@@ -337,7 +337,7 @@ void Scene::ShowLeftSide()
 	}
 	else if (ShowCamsList)
 	{
-		objects.cameras.ShowCamsInformationAndSettings(wnd->Gfx());
+		objects.cameras.ShowLeftPanel();
 	}
 
 	/**************/
@@ -351,8 +351,9 @@ void Scene::ShowLeftSide()
 void Scene::ShowRightSide()
 {
 	/* Правая сторона */
-
+	
 	ImGuiIO& io = ImGui::GetIO();
+
 	int corner = 1;
 
 	float MenuHeight = ImGui::GetMenuHeight();
@@ -363,7 +364,7 @@ void Scene::ShowRightSide()
 		(corner & 2) ? 1.0f : 0.0f
 	);
 
-	SetPanelWidthAndPos(corner, 0.2f, 0.75f);
+	SetPanelWidthAndPos(corner, 0.2f, 1.0f);
 
 	/* Содержимое */
 
@@ -419,7 +420,7 @@ void Scene::ShowBottomPanel()
 {
 	/* Нижняя стороны */
 
-	SetPanelWidthAndPos(3, 0.8f, 0.25f);
+	SetPanelWidthAndPos(3, 0.6f, 0.25f, -0.2f);
 
 	/* Содержимое */
 

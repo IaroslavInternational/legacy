@@ -40,7 +40,7 @@ private:
 	EngineTimer timer;
 
 	// Скорость
-	float speed_factor = 2.0f;
+	float speed_factor = 1.0f;
 
 	// Контейнер сцен
 	std::map<std::unique_ptr<Scene>, bool> scenes;

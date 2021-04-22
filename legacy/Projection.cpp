@@ -20,17 +20,17 @@ DirectX::XMMATRIX Projection::GetMatrix() const
 void Projection::RenderWidgets( Graphics& gfx )
 {
 	bool dirty = false;
-	const auto dcheck = [&dirty]( bool d ) { dirty = dirty || d; };
+	const auto dcheck = [&dirty](bool d) { dirty = dirty || d; };
 
-	ImGui::Text( "Projection" );
-	dcheck( ImGui::SliderFloat( "Width",&width,0.01f,4.0f,"%.2f",1.5f ) );
-	dcheck( ImGui::SliderFloat( "Height",&height,0.01f,4.0f,"%.2f",1.5f ) );
-	dcheck( ImGui::SliderFloat( "Near Z",&nearZ,0.01f,farZ - 0.01f,"%.2f",4.0f ) );
-	dcheck( ImGui::SliderFloat( "Far Z",&farZ,nearZ + 0.01f,400.0f,"%.2f",4.0f ) );
+	ImGui::Text( "Проекция" );
+	dcheck(ImGui::SliderFloat("Ширина", &width, 0.01f, 4.0f, "%.2f", 1.5f));
+	dcheck(ImGui::SliderFloat("Высота", &height, 0.01f, 4.0f, "%.2f", 1.5f));
+	dcheck(ImGui::SliderFloat("Near Z", &nearZ, 0.01f, farZ - 0.01f, "%.2f", 4.0f));
+	dcheck(ImGui::SliderFloat("Far Z", &farZ, nearZ + 0.01f, 400.0f, "%.2f", 4.0f));
 
 	if( dirty )
 	{
-		frust.SetVertices( gfx,width,height,nearZ,farZ );
+		frust.SetVertices(gfx, width, height, nearZ, farZ);
 	}
 }
 

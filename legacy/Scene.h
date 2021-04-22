@@ -45,7 +45,7 @@ private:
 	/**** Панели ****/
 
 	// Установка положения и размеров панели
-	void SetPanelWidthAndPos(int corner, float width, float height);
+	void SetPanelWidthAndPos(int corner, float width, float height, float x_offset = 0.0f, float y_offset = 0.0f);
 
 	// Верхня панель меню
 	void ShowMenu();

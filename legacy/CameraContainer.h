@@ -1,4 +1,5 @@
 #pragma once
+
 #include "EngineConverter.h"
 
 #if IS_ENGINE_MODE
@@ -21,51 +22,49 @@ class CameraContainer
 {
 public:
 #if IS_ENGINE_MODE
-	CameraContainer(const char* path, Graphics& gfx, AppLog* aLog);
+	CameraContainer(const char* path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog);
 #else
 	CameraContainer(const char* path, Graphics& gfx);
 #endif // IS_ENGINE_MODE
 	~CameraContainer();
-	
 public:
-	Camera* operator->();
-	
-	void LinkTechniques( Rgph::RenderGraph& rg );
-	void Submit( size_t channels ) const;
-	void Bind(Graphics& gfx);
-
-	void AddCamera(std::shared_ptr<Camera> pCam);
-
-	Camera& GetActiveCamera();
-
-	std::shared_ptr<Camera> GetPtr2ActiveCamera();
-
-	std::shared_ptr<Camera> GetPtr2CameraByName(std::string name);
-
-	void ShowCamsInformationAndSettings(Graphics& gfx);
-
+	Camera* operator->();											// Указатель на камеру
 #if IS_ENGINE_MODE
-	size_t CamerasAmount();
-
-	std::string GetCameraNameByIndex(size_t index);
+	void LinkTechniques();											// Добавить к рендеру
 #endif // IS_ENGINE_MODE
-private:
-	Camera& GetControlledCamera();
-private:
-	// Путь к файлу с данными о моделях
-	const char* path;
-
-	// Камеры
-	std::vector<std::shared_ptr<Camera>> cameras;
-	
-	// Индекс активной камеры
-	int active = 0;
-
-	// Индекс управляемой камеры
-	int controlled = 0;
-
+	void Submit(size_t channels) const;								// Добавить к каналу отрисовки
+	void Bind();													// Установка камеры в графическом ядре
+public:
+	Camera& GetActiveCamera();
+	std::shared_ptr<Camera> GetPtr2ActiveCamera();					// Указатель на активную камеру
+	std::shared_ptr<Camera> GetPtr2CameraByName(std::string name);	// Указатель на камеру по имени
+public:
 #if IS_ENGINE_MODE
-	// Лог
-	AppLog* applog;
+	size_t CamerasAmount();											// Кол-во камер
+	std::string GetCameraNameByIndex(size_t index);					// Имя камеры по индексу в контейнере
+#endif // IS_ENGINE_MODE
+public:
+	void ShowLeftPanel();											// Показать левую панель для камер
+	void OpenDialog();												// Открыть диалоговое окно для добавления камеры на сцену
+	void AddCamera(std::shared_ptr<Camera> pCam);					// Добавить камеру
+private:
+	void DeleteCamera(std::string name);							// Удалить камеру
+	Camera& GetControlledCamera();									// Адрес управляемой камеры
+private:
+	const char* path;												// Путь к файлу с данными о моделях
+	Graphics& gfx;													// Адрес графичсекого ядра
+#if IS_ENGINE_MODE
+	Rgph::RenderGraph& rg;											// Адрес рендер-графа
+#endif // IS_ENGINE_MODE
+	std::vector<std::shared_ptr<Camera>> cameras;					// Камеры
+private:
+	size_t active = 0;												// Индекс активной камеры
+	size_t controlled = 0;											// Индекс управляемой камеры
+private:
+#if IS_ENGINE_MODE
+	bool IsSave = false;											// Если нажата кнопка сохранить
+	bool IsDelete = false;											// Если нажата кнопка удалить
+
+	AppLog* applog;													// Лог
 #endif
 };

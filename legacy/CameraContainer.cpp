@@ -18,14 +18,17 @@ using json = nlohmann::json;
 using namespace std::string_literals;
 
 #if IS_ENGINE_MODE
-CameraContainer::CameraContainer(const char* path, Graphics& gfx, AppLog* aLog)
+CameraContainer::CameraContainer(const char* path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog)
 	:
 	path(path),
+	gfx(gfx),
+	rg(rg),
 	applog(aLog)
 #else
 CameraContainer::CameraContainer(const char* path, Graphics& gfx)
 	:
-	path(path)
+	path(path),
+	gfx(gfx)
 #endif // IS_ENGINE_MODE
 {
 #if IS_ENGINE_MODE
@@ -92,23 +95,22 @@ Camera* CameraContainer::operator->()
 CameraContainer::~CameraContainer()
 {}
 
-void CameraContainer::LinkTechniques( Rgph::RenderGraph& rg )
+#if IS_ENGINE_MODE
+void CameraContainer::LinkTechniques()
 {
 	for(int i = 0; i < cameras.size(); i++)
 	{
 		cameras[i]->LinkTechniques(rg);
 
-#if IS_ENGINE_MODE
 		std::ostringstream oss;
 		oss << "Добавлено к рендеру [" << cameras[i]->GetName() << "]\n";
 
 		applog->AddLog(CAMERAS_LOG, oss.str().c_str());
-#endif // IS_ENGINE_MODE
-
 	}
 }
+#endif // IS_ENGINE_MODE
 
-void CameraContainer::Submit( size_t channels ) const
+void CameraContainer::Submit(size_t channels) const
 {
 	for( size_t i = 0; i < cameras.size(); i++ )
 	{
@@ -119,22 +121,9 @@ void CameraContainer::Submit( size_t channels ) const
 	}
 }
 
-void CameraContainer::Bind(Graphics& gfx)
+void CameraContainer::Bind()
 {
 	gfx.SetCamera((*this)->GetMatrix());
-}
-
-void CameraContainer::AddCamera(std::shared_ptr<Camera> pCam)
-{
-	cameras.push_back(std::move(pCam));
-
-#if IS_ENGINE_MODE
-	std::ostringstream oss;
-	oss << "Добавлено [" << cameras.at(cameras.size() - 1)->GetName() << "]\n";
-
-	applog->AddLog(CAMERAS_LOG, oss.str().c_str());
-#endif // IS_ENGINE_MODE
-
 }
 
 Camera& CameraContainer::GetActiveCamera()
@@ -162,7 +151,17 @@ std::shared_ptr<Camera> CameraContainer::GetPtr2CameraByName(std::string name)
 }
 
 #if IS_ENGINE_MODE
-void CameraContainer::ShowCamsInformationAndSettings(Graphics& gfx)
+size_t CameraContainer::CamerasAmount()
+{
+	return cameras.size();
+}
+
+std::string CameraContainer::GetCameraNameByIndex(size_t index)
+{
+	return cameras.at(index)->GetName().c_str();
+}
+
+void CameraContainer::ShowLeftPanel()
 {
 	if (ImGui::Begin("Камеры", NULL,
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
@@ -195,20 +194,49 @@ void CameraContainer::ShowCamsInformationAndSettings(Graphics& gfx)
 		}
 
 		GetControlledCamera().SpawnControlWidgets(gfx);
+
+		if (ImGui::Button("Удалить", ImVec2(100, 20)))
+		{
+			IsDelete = true;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Сохранить", ImVec2(100, 20)))
+		{
+			IsSave = true;
+		}
 	}
 	ImGui::End();
 }
 
-size_t CameraContainer::CamerasAmount()
+void CameraContainer::OpenDialog()
 {
-	return cameras.size();
-}
-
-std::string CameraContainer::GetCameraNameByIndex(size_t index)
-{
-	return cameras.at(index)->GetName().c_str();
 }
 #endif // IS_ENGINE_MODE
+
+void CameraContainer::AddCamera(std::shared_ptr<Camera> pCam)
+{
+	cameras.push_back(std::move(pCam));
+
+#if IS_ENGINE_MODE
+	std::ostringstream oss;
+	oss << "Добавлено [" << cameras.at(cameras.size() - 1)->GetName() << "]\n";
+
+	applog->AddLog(CAMERAS_LOG, oss.str().c_str());
+#endif // IS_ENGINE_MODE
+}
+
+void CameraContainer::DeleteCamera(std::string name)
+{
+	for (auto cam = cameras.begin(); cam != cameras.end(); ++cam)
+	{
+		if (cam->get()->GetName() == name)
+		{
+			cameras.erase(cam);
+		}
+	}
+}
 
 Camera& CameraContainer::GetControlledCamera()
 {

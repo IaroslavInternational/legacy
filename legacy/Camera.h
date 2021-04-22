@@ -51,7 +51,7 @@ private:
 	float pitch;
 	float yaw;
 
-	static constexpr float travelSpeed = 12.0f;
+	static constexpr float travelSpeed = 24.0f;
 	static constexpr float rotationSpeed = 0.004f;
 #if IS_ENGINE_MODE
 	bool enableCameraIndicator = false;

@@ -61,38 +61,42 @@ void Camera::SpawnControlWidgets( Graphics& gfx ) noexcept
 {
 	bool rotDirty = false;
 	bool posDirty = false;
+	
 	const auto dcheck = []( bool d,bool& carry ) { carry = carry || d; };
+	
 	if( !tethered )
 	{
 		ImGui::Text( "Позиция" );
-		dcheck( ImGui::SliderFloat( "X",&pos.x,-80.0f,80.0f,"%.1f" ),posDirty );
-		dcheck( ImGui::SliderFloat( "Y",&pos.y,-80.0f,80.0f,"%.1f" ),posDirty );
-		dcheck( ImGui::SliderFloat( "Z",&pos.z,-80.0f,80.0f,"%.1f" ),posDirty );
+		dcheck(ImGui::SliderFloat("X", &pos.x, -80.0f, 80.0f, "%.1f"), posDirty);
+		dcheck(ImGui::SliderFloat("Y", &pos.y, -80.0f, 80.0f, "%.1f"), posDirty);
+		dcheck(ImGui::SliderFloat("Z", &pos.z, -80.0f, 80.0f, "%.1f"), posDirty);
 	}
+	
 	ImGui::Text( "Ориентация" );
-	dcheck( ImGui::SliderAngle( "Pitch",&pitch,0.995f * -90.0f,0.995f * 90.0f ), rotDirty );
-	dcheck( ImGui::SliderAngle( "Yaw",&yaw,-180.0f,180.0f ), rotDirty );
+	dcheck(ImGui::SliderAngle("Тангаж", &pitch, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
+	dcheck(ImGui::SliderAngle("Расканье", &yaw, -180.0f, 180.0f), rotDirty);
+	
 	proj.RenderWidgets( gfx );
-	ImGui::Checkbox( "Индикатор",&enableCameraIndicator );
-	ImGui::Checkbox( "Отображение",&enableFrustumIndicator );
-	if( ImGui::Button( "Reset" ) )
+	
+	ImGui::Checkbox("Индикатор", &enableCameraIndicator);
+	ImGui::Checkbox("Отображение", &enableFrustumIndicator);
+	
+	if (ImGui::Button("Сбросить"))
 	{
 		Reset(gfx);
 	}
 
-#if IS_ENGINE_MODE
 	if( rotDirty )
 	{
-		const dx::XMFLOAT3 angles = { pitch,yaw,0.0f };
-		indicator.SetRotation( angles );
-		proj.SetRotation( angles );
+		const dx::XMFLOAT3 angles = { pitch, yaw, 0.0f };
+		indicator.SetRotation(angles);
+		proj.SetRotation(angles);
 	}
 	if( posDirty )
 	{
-		indicator.SetPos( pos );
-		proj.SetPos( pos );
+		indicator.SetPos(pos);
+		proj.SetPos(pos);
 	}
-#endif // IS_ENGINE_MODE
 }
 #endif // IS_ENGINE_MODE
 
