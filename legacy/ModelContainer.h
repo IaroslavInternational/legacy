@@ -12,9 +12,9 @@ class ModelContainer
 {
 public:
 #if IS_ENGINE_MODE
-	ModelContainer(std::string, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog);
+	ModelContainer(std::string path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog);
 #else
-	ModelContainer(std::string, Graphics& gfx, Rgph::RenderGraph& rg);
+	ModelContainer(std::string path, Graphics& gfx, Rgph::RenderGraph& rg);
 #endif // IS_ENGINE_MODE
 	~ModelContainer();
 public:

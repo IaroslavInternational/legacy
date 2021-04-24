@@ -2,9 +2,9 @@
 
 #if IS_ENGINE_MODE
 #include "imgui/imgui.h"
-#include "Camera.h"
 #endif // IS_ENGINE_MODE
 
+#include "Camera.h"
 #include "EngineMath.h"
 
 PointLight::PointLight(Graphics& gfx, std::string name, DirectX::XMFLOAT3 pos, float radius)
@@ -25,9 +25,7 @@ PointLight::PointLight(Graphics& gfx, std::string name, DirectX::XMFLOAT3 pos, f
 
 	Reset();
 
-#if IS_ENGINE_MODE
 	pCamera = std::make_shared<Camera>(gfx, name, cbData.pos);
-#endif // IS_ENGINE_MODE
 }
 
 #if IS_ENGINE_MODE
@@ -111,9 +109,7 @@ void PointLight::Reset() noexcept
 	cbData = home;
 }
 
-#if IS_ENGINE_MODE
 std::shared_ptr<Camera> PointLight::ShareCamera() const noexcept
 {
 	return pCamera;
 }
-#endif // IS_ENGINE_MODE

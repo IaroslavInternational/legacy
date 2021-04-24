@@ -14,9 +14,9 @@ namespace Rgph
 {
 	class RenderGraph;
 }
+#endif // IS_ENGINE_MODE
 
 class Camera;
-#endif // IS_ENGINE_MODE
 
 class PointLight
 {
@@ -33,9 +33,7 @@ public:
 public:
 	std::string GetName() const noexcept;								// Получить имя ист. света
 	void Reset() noexcept;												// Сбросить данные
-#if IS_ENGINE_MODE
 	std::shared_ptr<Camera> ShareCamera() const noexcept;				// Получить укзатель на камеру
-#endif // IS_ENGINE_MODE
 public:
 #if IS_ENGINE_MODE
 	void SpawnDefaultControl() noexcept;								// Базовый интерфейс управления
@@ -58,9 +56,7 @@ private:
 	mutable SolidSphere mesh;											// Меш (сфера)
 #endif // IS_ENGINE_MODE
 	mutable Bind::PixelConstantBuffer<PointLightCBuf> cbuf;				// Буфер шейдера
-#if IS_ENGINE_MODE
 	mutable std::shared_ptr<Camera> pCamera;							// Указатель на камеру
-#endif // IS_ENGINE_MODE
 private:
 	std::string name;													// Имя ист. света
 	bool IsRendered = true;												// Разрешена ли отрисовка

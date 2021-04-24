@@ -8,16 +8,16 @@ SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx,
 	:
 	sdr(pathToObjectsData),
 #if IS_ENGINE_MODE
-	cameras(sdr.GetCameraContainerPath().c_str(), gfx, rg, &applog),
-	models(sdr.GetModelContainerPath(), gfx, rg, &applog),
-	pointLights(sdr.GetPointLightContainerPath().c_str(), gfx, &applog),
+	cameras(	  sdr.GetCameraContainerPath(),		gfx, rg, &applog),
+	models(		  sdr.GetModelContainerPath(),		gfx, rg, &applog),
+	pointLights(  sdr.GetPointLightContainerPath(), gfx, rg, &applog),
 	triggersScene(sdr.GetTriggerContainerPath().c_str(), gfx, &applog),
 	nEditor(cameras, models, &applog)
 #else
-	cameras(sdr.GetCameraContainerPath().c_str(), gfx),
-	models(sdr.GetModelContainerPath().c_str(), gfx, rg),
-	pointLights(sdr.GetPointLightContainerPath().c_str(), gfx),
-	triggersScene(sdr.GetTriggerContainerPath().c_str().c_str())
+	cameras(	  sdr.GetCameraContainerPath(),		gfx),
+	models(		  sdr.GetModelContainerPath(),		gfx, rg),
+	pointLights(  sdr.GetPointLightContainerPath(), gfx),
+	triggersScene(sdr.GetTriggerContainerPath().c_str())
 #endif // IS_ENGINE_MODE
 {
 	pointLights.AddCamerasToLight(&cameras);	// Важно !	
@@ -31,7 +31,7 @@ SceneObjects::~SceneObjects()
 #if IS_ENGINE_MODE
 void SceneObjects::LinkTechniques(Rgph::RenderGraph& rg)
 {
-	pointLights.LinkTechniques(rg);
+	pointLights.LinkTechniques();
 	cameras.LinkTechniques();
 	triggersScene.LinkTechniques(rg);
 	models.LinkTechniques();
@@ -45,16 +45,13 @@ void SceneObjects::Submit(size_t channels)
 	models.Submit(channels);
 }
 #else
-
 void SceneObjects::LinkTechniques(Rgph::RenderGraph& rg)
 {
-	pointLights.LinkTechniques(rg);
 	models.LinkTechniques(rg);
 }
 
 void SceneObjects::Submit(size_t channels)
 {
-	pointLights.Submit(channels);
 	models.Submit(channels);
 }
 #endif // IS_ENGINE_MODE

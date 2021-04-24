@@ -3,45 +3,49 @@
 #include "EngineConverter.h"
 
 #include "PointLight.h"
-#include "BlurOutlineRenderGraph.h"
-#include "CameraContainer.h"
 
 #if IS_ENGINE_MODE
 #include "AppLog.h"
+#include "CameraContainer.h"
 #endif // IS_ENGINE_MODE
+
+#include "BlurOutlineRenderGraph.h"
 
 class PointLightContainer
 {
 public:
 #if IS_ENGINE_MODE
-	PointLightContainer(const char* path, Graphics& gfx, AppLog* aLog);
+	PointLightContainer(std::string path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog);
 #else
-	PointLightContainer(const char* path, Graphics& gfx);
+	PointLightContainer(std::string path, Graphics& gfx);
 #endif
 	~PointLightContainer();
-
-	void LinkTechniques(Rgph::RenderGraph& rg);
-	void Bind(Graphics& gfx, DirectX::FXMMATRIX view);
-	void Submit(size_t channels);
-
-	void RgBindShadowCamera(Rgph::BlurOutlineRenderGraph& rg);
-	void AddCamerasToLight(CameraContainer* camcon);
-
+public:
 #if IS_ENGINE_MODE
-	// Показать источники освещения *Левая панель*
-	void ShowPLightsInformation();
-
-	// Показать источники освещения *Правая панель*
-	void ShowPLightsProperties();
+	void LinkTechniques();										// Добавить к рендеру
+	void Submit(size_t channels);								// Добавить к каналу отрисовки
+#endif // IS_ENGINE_MODE
+	void Bind(DirectX::FXMMATRIX view);							// Обновить данные для шейдера
+public:
+	void RgBindShadowCamera(Rgph::BlurOutlineRenderGraph& rg);	// Установить главную камеру
+	void AddCamerasToLight(CameraContainer* camcon);			// Добавить камеру к ист. освещения
+public:
+#if IS_ENGINE_MODE
+	void ShowLeftPanel();										// Показать левую панель для ист. освещения
+	void ShowRightPanel();										// Показать правую панель для ист. освещения
 #endif // IS_ENGINE_MODE
 private:
-	std::vector<std::string> pLightsName;
-	std::vector<DirectX::XMFLOAT3> pLightsPos;
-	std::vector<std::unique_ptr<PointLight>> pLights;
+	std::vector<std::unique_ptr<PointLight>> pLights;			// Точечные источники освещения
+private:
+	std::string path;											// Путь к файлу с данными об ист. освещения
+	Graphics& gfx;												// Адрес графичсекого ядра
+#if IS_ENGINE_MODE
+	Rgph::RenderGraph& rg;										// Адрес рендер-графа
+#endif // IS_ENGINE_MODE
 private:
 #if IS_ENGINE_MODE
-	const char* selected = "";
+	std::string selected = "";									// Выбранные элемент в списке ист. освещения
 
-	AppLog* applog;
+	AppLog* applog;												// Лог
 #endif // IS_ENGINE_MODE
 };

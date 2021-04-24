@@ -22,9 +22,9 @@ class CameraContainer
 {
 public:
 #if IS_ENGINE_MODE
-	CameraContainer(const char* path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog);
+	CameraContainer(std::string path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog);
 #else
-	CameraContainer(const char* path, Graphics& gfx);
+	CameraContainer(std::string path, Graphics& gfx);
 #endif // IS_ENGINE_MODE
 	~CameraContainer();
 public:
@@ -51,7 +51,7 @@ private:
 	void DeleteCamera(std::string name);							// Удалить камеру
 	Camera& GetControlledCamera();									// Адрес управляемой камеры
 private:
-	const char* path;												// Путь к файлу с данными о моделях
+	std::string path = "";											// Путь к файлу с данными о моделях
 	Graphics& gfx;													// Адрес графичсекого ядра
 #if IS_ENGINE_MODE
 	Rgph::RenderGraph& rg;											// Адрес рендер-графа

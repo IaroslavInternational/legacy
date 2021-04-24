@@ -18,14 +18,14 @@ using json = nlohmann::json;
 using namespace std::string_literals;
 
 #if IS_ENGINE_MODE
-CameraContainer::CameraContainer(const char* path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog)
+CameraContainer::CameraContainer(std::string path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog)
 	:
 	path(path),
 	gfx(gfx),
 	rg(rg),
 	applog(aLog)
 #else
-CameraContainer::CameraContainer(const char* path, Graphics& gfx)
+CameraContainer::CameraContainer(std::string path, Graphics& gfx)
 	:
 	path(path),
 	gfx(gfx)

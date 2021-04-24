@@ -115,7 +115,7 @@ void Scene::Render(float dt)
 
 	/****************/
 
-	objects.pointLights.Bind(wnd->Gfx(), objects.cameras->GetMatrix());
+	objects.pointLights.Bind(objects.cameras->GetMatrix());
 	rg.BindMainCamera(objects.cameras.GetActiveCamera());
 
 	objects.Submit(Chan::main);
@@ -333,7 +333,7 @@ void Scene::ShowLeftSide()
 	}
 	else if (ShowPLightsList)
 	{
-		objects.pointLights.ShowPLightsInformation();
+		objects.pointLights.ShowLeftPanel();
 	}
 	else if (ShowCamsList)
 	{
@@ -387,7 +387,7 @@ void Scene::ShowRightSide()
 	}
 	else if (ShowPLightsSettings)
 	{
-		objects.pointLights.ShowPLightsProperties();
+		objects.pointLights.ShowRightPanel();
 
 		ImGui::SetNextWindowPos({ round(io.DisplaySize.x - RightPanelW), MenuHeight }, 0, RightPanelPivot);
 		ImGui::SetNextWindowSize({ io.DisplaySize.x * 0.15f, io.DisplaySize.y * 0.15f }, ImGuiCond_FirstUseEver);

@@ -14,62 +14,24 @@ using json = nlohmann::json;
 using namespace std::string_literals;
 
 #if IS_ENGINE_MODE
-PointLightContainer::PointLightContainer(const char* path, Graphics& gfx, AppLog* aLog)
+PointLightContainer::PointLightContainer(std::string path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog)
 	:
+	path(path),
+	gfx(gfx),
+	rg(rg),
 	applog(aLog)
-{
-	applog->AddLog(POINTLIGHTS_LOG, "Инициализация\n");
-
-	const auto dataPath = path;
-
-	std::ifstream dataFile(dataPath);
-	if (!dataFile.is_open())
-	{
-		throw ("Не удаётся открыть файл с данными о точечном освещении");
-	}
-
-	json j;
-	dataFile >> j;
-
-	for (json::iterator m = j.begin(); m != j.end(); ++m)
-	{
-		auto d = m.key();
-
-		for (const auto& obj : j.at(d))
-		{
-			/* Запись имени объекта */
-
-			std::string name = d.c_str();
-			pLightsName.push_back(name);
-
-			/************************/
-
-			/* Запись позиции */
-
-			float pos_x = obj.at("pos-x");
-			float pos_y = obj.at("pos-y");
-			float pos_z = obj.at("pos-z");
-
-			DirectX::XMFLOAT3 position = { pos_x, pos_y, pos_z };
-
-			pLightsPos.emplace_back(position);
-
-			/******************/
-
-			/* Запись источника освещения */
-
-			pLights.emplace_back(std::make_unique<PointLight>(gfx, name, position));
-
-			/**************************************************/
-		}
-	}
-}
 #else
-PointLightContainer::PointLightContainer(const char* path, Graphics& gfx)
+PointLightContainer::PointLightContainer(std::string path, Graphics& gfx)
+	:
+	path(path),
+	gfx(gfx)
+#endif // IS_ENGINE_MODE
 {
-	const auto dataPath = path;
+#if IS_ENGINE_MODE
+	applog->AddLog(POINTLIGHTS_LOG, "Инициализация\n");
+#endif // IS_ENGINE_MODE
 
-	std::ifstream dataFile(dataPath);
+	std::ifstream dataFile(path);
 	if (!dataFile.is_open())
 	{
 		throw ("Не удаётся открыть файл с данными о точечном освещении");
@@ -87,7 +49,6 @@ PointLightContainer::PointLightContainer(const char* path, Graphics& gfx)
 			/* Запись имени объекта */
 
 			std::string name = d.c_str();
-			pLightsName.push_back(name);
 
 			/************************/
 
@@ -99,8 +60,6 @@ PointLightContainer::PointLightContainer(const char* path, Graphics& gfx)
 
 			DirectX::XMFLOAT3 position = { pos_x, pos_y, pos_z };
 
-			pLightsPos.emplace_back(position);
-
 			/******************/
 
 			/* Запись источника освещения */
@@ -111,13 +70,13 @@ PointLightContainer::PointLightContainer(const char* path, Graphics& gfx)
 		}
 	}
 }
-#endif // IS_ENGINE_MODE
 
 PointLightContainer::~PointLightContainer()
 {
 }
 
-void PointLightContainer::LinkTechniques(Rgph::RenderGraph& rg)
+#if IS_ENGINE_MODE
+void PointLightContainer::LinkTechniques()
 {
 	for (int i = 0; i < pLights.size(); i++)
 	{
@@ -125,19 +84,11 @@ void PointLightContainer::LinkTechniques(Rgph::RenderGraph& rg)
 
 #if IS_ENGINE_MODE
 		std::ostringstream oss;
-		oss << "Добавлено к рендеру [" << pLightsName[i] << "]\n";
+		oss << "Добавлено к рендеру [" << pLights[i]->GetName() << "]\n";
 
 		applog->AddLog(POINTLIGHTS_LOG, oss.str().c_str());
 #endif // IS_ENGINE_MODE
 
-	}
-}
-
-void PointLightContainer::Bind(Graphics& gfx, DirectX::FXMMATRIX view)
-{
-	for (auto& pl : pLights)
-	{
-		pl->Bind(gfx, view);
 	}
 }
 
@@ -146,6 +97,15 @@ void PointLightContainer::Submit(size_t channels)
 	for (auto& pl : pLights)
 	{
 		pl->Submit(channels);
+	}
+}
+#endif // IS_ENGINE_MODE
+
+void PointLightContainer::Bind(DirectX::FXMMATRIX view)
+{
+	for (auto& pl : pLights)
+	{
+		pl->Bind(gfx, view);
 	}
 }
 
@@ -166,38 +126,39 @@ void PointLightContainer::AddCamerasToLight(CameraContainer* camcon)
 }
 
 #if IS_ENGINE_MODE
-void PointLightContainer::ShowPLightsInformation()
+void PointLightContainer::ShowLeftPanel()
 {
 	if (ImGui::Begin("Источники освещения", NULL,
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus))
 	{
-		for (auto& pln : pLightsName)
+		for (auto& pl : pLights)
 		{
 			char label[128];
-			sprintf_s(label, pln.c_str(), selected);
+			sprintf_s(label, pl->GetName().c_str(), selected);
 
 			ImGui::Bullet();
-			if (ImGui::Selectable(label, selected == pln))
+			if (ImGui::Selectable(label, selected == pl->GetName()))
 			{
-				selected = pln.c_str();
+				selected = pl->GetName();
 			}
 		}
 	}
+
 	ImGui::End();
 }
 
-void PointLightContainer::ShowPLightsProperties()
+void PointLightContainer::ShowRightPanel()
 {
 	if (ImGui::Begin("Опции", NULL,
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus))
 	{
-		for (int k = 0; k < pLightsName.size(); k++)
+		for (int k = 0; k < pLights.size(); k++)
 		{
-			if (pLightsName.at(k) == selected)
+			if (pLights[k]->GetName() == selected)
 			{
-				pLights.at(k)->SpawnDefaultControl();
+				pLights[k]->SpawnDefaultControl();
 				break;
 			}
 		}
