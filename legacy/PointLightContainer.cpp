@@ -197,7 +197,7 @@ void PointLightContainer::ShowPLightsProperties()
 		{
 			if (pLightsName.at(k) == selected)
 			{
-				pLights.at(k)->SpawnControlWindow();
+				pLights.at(k)->SpawnDefaultControl();
 				break;
 			}
 		}

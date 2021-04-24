@@ -33,7 +33,8 @@ Model::Model(std::string name, const std::string& path, Graphics& gfx,
 		aiProcess_ConvertToLeftHanded |
 		aiProcess_GenNormals |
 		aiProcess_CalcTangentSpace |
-		aiAnimBehaviour_REPEAT);
+		aiAnimBehaviour_REPEAT
+	);
 
 	if( pScene == nullptr )
 	{

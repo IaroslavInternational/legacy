@@ -1,35 +1,47 @@
 #pragma once
 
 #include "Graphics.h"
+
+#if IS_ENGINE_MODE
 #include "SolidSphere.h"
+#endif // IS_ENGINE_MODE
+
 #include "ConstantBuffers.h"
 #include "ConditionalNoexcept.h"
 
+#if IS_ENGINE_MODE
 namespace Rgph
 {
 	class RenderGraph;
 }
 
 class Camera;
+#endif // IS_ENGINE_MODE
 
 class PointLight
 {
 public:
-	PointLight( Graphics& gfx, std::string name, DirectX::XMFLOAT3 pos = { 10.0f,9.0f,2.5f }, float radius = 0.5f);
-
+	PointLight(Graphics& gfx, std::string name, 
+			   DirectX::XMFLOAT3 pos = { 0.0f,0.0f,0.0f }, 
+			   float radius = 0.5f);
+public:
 #if IS_ENGINE_MODE
-	void SpawnControlWindow() noexcept;
+	void LinkTechniques(Rgph::RenderGraph& rg);							// Добавить к рендеру
+	void Submit(size_t channels) const noxnd;							// Добавить к каналу отрисовки
 #endif // IS_ENGINE_MODE
-
-	void Reset() noexcept;
-	void Submit( size_t channels ) const noxnd;
-	
-	void Bind( Graphics& gfx,DirectX::FXMMATRIX view ) const noexcept;
-	void LinkTechniques( Rgph::RenderGraph& );
-
-	std::shared_ptr<Camera> ShareCamera() const noexcept;
+	void Bind(Graphics& gfx, DirectX::FXMMATRIX view) const noexcept;	// Обновить данные для шейдера
+public:
+	std::string GetName() const noexcept;								// Получить имя ист. света
+	void Reset() noexcept;												// Сбросить данные
+#if IS_ENGINE_MODE
+	std::shared_ptr<Camera> ShareCamera() const noexcept;				// Получить укзатель на камеру
+#endif // IS_ENGINE_MODE
+public:
+#if IS_ENGINE_MODE
+	void SpawnDefaultControl() noexcept;								// Базовый интерфейс управления
+#endif // IS_ENGINE_MODE
 private:
-	struct PointLightCBuf
+	struct PointLightCBuf												// Буфер данных ист. освещения для шейдера
 	{
 		alignas(16) DirectX::XMFLOAT3 pos;
 		alignas(16) DirectX::XMFLOAT3 ambient;
@@ -40,9 +52,16 @@ private:
 		float attQuad;
 	};
 private:
-	PointLightCBuf home;
-	PointLightCBuf cbData;
-	mutable SolidSphere mesh;
-	mutable Bind::PixelConstantBuffer<PointLightCBuf> cbuf;
-	std::shared_ptr<Camera> pCamera;
+	PointLightCBuf home;												// Исходный буфер данных
+	PointLightCBuf cbData;												// Изменяемый буфер данных
+#if IS_ENGINE_MODE
+	mutable SolidSphere mesh;											// Меш (сфера)
+#endif // IS_ENGINE_MODE
+	mutable Bind::PixelConstantBuffer<PointLightCBuf> cbuf;				// Буфер шейдера
+#if IS_ENGINE_MODE
+	mutable std::shared_ptr<Camera> pCamera;							// Указатель на камеру
+#endif // IS_ENGINE_MODE
+private:
+	std::string name;													// Имя ист. света
+	bool IsRendered = true;												// Разрешена ли отрисовка
 };
