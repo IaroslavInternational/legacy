@@ -9,7 +9,7 @@ SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx,
 	sdr(pathToObjectsData),
 #if IS_ENGINE_MODE
 	cameras(sdr.GetCameraContainerPath().c_str(), gfx, rg, &applog),
-	models(sdr.GetModelContainerPath().c_str(), gfx, rg, &applog),
+	models(sdr.GetModelContainerPath(), gfx, rg, &applog),
 	pointLights(sdr.GetPointLightContainerPath().c_str(), gfx, &applog),
 	triggersScene(sdr.GetTriggerContainerPath().c_str(), gfx, &applog),
 	nEditor(cameras, models, &applog)

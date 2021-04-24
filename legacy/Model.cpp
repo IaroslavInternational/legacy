@@ -33,14 +33,7 @@ Model::Model(std::string name, const std::string& path, Graphics& gfx,
 		aiProcess_ConvertToLeftHanded |
 		aiProcess_GenNormals |
 		aiProcess_CalcTangentSpace |
-		aiAnimBehaviour_REPEAT
-	);
-
-	/*if (pScene->HasAnimations())
-	{
-		for(size_t i = 0; i < pScene->mNumAnimations; i++)
-			pScene->mAnimations[i]->mTicksPerSecond = 2;
-	}*/
+		aiAnimBehaviour_REPEAT);
 
 	if( pScene == nullptr )
 	{
@@ -92,16 +85,36 @@ void Model::Accept(ModelProbe& probe)
 	pRoot->Accept(probe);
 }
 
-void Model::SetRootTransform(DirectX::XMMATRIX tf) noexcept
-{
-	pRoot->SetAppliedTransform(ScaleTranslation(tf, scale));
-}
-
 void Model::SetScale(float scale)
 {
 	pRoot->SetAppliedTransform(ScaleTranslation(dx::XMMatrixTranspose(dx::XMLoadFloat4x4(
 		&pRoot->GetAppliedTransform()
 	)), scale));
+}
+
+void Model::SetRootTransform(DirectX::XMMATRIX tf) noexcept
+{
+	pRoot->SetAppliedTransform(tf);
+}
+
+bool Model::IsCamConnceted()
+{
+	return isCamAdded;
+}
+
+std::string Model::GetName()
+{
+	return name;
+}
+
+DirectX::XMFLOAT3 Model::GetPosition()
+{
+	return position;
+}
+
+DirectX::XMFLOAT3 Model::GetOrientation()
+{
+	return orientation;
 }
 
 #if IS_ENGINE_MODE
@@ -156,31 +169,6 @@ void Model::SpawnDefaultControl()
 	// 	ImGui::EndChild() в соответсвтующем методе контейнера
 }
 #endif //IS_ENGINE_MODE
-
-std::string Model::GetName()
-{
-	return name;
-}
-
-void Model::SetRenderStatus(bool status)
-{
-	IsRendered = status;
-}
-
-DirectX::XMFLOAT3 Model::GetPosition()
-{
-	return position;
-}
-
-DirectX::XMFLOAT3 Model::GetOrientation()
-{
-	return orientation;
-}
-
-bool Model::IsCamConnceted()
-{
-	return isCamAdded;
-}
 
 void Model::ConnectCamera(std::shared_ptr<Camera> cam, DirectX::XMFLOAT3 offset)
 {

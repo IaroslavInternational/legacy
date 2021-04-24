@@ -17,14 +17,14 @@ using json = nlohmann::json;
 using namespace std::string_literals;
 
 #if IS_ENGINE_MODE
-ModelContainer::ModelContainer(const char* path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog)
+ModelContainer::ModelContainer(std::string path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog)
 	:
 	path(path),
 	applog(aLog),
 	gfx(gfx),
 	rg(rg)
 #else
-ModelContainer::ModelContainer(const char* path, Graphics& gfx, Rgph::RenderGraph& rg)
+ModelContainer::ModelContainer(std::string, Graphics& gfx, Rgph::RenderGraph& rg)
 	:
 	path(path),
 	gfx(gfx),
@@ -204,7 +204,7 @@ void ModelContainer::LoadModel(std::string name, std::string path)
 
 	using std::to_string;
 
-	// Открытие файла с триггерами
+	// Открытие файла с данными о моделях
 	std::ifstream dataFile(this->path);
 	if (!dataFile.is_open())
 	{
@@ -246,7 +246,7 @@ void ModelContainer::LoadModel(std::string name, std::string path)
 	json_str.at(pos_of_par) = ' ';
 	json_str.at(pos_of_par2 + 1) = ',';
 
-	// Запись в файл нового триггера
+	// Запись в файл данных новой модели
 	std::ofstream ostream(this->path);
 	ostream << json_str + newModel.str() + '}';
 

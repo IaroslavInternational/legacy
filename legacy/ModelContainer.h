@@ -12,9 +12,9 @@ class ModelContainer
 {
 public:
 #if IS_ENGINE_MODE
-	ModelContainer(const char* path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog);
+	ModelContainer(std::string, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog);
 #else
-	ModelContainer(const char* path, Graphics& gfx, Rgph::RenderGraph& rg);
+	ModelContainer(std::string, Graphics& gfx, Rgph::RenderGraph& rg);
 #endif // IS_ENGINE_MODE
 	~ModelContainer();
 public:
@@ -37,7 +37,7 @@ private:
 	void DeleteModel(std::string name);									// Удалить модель
 	void Init();														// Установить положение и ориентацию модели
 private:
-	const char* path;													// Путь к файлу с данными о моделях
+	std::string path;													// Путь к файлу с данными о моделях
 	Graphics& gfx;														// Адрес графичсекого ядра
 	Rgph::RenderGraph& rg;												// Адрес рендер-графа
 	std::vector<std::unique_ptr<Model>> models;							// Указатели на модели
