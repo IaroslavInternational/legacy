@@ -45,6 +45,7 @@ public:
 #endif // IS_ENGINE_MODE
 public:
 	void ShowLeftPanel();											// Показать левую панель для камер
+	void ShowRightPanel();											// Показать правую панель для камер
 	void OpenDialog();												// Открыть диалоговое окно для добавления камеры на сцену
 	void AddCamera(std::shared_ptr<Camera> pCam);					// Добавить камеру
 private:
@@ -62,6 +63,8 @@ private:
 	size_t controlled = 0;											// Индекс управляемой камеры
 private:
 #if IS_ENGINE_MODE
+	std::string selected = "";										// Выбранный элемент в списке
+
 	bool IsSave = false;											// Если нажата кнопка сохранить
 	bool IsDelete = false;											// Если нажата кнопка удалить
 

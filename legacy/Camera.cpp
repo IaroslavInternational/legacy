@@ -12,12 +12,13 @@ namespace dx = DirectX;
 Camera::Camera(Graphics& gfx, std::string name,
 			   dx::XMFLOAT3 position,
 			   dx::XMFLOAT2 orientation,
+			   ProjectionData prd,
 			   bool tethered) noexcept
 	:
 	name(std::move(name)),
 	homePosition(position),
 	homeOrientation(orientation),
-	proj(gfx, 1.0f, 9.0f / 16.0f, 0.5f, 400.0f),
+	proj(gfx, prd.width, prd.height, prd.nearZ, prd.farZ),
 	indicator(gfx),
 	tethered(tethered)
 {
@@ -88,6 +89,11 @@ DirectX::XMMATRIX Camera::GetMatrix() const noexcept
 	return XMMatrixLookAtLH(camPosition, camTarget, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
+ProjectionData Camera::GetProjectionData() const noexcept
+{
+	return proj.GetData();
+}
+
 DirectX::XMMATRIX Camera::GetProjection() const noexcept
 {
 	return proj.GetMatrix();
@@ -105,13 +111,14 @@ void Camera::Reset(Graphics& gfx) noexcept
 
 	orientation = homeOrientation;
 
-#if IS_ENGINE_MODE
 	const dx::XMFLOAT3 angles = { orientation.x,orientation.y,0.0f };
 
+#if IS_ENGINE_MODE
 	indicator.SetRotation(angles);
+#endif // IS_ENGINE_MODE
+
 	proj.SetRotation(angles);
 	proj.Reset(gfx);
-#endif // IS_ENGINE_MODE
 }
 
 void Camera::Rotate(float dx, float dy) noexcept

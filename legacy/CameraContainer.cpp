@@ -38,6 +38,8 @@ CameraContainer::CameraContainer(std::string path, Graphics& gfx)
 
 	dataFile.close();
 
+	ProjectionData prd;
+
 	for (json::iterator m = j.begin(); m != j.end(); ++m)
 	{
 		auto& d = m.key();
@@ -70,9 +72,20 @@ CameraContainer::CameraContainer(std::string path, Graphics& gfx)
 
 			/*********************/
 
+			/* Получение проекции */
+
+			float proj_w = obj.at("proj-width");
+			float proj_h = obj.at("proj-height");
+			float proj_nZ = obj.at("proj-nearZ");
+			float proj_fZ = obj.at("proj-farZ");
+
+			prd = { proj_w, proj_h, proj_nZ, proj_fZ };
+
+			/**********************/
+
 			/* Инициализация камеры */
 
-			cameras.emplace_back(std::make_shared<Camera>(gfx, name, position, orientation));
+			cameras.emplace_back(std::make_shared<Camera>(gfx, name, position, orientation, prd));
 
 			/************************/
 		}
@@ -161,60 +174,73 @@ void CameraContainer::ShowLeftPanel()
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus))
 	{
-		if (ImGui::BeginCombo("Акт. камера", (*this)->GetName().c_str()))
+		for (int i = 0; i < std::size(cameras); i++)
 		{
-			for (int i = 0; i < std::size(cameras); i++)
-			{
-				const bool isSelected = i == active;
-				if (ImGui::Selectable(cameras[i]->GetName().c_str(), isSelected))
-				{
-					active = i;
-				}
-			}
-			ImGui::EndCombo();
-		}
+			char label[128];
+			sprintf_s(label, cameras[i]->GetName().c_str(), selected);
 
-		if (ImGui::BeginCombo("Упр. камера", GetControlledCamera().GetName().c_str()))
-		{
-			for (int i = 0; i < std::size(cameras); i++)
+			ImGui::Bullet();
+			if (ImGui::Selectable(label, selected == cameras[i]->GetName().c_str()))
 			{
-				const bool isSelected = i == controlled;
-				if (ImGui::Selectable(cameras[i]->GetName().c_str(), isSelected))
-				{
-					controlled = i;
-				}
+				selected = cameras[i]->GetName();
+				active = i;
+				controlled = i;
+			}
+		}
+	}
+
+	ImGui::End();
+}
+
+void CameraContainer::ShowRightPanel()
+{
+	if (ImGui::Begin("Опции", NULL,
+		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus))
+	{
+		for (int k = 0; k < cameras.size(); k++)
+		{
+			if (cameras[k]->GetName() == selected)
+			{
+				GetControlledCamera().SpawnDefaultControl(gfx);
 
 				if (IsSave)
 				{
-					auto position = cameras[i]->GetPosition();
-					auto orientation = cameras[i]->GetOrientation();
-					auto name = cameras[i]->GetName();
+					auto position = cameras[k]->GetPosition();
+					auto orientation = cameras[k]->GetOrientation();
+					auto proj = cameras[k]->GetProjectionData();
+					auto name = cameras[k]->GetName();
 
-					applog->AddLog(MODEL_LOG, "Сохранение позиции\n");
+					applog->AddLog(CAMERAS_LOG, "Сохранение позиции\n");
 
 					EngineFunctions::SetNewValue<float>(name, "pos-x", position.x, path, applog);
 					EngineFunctions::SetNewValue<float>(name, "pos-y", position.y, path, applog);
 					EngineFunctions::SetNewValue<float>(name, "pos-z", position.z, path, applog);
 
-					applog->AddLog(MODEL_LOG, "Сохранение ориентации\n");
+					applog->AddLog(CAMERAS_LOG, "Сохранение ориентации\n");
 
 					EngineFunctions::SetNewValue<float>(name, "pitch", orientation.x, path, applog);
 					EngineFunctions::SetNewValue<float>(name, "yaw", orientation.y, path, applog);
+
+					applog->AddLog(CAMERAS_LOG, "Сохранение проекции\n");
+					EngineFunctions::SetNewValue<float>(name, "proj-width", proj.width, path, applog);
+					EngineFunctions::SetNewValue<float>(name, "proj-height", proj.height, path, applog);
+					EngineFunctions::SetNewValue<float>(name, "proj-farZ", proj.farZ, path, applog);
+					EngineFunctions::SetNewValue<float>(name, "proj-nearZ", proj.nearZ, path, applog);
+
 
 					IsSave = false;
 				}
 
 				if (IsDelete)
 				{
-
+					DeleteCamera(cameras[k]->GetName());
 					IsDelete = false;
 				}
 
+				break;
 			}
-			ImGui::EndCombo();
 		}
-
-		GetControlledCamera().SpawnDefaultControl(gfx);
 
 		if (ImGui::Button("Удалить", ImVec2(100, 20)))
 		{
@@ -227,6 +253,8 @@ void CameraContainer::ShowLeftPanel()
 		{
 			IsSave = true;
 		}
+
+		ImGui::EndChild();
 	}
 
 	ImGui::End();

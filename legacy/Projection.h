@@ -9,6 +9,14 @@ namespace Rgph
 	class RenderGraph;
 }
 
+struct ProjectionData
+{
+	float width;
+	float height;
+	float nearZ;
+	float farZ;
+};
+
 class Projection
 {
 public:
@@ -20,6 +28,7 @@ public:
 	void Submit( size_t channel ) const;
 	void LinkTechniques( Rgph::RenderGraph& rg );
 	void Reset( Graphics& gfx );
+	ProjectionData GetData() const;
 private:
 	float width;
 	float height;

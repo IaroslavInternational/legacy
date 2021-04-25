@@ -291,7 +291,7 @@ void ModelContainer::ShowRightPanel()
 	{
 		for (int k = 0; k < models.size(); k++)
 		{
-			if (models[k]->GetName().c_str() == selected)
+			if (models[k]->GetName() == selected)
 			{
 				// static MP probe{ modelsName.at(k) };
 				// probe.SpawnChildWindow(*models.at(k));
