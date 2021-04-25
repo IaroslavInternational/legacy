@@ -851,6 +851,9 @@
     <ClInclude Include="Testing.h">
       <Filter>Заголовочные файлы\Система</Filter>
     </ClInclude>
+    <ClInclude Include="EngineFunctions.hpp">
+      <Filter>Заголовочные файлы\Система\Утилиты</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="legacy.rc">

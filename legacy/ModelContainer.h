@@ -31,8 +31,6 @@ public:
 	size_t ModelsAmount();												// Кол-во моделей
 #endif
 private:
-	template<typename T>
-	void SetNewValue(const char* objectName, const char* param, T val);	// Установить значение 
 	void LoadModel(std::string name, std::string path);					// Добавить модель
 	void DeleteModel(std::string name);									// Удалить модель
 	void Init();														// Установить положение и ориентацию модели

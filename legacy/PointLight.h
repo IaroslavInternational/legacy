@@ -18,12 +18,21 @@ namespace Rgph
 
 class Camera;
 
+struct PointLightCBuf												// Буфер данных ист. освещения для шейдера
+{
+	alignas(16) DirectX::XMFLOAT3 pos;
+	alignas(16) DirectX::XMFLOAT3 ambient;
+	alignas(16) DirectX::XMFLOAT3 diffuseColor;
+	float diffuseIntensity;
+	float attConst;
+	float attLin;
+	float attQuad;
+};
+
 class PointLight
 {
 public:
-	PointLight(Graphics& gfx, std::string name, 
-			   DirectX::XMFLOAT3 pos = { 0.0f,0.0f,0.0f }, 
-			   float radius = 0.5f);
+	PointLight(Graphics& gfx, std::string name, PointLightCBuf data, float radius = 0.5f);
 public:
 #if IS_ENGINE_MODE
 	void LinkTechniques(Rgph::RenderGraph& rg);							// Добавить к рендеру
@@ -32,23 +41,13 @@ public:
 	void Bind(Graphics& gfx, DirectX::FXMMATRIX view) const noexcept;	// Обновить данные для шейдера
 public:
 	std::string GetName() const noexcept;								// Получить имя ист. света
+	PointLightCBuf GetData() const noexcept;							// Получить данные ист. освещения
 	void Reset() noexcept;												// Сбросить данные
 	std::shared_ptr<Camera> ShareCamera() const noexcept;				// Получить укзатель на камеру
 public:
 #if IS_ENGINE_MODE
 	void SpawnDefaultControl() noexcept;								// Базовый интерфейс управления
 #endif // IS_ENGINE_MODE
-private:
-	struct PointLightCBuf												// Буфер данных ист. освещения для шейдера
-	{
-		alignas(16) DirectX::XMFLOAT3 pos;
-		alignas(16) DirectX::XMFLOAT3 ambient;
-		alignas(16) DirectX::XMFLOAT3 diffuseColor;
-		float diffuseIntensity;
-		float attConst;
-		float attLin;
-		float attQuad;
-	};
 private:
 	PointLightCBuf home;												// Исходный буфер данных
 	PointLightCBuf cbData;												// Изменяемый буфер данных

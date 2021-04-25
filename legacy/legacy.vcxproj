@@ -330,6 +330,7 @@
     <ClInclude Include="cnpy.h" />
     <ClInclude Include="CubeTexture.h" />
     <ClInclude Include="EngineConverter.h" />
+    <ClInclude Include="EngineFunctions.hpp" />
     <ClInclude Include="imgui\dirent\dirent.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />

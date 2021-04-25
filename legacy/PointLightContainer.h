@@ -45,7 +45,10 @@ private:
 private:
 #if IS_ENGINE_MODE
 	std::string selected = "";									// Выбранные элемент в списке ист. освещения
-
+	
+	bool IsSave = false;										// Если нажата кнопка сохранить
+	bool IsDelete = false;										// Если нажата кнопка удалить
+	
 	AppLog* applog;												// Лог
 #endif // IS_ENGINE_MODE
 };

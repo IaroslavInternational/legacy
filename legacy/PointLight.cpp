@@ -7,22 +7,13 @@
 #include "Camera.h"
 #include "EngineMath.h"
 
-PointLight::PointLight(Graphics& gfx, std::string name, DirectX::XMFLOAT3 pos, float radius)
+PointLight::PointLight(Graphics& gfx, std::string name, PointLightCBuf data, float radius)
 	:
 	mesh(gfx, radius),
 	cbuf(gfx),
-	name(name)
+	name(name),
+	home(data)
 {
-	home = {
-		pos,
-		{ 0.05f,0.05f,0.05f },
-		{ 1.0f,1.0f,1.0f },
-		1.0f,
-		1.0f,
-		0.025f,
-		0.0030f,
-	};
-
 	Reset();
 
 	pCamera = std::make_shared<Camera>(gfx, name, cbData.pos);
@@ -102,6 +93,11 @@ void PointLight::SpawnDefaultControl() noexcept
 std::string PointLight::GetName() const noexcept
 {
 	return name;
+}
+
+PointLightCBuf PointLight::GetData() const noexcept
+{
+	return cbData;
 }
 
 void PointLight::Reset() noexcept

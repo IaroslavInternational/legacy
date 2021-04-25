@@ -1,20 +1,13 @@
 #include "ModelContainer.h"
 
+#include "EngineFunctions.hpp"
+
 #if IS_ENGINE_MODE
 #include "imgui\imgui.h"
 #include "imgui\ImGuiFileDialog.h"
 #endif // IS_ENGINE_MODE
 
 #include "TestModelProbe.h"
-
-#include <sstream>
-#include <fstream>
-#include <filesystem>
-
-#include "json.hpp"
-
-using json = nlohmann::json;
-using namespace std::string_literals;
 
 #if IS_ENGINE_MODE
 ModelContainer::ModelContainer(std::string path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog)
@@ -147,46 +140,6 @@ std::unique_ptr<Model>* ModelContainer::GetPtr2ModelByName(std::string name)
 	}
 
 	return nullptr;
-}
-
-template<typename T>
-void ModelContainer::SetNewValue(const char* objectName, const char* param, T val)
-{
-	// Открытие файла с триггерами
-	std::ifstream dataFile(this->path);
-	if (!dataFile.is_open())
-	{
-		throw ("Не удаётся открыть файл с данными о моделях сцен");
-	}
-
-#if IS_ENGINE_MODE
-	std::ostringstream ostrlog;
-	ostrlog << "Установка [" << param << " : " << std::to_string(val) << "] " << "для [" << objectName << "]\n";
-
-	applog->AddLog(MODEL_LOG, ostrlog.str().c_str());
-#endif // IS_ENGINE_MODE
-
-	// Чтение файла
-	json j;
-	dataFile >> j;
-
-	// Закрытие файла
-	dataFile.close();
-
-	for (json::iterator m = j.begin(); m != j.end(); ++m)
-	{
-		for (auto& obj : j.at(objectName))
-		{
-			obj[param] = val;
-		}
-	}
-
-	// Запись в файл нового триггера
-	std::ofstream ostr(this->path);
-	ostr << j.dump();
-
-	// Закрытие файла
-	ostr.close();
 }
 
 void ModelContainer::LoadModel(std::string name, std::string path)
@@ -353,15 +306,15 @@ void ModelContainer::ShowRightPanel()
 
 					applog->AddLog(MODEL_LOG, "Сохранение позиции\n");
 
-					SetNewValue<float>(name.c_str(), "pos-x", position.x);
-					SetNewValue<float>(name.c_str(), "pos-y", position.y);
-					SetNewValue<float>(name.c_str(), "pos-z", position.z);
+					EngineFunctions::SetNewValue<float>(name, "pos-x", position.x, path, applog);
+					EngineFunctions::SetNewValue<float>(name, "pos-y", position.y, path, applog);
+					EngineFunctions::SetNewValue<float>(name, "pos-z", position.z, path, applog);
 
 					applog->AddLog(MODEL_LOG, "Сохранение ориентации\n");
 
-					SetNewValue<float>(name.c_str(), "roll", orientation.x);
-					SetNewValue<float>(name.c_str(), "pitch", orientation.y);
-					SetNewValue<float>(name.c_str(), "yaw", orientation.z);
+					EngineFunctions::SetNewValue<float>(name, "roll", orientation.x, path, applog);
+					EngineFunctions::SetNewValue<float>(name, "pitch", orientation.y, path, applog);
+					EngineFunctions::SetNewValue<float>(name, "yaw", orientation.z, path, applog);
 
 					IsSave = false;
 				}
