@@ -9,46 +9,83 @@
 
 namespace dx = DirectX;
 
-Camera::Camera( Graphics& gfx,std::string name,DirectX::XMFLOAT3 homePos,float homePitch,float homeYaw,bool tethered ) noexcept
+Camera::Camera(Graphics& gfx, std::string name,
+			   dx::XMFLOAT3 position,
+			   dx::XMFLOAT2 orientation,
+			   bool tethered) noexcept
 	:
-	name( std::move( name ) ),
-	homePos( homePos ),
-	homePitch( homePitch ),
-	homeYaw( homeYaw ),
-	proj( gfx,1.0f,9.0f / 16.0f,0.5f,400.0f ),
-	indicator( gfx ),
-	tethered( tethered )
+	name(std::move(name)),
+	homePosition(position),
+	homeOrientation(orientation),
+	proj(gfx, 1.0f, 9.0f / 16.0f, 0.5f, 400.0f),
+	indicator(gfx),
+	tethered(tethered)
 {
-	if( tethered )
+	if (tethered)
 	{
-		pos = homePos;
-		indicator.SetPos( pos );
-		proj.SetPos( pos );
+		this->position = homePosition;
+
+		indicator.SetPos(position);
+		proj.SetPos(position);
 	}
-	Reset( gfx );
+
+	this->orientation = homeOrientation;
+
+	Reset(gfx);
 }
 
-void Camera::BindToGraphics( Graphics& gfx ) const
+#if IS_ENGINE_MODE
+void Camera::LinkTechniques(Rgph::RenderGraph& rg)
 {
-	gfx.SetCamera( GetMatrix() );
-	gfx.SetProjection( proj.GetMatrix() );
+	indicator.LinkTechniques(rg);
+	proj.LinkTechniques(rg);
+}
+
+void Camera::Submit(size_t channels) const
+{
+	if (enableCameraIndicator)
+	{
+		indicator.Submit(channels);
+	}
+	if (enableFrustumIndicator)
+	{
+		proj.Submit(channels);
+	}
+}
+#endif // IS_ENGINE_MODE
+
+void Camera::BindToGraphics(Graphics& gfx) const
+{
+	gfx.SetCamera(GetMatrix());
+	gfx.SetProjection(proj.GetMatrix());
+}
+
+DirectX::XMFLOAT3 Camera::GetPosition() const noexcept
+{
+	return position;
+}
+
+DirectX::XMFLOAT2 Camera::GetOrientation() const noexcept
+{
+	return orientation;
 }
 
 DirectX::XMMATRIX Camera::GetMatrix() const noexcept
 {
 	using namespace dx;
 
-	const dx::XMVECTOR forwardBaseVector = XMVectorSet( 0.0f,0.0f,1.0f,0.0f );
+	const dx::XMVECTOR forwardBaseVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	// apply the camera rotations to a base vector
-	const auto lookVector = XMVector3Transform( forwardBaseVector,
-		XMMatrixRotationRollPitchYaw( pitch,yaw,0.0f )
+	const auto lookVector = XMVector3Transform(forwardBaseVector,
+		XMMatrixRotationRollPitchYaw(orientation.x, orientation.y, 0.0f)
 	);
 	// generate camera transform (applied to all objects to arrange them relative
 	// to camera position/orientation in world) from cam position and direction
 	// camera "top" always faces towards +Y (cannot do a barrel roll)
-	const auto camPosition = XMLoadFloat3( &pos );
+	const auto camPosition = XMLoadFloat3(&position);
 	const auto camTarget = camPosition + lookVector;
-	return XMMatrixLookAtLH( camPosition,camTarget,XMVectorSet( 0.0f,1.0f,0.0f,0.0f ) );
+
+	return XMMatrixLookAtLH(camPosition, camTarget, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
 DirectX::XMMATRIX Camera::GetProjection() const noexcept
@@ -56,133 +93,115 @@ DirectX::XMMATRIX Camera::GetProjection() const noexcept
 	return proj.GetMatrix();
 }
 
-#if IS_ENGINE_MODE
-void Camera::SpawnControlWidgets( Graphics& gfx ) noexcept
+void Camera::Reset(Graphics& gfx) noexcept
 {
-	bool rotDirty = false;
-	bool posDirty = false;
-	
-	const auto dcheck = []( bool d,bool& carry ) { carry = carry || d; };
-	
-	if( !tethered )
+	if (!tethered)
 	{
-		ImGui::Text( "Позиция" );
-		dcheck(ImGui::SliderFloat("X", &pos.x, -80.0f, 80.0f, "%.1f"), posDirty);
-		dcheck(ImGui::SliderFloat("Y", &pos.y, -80.0f, 80.0f, "%.1f"), posDirty);
-		dcheck(ImGui::SliderFloat("Z", &pos.z, -80.0f, 80.0f, "%.1f"), posDirty);
-	}
-	
-	ImGui::Text( "Ориентация" );
-	dcheck(ImGui::SliderAngle("Тангаж", &pitch, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
-	dcheck(ImGui::SliderAngle("Расканье", &yaw, -180.0f, 180.0f), rotDirty);
-	
-	proj.RenderWidgets( gfx );
-	
-	ImGui::Checkbox("Индикатор", &enableCameraIndicator);
-	ImGui::Checkbox("Отображение", &enableFrustumIndicator);
-	
-	if (ImGui::Button("Сбросить"))
-	{
-		Reset(gfx);
+		position = homePosition;
+
+		indicator.SetPos(position);
+		proj.SetPos(position);
 	}
 
-	if( rotDirty )
-	{
-		const dx::XMFLOAT3 angles = { pitch, yaw, 0.0f };
-		indicator.SetRotation(angles);
-		proj.SetRotation(angles);
-	}
-	if( posDirty )
-	{
-		indicator.SetPos(pos);
-		proj.SetPos(pos);
-	}
-}
-#endif // IS_ENGINE_MODE
-
-void Camera::Reset( Graphics& gfx ) noexcept
-{
-	if( !tethered )
-	{
-		pos = homePos;
-		indicator.SetPos( pos );
-		proj.SetPos( pos );
-	}
-	pitch = homePitch;
-	yaw = homeYaw;
+	orientation = homeOrientation;
 
 #if IS_ENGINE_MODE
-	const dx::XMFLOAT3 angles = { pitch,yaw,0.0f };
-	indicator.SetRotation( angles );
-	proj.SetRotation( angles );
-	proj.Reset( gfx );
+	const dx::XMFLOAT3 angles = { orientation.x,orientation.y,0.0f };
+
+	indicator.SetRotation(angles);
+	proj.SetRotation(angles);
+	proj.Reset(gfx);
 #endif // IS_ENGINE_MODE
 }
 
-void Camera::Rotate( float dx,float dy ) noexcept
+void Camera::Rotate(float dx, float dy) noexcept
 {
-	yaw = wrap_angle( yaw + dx * rotationSpeed );
-	pitch = std::clamp( pitch + dy * rotationSpeed,0.995f * -PI / 2.0f,0.995f * PI / 2.0f );
-	const dx::XMFLOAT3 angles = { pitch,yaw,0.0f };
-	indicator.SetRotation( angles );
-	proj.SetRotation( angles );
+	orientation.y = wrap_angle(orientation.y + dx * rotationSpeed);
+	orientation.x = std::clamp(orientation.x + dy * rotationSpeed, 0.995f * -PI / 2.0f, 0.995f * PI / 2.0f);
+
+	const dx::XMFLOAT3 angles = { orientation.x,orientation.y,0.0f };
+
+	indicator.SetRotation(angles);
+	proj.SetRotation(angles);
 }
 
-void Camera::Translate( DirectX::XMFLOAT3 translation ) noexcept
+void Camera::Translate(DirectX::XMFLOAT3 translation) noexcept
 {
-	if( !tethered )
+	if (!tethered)
 	{
-		dx::XMStoreFloat3( &translation,dx::XMVector3Transform(
-			dx::XMLoadFloat3( &translation ),
-			dx::XMMatrixRotationRollPitchYaw( pitch,yaw,0.0f ) *
-			dx::XMMatrixScaling( travelSpeed,travelSpeed,travelSpeed )
-		) );
-		pos = {
-			pos.x + translation.x,
-			pos.y + translation.y,
-			pos.z + translation.z
+		dx::XMStoreFloat3(&translation, dx::XMVector3Transform(
+			dx::XMLoadFloat3(&translation),
+			dx::XMMatrixRotationRollPitchYaw(orientation.x, orientation.y, 0.0f) *
+			dx::XMMatrixScaling(travelSpeed, travelSpeed, travelSpeed)
+		));
+
+		position = {
+			position.x + translation.x,
+			position.y + translation.y,
+			position.z + translation.z
 		};
-		indicator.SetPos( pos );
-		proj.SetPos( pos );
+
+		indicator.SetPos(position);
+		proj.SetPos(position);
 	}
 }
 
-DirectX::XMFLOAT3 Camera::GetPos() const noexcept
+void Camera::SetPos(const DirectX::XMFLOAT3& pos) noexcept
 {
-	return pos;
-}
-
-void Camera::SetPos( const DirectX::XMFLOAT3& pos ) noexcept
-{
-	this->pos = pos;
+	this->position = pos;
 
 #if IS_ENGINE_MODE
-	indicator.SetPos( pos );
-	proj.SetPos( pos );
+	indicator.SetPos(pos);
+	proj.SetPos(pos);
 #endif // IS_ENGINE_MODE
 }
 
-const std::string& Camera::GetName() const noexcept
+std::string Camera::GetName() const noexcept
 {
 	return name;
 }
 
 #if IS_ENGINE_MODE
-void Camera::LinkTechniques( Rgph::RenderGraph& rg )
+void Camera::SpawnDefaultControl(Graphics& gfx) noexcept
 {
-	indicator.LinkTechniques( rg );
-	proj.LinkTechniques( rg );
-}
+	bool rotDirty = false;
+	bool posDirty = false;
 
-void Camera::Submit( size_t channels ) const
-{
-	if( enableCameraIndicator )
+	const auto dcheck = [](bool d, bool& carry) { carry = carry || d; };
+
+	if (!tethered)
 	{
-		indicator.Submit( channels );
+		ImGui::Text("Позиция");
+		dcheck(ImGui::SliderFloat("X", &position.x, -80.0f, 80.0f, "%.1f"), posDirty);
+		dcheck(ImGui::SliderFloat("Y", &position.y, -80.0f, 80.0f, "%.1f"), posDirty);
+		dcheck(ImGui::SliderFloat("Z", &position.z, -80.0f, 80.0f, "%.1f"), posDirty);
 	}
-	if( enableFrustumIndicator )
+
+	ImGui::Text("Ориентация");
+	dcheck(ImGui::SliderAngle("Тангаж", &orientation.x, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
+	dcheck(ImGui::SliderAngle("Расканье", &orientation.y, -180.0f, 180.0f), rotDirty);
+
+	proj.RenderWidgets(gfx);
+
+	ImGui::Checkbox("Индикатор", &enableCameraIndicator);
+	ImGui::Checkbox("Отображение", &enableFrustumIndicator);
+
+	if (ImGui::Button("Сбросить"))
 	{
-		proj.Submit( channels );
+		Reset(gfx);
+	}
+
+	if (rotDirty)
+	{
+		const dx::XMFLOAT3 angles = { orientation.x, orientation.y, 0.0f };
+		indicator.SetRotation(angles);
+		proj.SetRotation(angles);
+	}
+
+	if (posDirty)
+	{
+		indicator.SetPos(position);
+		proj.SetPos(position);
 	}
 }
 #endif // IS_ENGINE_MODE

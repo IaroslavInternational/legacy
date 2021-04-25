@@ -45,10 +45,10 @@ void App::DoFrame(float dt)
 				// Делаем новую сцену активной
 				for (auto it = scenes.begin(); it != scenes.end(); ++it)
 				{
-					if (static_cast<std::string>(it->first->GetName()) == t.first)
+					if (it->first->GetName() == t.first)
 					{						
 						it->second = true;
-						it->first->ResetPos();
+						it->first->ResetPos();						
 						break;
 					}
 				}

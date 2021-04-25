@@ -3,7 +3,7 @@
 
 #include "Camera.h"
 
-SceneObjects::SceneObjects(const char* pathToObjectsData, Graphics& gfx,
+SceneObjects::SceneObjects(std::string pathToObjectsData, Graphics& gfx,
 						   Rgph::BlurOutlineRenderGraph& rg)
 	:
 	sdr(pathToObjectsData),

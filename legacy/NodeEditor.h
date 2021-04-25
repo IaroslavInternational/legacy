@@ -154,9 +154,6 @@ private:
 	ModelNode* FindModNodeById(int id);
 
 	void ConncetCam2Model(int cam_id, int mod_id);
-
-	template <typename T>
-	const char* AttachStrings(T str1, T str2);
 private:
 	// Ћог
 	AppLog* applog;

@@ -16,9 +16,8 @@ namespace dx = DirectX;
 class Scene
 {
 public:
-	Scene() = default;
-	Scene(const char* sceneName,	   std::shared_ptr<Window> _wnd, 
-		  const char* data);
+	Scene(std::string sceneName,	   std::shared_ptr<Window> _wnd, 
+		  std::string data);
 	~Scene();
 
 	/***** /Методы сцены\ *****/
@@ -35,7 +34,7 @@ public:
 	void ResetPos();
 
 	// Геттер имени сцены
-	const char* GetName() const;
+	std::string GetName() const;
 
 	/***** \Методы сцены/ *****/
 private:
@@ -98,7 +97,7 @@ private:
 #endif // IS_ENGINE_MODE
 private:
 	// Идентификаторы сцены
-	const char* sceneName;
+	std::string sceneName;
 
 	// Настройки
 #if IS_ENGINE_MODE

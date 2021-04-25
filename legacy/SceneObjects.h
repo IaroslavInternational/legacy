@@ -15,7 +15,7 @@
 class SceneObjects
 {
 public:
-	SceneObjects(const char* pathToObjectsData, Graphics& gfx, Rgph::BlurOutlineRenderGraph& rg);
+	SceneObjects(std::string pathToObjectsData, Graphics& gfx, Rgph::BlurOutlineRenderGraph& rg);
 	~SceneObjects();
 public:
 	void LinkTechniques(Rgph::RenderGraph& rg);

@@ -4,18 +4,10 @@
 #include "imgui/imgui.h"
 #endif // IS_ENGINE_MODE
 
+#include "EngineFunctions.hpp"
 #include "Camera.h"
 #include "Graphics.h"
 #include "RenderGraph.h"
-
-#include <sstream>
-#include <fstream>
-#include <filesystem>
-
-#include "json.hpp"
-
-using json = nlohmann::json;
-using namespace std::string_literals;
 
 #if IS_ENGINE_MODE
 CameraContainer::CameraContainer(std::string path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog)
@@ -74,11 +66,13 @@ CameraContainer::CameraContainer(std::string path, Graphics& gfx)
 			float pitch = obj.at("pitch");
 			float yaw = obj.at("yaw");
 
+			DirectX::XMFLOAT2 orientation = { pitch, yaw };
+
 			/*********************/
 
 			/* Инициализация камеры */
 
-			cameras.emplace_back(std::make_shared<Camera>(gfx, name, position, pitch, yaw));
+			cameras.emplace_back(std::make_shared<Camera>(gfx, name, position, orientation));
 
 			/************************/
 		}
@@ -189,11 +183,38 @@ void CameraContainer::ShowLeftPanel()
 				{
 					controlled = i;
 				}
+
+				if (IsSave)
+				{
+					auto position = cameras[i]->GetPosition();
+					auto orientation = cameras[i]->GetOrientation();
+					auto name = cameras[i]->GetName();
+
+					applog->AddLog(MODEL_LOG, "Сохранение позиции\n");
+
+					EngineFunctions::SetNewValue<float>(name, "pos-x", position.x, path, applog);
+					EngineFunctions::SetNewValue<float>(name, "pos-y", position.y, path, applog);
+					EngineFunctions::SetNewValue<float>(name, "pos-z", position.z, path, applog);
+
+					applog->AddLog(MODEL_LOG, "Сохранение ориентации\n");
+
+					EngineFunctions::SetNewValue<float>(name, "pitch", orientation.x, path, applog);
+					EngineFunctions::SetNewValue<float>(name, "yaw", orientation.y, path, applog);
+
+					IsSave = false;
+				}
+
+				if (IsDelete)
+				{
+
+					IsDelete = false;
+				}
+
 			}
 			ImGui::EndCombo();
 		}
 
-		GetControlledCamera().SpawnControlWidgets(gfx);
+		GetControlledCamera().SpawnDefaultControl(gfx);
 
 		if (ImGui::Button("Удалить", ImVec2(100, 20)))
 		{
@@ -207,6 +228,7 @@ void CameraContainer::ShowLeftPanel()
 			IsSave = true;
 		}
 	}
+
 	ImGui::End();
 }
 

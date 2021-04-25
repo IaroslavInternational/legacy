@@ -14,9 +14,15 @@
 using json = nlohmann::json;
 using namespace std::string_literals;
 
+// Специальные функции для движка
 namespace EngineFunctions
 {
-	// Установить значение 
+	// Установить новое значение для параметра в файле .json
+	// objectName - имя изменяемого объекта
+	// param - параметр для замены
+	// path - путь к файлу
+	// val - значение
+	// Applog - указатель на лог
 #if IS_ENGINE_MODE
 	template<typename T>
 	void SetNewValue(std::string objectName, std::string param, T val, std::string path, AppLog* applog)
@@ -60,5 +66,15 @@ namespace EngineFunctions
 
 		// Закрытие файла
 		ostr.close();
+	}
+
+	// Соеденить два объекта в одну строку через пробел
+	template <typename T>
+	std::string AttachStrings(T str1, T str2) 
+	{
+		std::ostringstream oss;
+		oss << str1 << " " << str2;
+
+		return oss.str();
 	}
 }

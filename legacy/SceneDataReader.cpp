@@ -6,7 +6,7 @@
 
 #include "json.hpp"
 
-SceneDataReader::SceneDataReader(const char* path)
+SceneDataReader::SceneDataReader(std::string path)
 {
 	using json = nlohmann::json;
 	using namespace std::string_literals;

@@ -16,48 +16,48 @@ namespace Rgph
 class Camera
 {
 public:
-	Camera(Graphics& gfx, std::string name, DirectX::XMFLOAT3 homePos = { 0.0f,0.0f,0.0f },
-		float homePitch = 0.0f, float homeYaw = 0.0f, bool tethered = false) noexcept;
-
-	void BindToGraphics(Graphics& gfx) const;
-
-	DirectX::XMMATRIX GetMatrix() const noexcept;
-	DirectX::XMMATRIX GetProjection() const noexcept;
-
+	Camera(Graphics& gfx, std::string name, 
+		   DirectX::XMFLOAT3 position =	   { 0.0f,0.0f,0.0f },
+		   DirectX::XMFLOAT2 orientation = { 0.0f,0.0f },
+		   bool tethered = false) noexcept;
+public:
 #if IS_ENGINE_MODE
-	void SpawnControlWidgets(Graphics& gfx) noexcept;
+	void LinkTechniques(Rgph::RenderGraph& rg);				// Добавить к рендеру
+	void Submit(size_t channel) const;						// Добавить к каналу отрисовки
 #endif // IS_ENGINE_MODE
-
-	void Reset(Graphics& gfx) noexcept;
-	void Rotate(float dx, float dy) noexcept;
-	void Translate(DirectX::XMFLOAT3 translation) noexcept;
-
-	DirectX::XMFLOAT3 GetPos() const noexcept;
-	void SetPos(const DirectX::XMFLOAT3& pos) noexcept;
-
-	const std::string& GetName() const noexcept;
+	void BindToGraphics(Graphics& gfx) const;				// Добавить камеру к цели рендера
+public:
+	DirectX::XMFLOAT3 GetPosition() const noexcept;			// Получить позицию
+	DirectX::XMFLOAT2 GetOrientation() const noexcept;		// Получить ориентацию
+	DirectX::XMMATRIX GetMatrix() const noexcept;			// Получить матрицу
+	DirectX::XMMATRIX GetProjection() const noexcept;		// Получить проекцию
+	void Reset(Graphics& gfx) noexcept;						// Сбросить
+	void Rotate(float dx, float dy) noexcept;				// Вращать камеру
+	void Translate(DirectX::XMFLOAT3 translation) noexcept;	// Переместить камеру
+	void SetPos(const DirectX::XMFLOAT3& pos) noexcept;		// Установить позицию
+	std::string GetName() const noexcept;					// Получить имя камеры
+public:
 #if IS_ENGINE_MODE
-	void LinkTechniques(Rgph::RenderGraph& rg);
-	void Submit(size_t channel) const;
+	void SpawnDefaultControl(Graphics& gfx) noexcept;		// Базовый интерфейс управления
 #endif // IS_ENGINE_MODE
 private:
-	bool tethered;
+	bool tethered;											//
 
-	std::string name;
-	DirectX::XMFLOAT3 homePos;
-	float homePitch;
-	float homeYaw;
-	DirectX::XMFLOAT3 pos;
-	float pitch;
-	float yaw;
+	std::string name;										// Имя камеры
 
-	static constexpr float travelSpeed = 24.0f;
-	static constexpr float rotationSpeed = 0.004f;
+	DirectX::XMFLOAT3 homePosition;							// Исходная позиция
+	DirectX::XMFLOAT2 homeOrientation;						// Исходная ориентация
+	DirectX::XMFLOAT3 position;								// Позиция
+	DirectX::XMFLOAT2 orientation;							// Ориентация
+
+	float travelSpeed = 24.0f;								// Скорость перемещения
+	float rotationSpeed = 0.004f;							// Скорость вращения
+private:
 #if IS_ENGINE_MODE
-	bool enableCameraIndicator = false;
-	bool enableFrustumIndicator = false;
+	bool enableCameraIndicator = true;						// Разрешена ли отрисовка индикатора камеры
+	bool enableFrustumIndicator = false;					// Разрешена ли отрисовка проекции камеры
 
-	Projection proj;
-	CameraIndicator indicator;
+	Projection proj;										// Проекция камеры
+	CameraIndicator indicator;								// Индикатор камеры
 #endif // IS_ENGINE_MODE
 };

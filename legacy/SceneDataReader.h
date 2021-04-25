@@ -6,7 +6,7 @@
 class SceneDataReader
 {
 public:
-	SceneDataReader(const char* path);
+	SceneDataReader(std::string path);
 	~SceneDataReader();
 public:
 	std::string GetCameraContainerPath() const;		// Путь к файлу с данными о контейнере камер

@@ -14,8 +14,8 @@
 
 #include <sstream>
 
-Scene::Scene(const char* sceneName,		  std::shared_ptr<Window> _wnd, 
-			 const char* data)
+Scene::Scene(std::string sceneName,		  std::shared_ptr<Window> _wnd, 
+			 std::string data)
 	:
 	wnd(_wnd),
 	objects(data, wnd->Gfx(), rg),
@@ -145,7 +145,7 @@ void Scene::Render(float dt)
 
 std::pair<std::string, bool> Scene::IsOnTheSceneTrigger()
 {
-	return objects.triggersScene.CheckTriggers(objects.cameras.GetActiveCamera().GetPos());
+	return objects.triggersScene.CheckTriggers(objects.cameras.GetActiveCamera().GetPosition());
 }
 
 void Scene::ResetPos()
@@ -582,7 +582,7 @@ void Scene::ShowImguiDemoWindow()
 /*********************************************/
 #endif
 
-const char* Scene::GetName() const
+std::string Scene::GetName() const
 {
 	return sceneName;
 }
