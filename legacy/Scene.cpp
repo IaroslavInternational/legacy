@@ -107,7 +107,7 @@ void Scene::ProcessInput(float dt)
 void Scene::Render(float dt)
 {
 	/* Начало кадра */
-	
+
 	wnd->Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
 #if IS_ENGINE_MODE
 	objects.nEditor.BeginFrame();

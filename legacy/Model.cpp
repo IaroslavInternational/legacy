@@ -27,7 +27,7 @@ Model::Model(std::string name, const std::string& path, Graphics& gfx,
 	orientation(orientation)
 {
 	Assimp::Importer imp;
-	const auto pScene = imp.ReadFile(path.c_str(),
+	auto pScene = imp.ReadFile(path.c_str(),
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_ConvertToLeftHanded |
@@ -126,6 +126,7 @@ void Model::SpawnDefaultControl()
 		bool rotDirty = false;
 		bool posDirty = false;
 		bool scaleDirty = false;
+		bool animDirty = false;
 
 		const auto dcheck = [](bool d, bool& carry) { carry = carry || d; };
 
@@ -143,7 +144,7 @@ void Model::SpawnDefaultControl()
 		dcheck(ImGui::SliderFloat("S", &scale, 0.0001f, 10.0f, "%.4f"), scaleDirty);
 
 		ImGui::Checkbox("Скрыть", &IsRendered);
-
+		
 		if (isCamAdded)
 		{
 			cam->SetPos(DirectX::XMFLOAT3(position.x + offset_x, position.y + offset_y, position.z + offset_z));
