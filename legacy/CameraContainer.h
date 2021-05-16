@@ -48,11 +48,12 @@ public:
 	void ShowRightPanel();											// Показать правую панель для камер
 	void OpenDialog();												// Открыть диалоговое окно для добавления камеры на сцену
 	void AddCamera(std::shared_ptr<Camera> pCam);					// Добавить камеру
+	void AddRuntimeCamera(std::shared_ptr<Camera> pCam);			// Добавить камеру и записать в файл
 private:
 	void DeleteCamera(std::string name);							// Удалить камеру
 	Camera& GetControlledCamera();									// Адрес управляемой камеры
 private:
-	std::string path = "";											// Путь к файлу с данными о моделях
+	std::string path = "";											// Путь к файлу с данными о камерах
 	Graphics& gfx;													// Адрес графичсекого ядра
 #if IS_ENGINE_MODE
 	Rgph::RenderGraph& rg;											// Адрес рендер-графа

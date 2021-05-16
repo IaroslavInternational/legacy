@@ -1,0 +1,11 @@
+newmtl None
+Ns 100.000
+d 1.00000
+illum 2
+Kd 1.00000 1.00000 1.00000
+Ka 0.00000 0.00000 0.00000
+Ks 1.00000 1.00000 1.00000
+Ke 0.00000e+0 0.00000e+0 0.00000e+0
+map_Kd Camera_None_color.tif
+map_Ks Camera_None_rough.tif
+map_bump Camera_None_nmap.tif

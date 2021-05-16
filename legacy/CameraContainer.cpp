@@ -187,6 +187,16 @@ void CameraContainer::ShowLeftPanel()
 				controlled = i;
 			}
 		}
+
+		ImGui::NewLine();
+
+		if (ImGui::Button("Добавить"))
+		{
+			applog->AddLog(SYSTEM_LOG, "Добавить камеру\n");
+
+			AddRuntimeCamera(std::make_shared<Camera>(gfx, EngineFunctions::AttachStrings(std::string("Camera"), std::to_string(cameras.size() + 1))));
+		}
+
 	}
 
 	ImGui::End();
@@ -227,7 +237,6 @@ void CameraContainer::ShowRightPanel()
 					EngineFunctions::SetNewValue<float>(name, "proj-height", proj.height, path, applog);
 					EngineFunctions::SetNewValue<float>(name, "proj-farZ", proj.farZ, path, applog);
 					EngineFunctions::SetNewValue<float>(name, "proj-nearZ", proj.nearZ, path, applog);
-
 
 					IsSave = false;
 				}
@@ -277,6 +286,66 @@ void CameraContainer::AddCamera(std::shared_ptr<Camera> pCam)
 #endif // IS_ENGINE_MODE
 }
 
+void CameraContainer::AddRuntimeCamera(std::shared_ptr<Camera> pCam)
+{
+	using std::to_string;
+
+	// Открытие файла с данными о моделях
+	std::ifstream dataFile(this->path);
+	if (!dataFile.is_open())
+	{
+		throw ("Не удаётся открыть файл с данными о камерах сцены");
+	}
+
+#if IS_ENGINE_MODE
+	applog->AddLog(CAMERAS_LOG, "Добавление\n");
+#endif // IS_ENGINE_MODE
+
+	// Чтение файла
+	json j;
+	dataFile >> j;
+
+	// Закрытие файла
+	dataFile.close();
+
+	// Новая камера
+	std::ostringstream newCam;
+	newCam << "\"" << pCam->GetName() << "\":[{";
+
+	newCam << "\"name\": \"" << pCam->GetName() << "\",";
+
+	newCam << "\"pos-x\": " <<  pCam->GetPosition().x << ",";
+	newCam << "\"pos-y\" : " << pCam->GetPosition().y << ",";
+	newCam << "\"pos-z\" : " << pCam->GetPosition().z << ",";
+
+	newCam << "\"proj-farZ\" : " << pCam->GetProjectionData().farZ << ",";
+	newCam << "\"proj-height\" : " << pCam->GetProjectionData().height << ",";
+	newCam << "\"proj-nearZ\" : " << pCam->GetProjectionData().nearZ << ",";
+	newCam << "\"proj-width\" : " << pCam->GetProjectionData().width << ",";
+
+	newCam << "\"pitch\": " << pCam->GetOrientation().x << ",";
+	newCam << "\"yaw\": " << pCam->GetOrientation().y << "}]";
+
+	// Подготовка к вставке в файл
+	std::string json_str = j.dump();
+	size_t pos_of_par = json_str.find_last_of('}');
+	size_t pos_of_par2 = json_str.find_last_of(']');
+
+	json_str.at(pos_of_par) = ' ';
+	json_str.at(pos_of_par2 + 1) = ',';
+
+	// Запись в файл данных новой модели
+	std::ofstream ostream(this->path);
+	ostream << json_str + newCam.str() + '}';
+
+	// Закрытие файла
+	ostream.close();
+
+	pCam->LinkTechniques(rg);
+
+	AddCamera(pCam);
+}
+
 void CameraContainer::DeleteCamera(std::string name)
 {
 	for (auto cam = cameras.begin(); cam != cameras.end(); ++cam)
@@ -286,6 +355,9 @@ void CameraContainer::DeleteCamera(std::string name)
 			cameras.erase(cam);
 		}
 	}
+
+	active = 0;
+	controlled = 0;
 }
 
 Camera& CameraContainer::GetControlledCamera()

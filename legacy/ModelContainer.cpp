@@ -175,7 +175,7 @@ void ModelContainer::LoadModel(std::string name, std::string path)
 	// Закрытие файла
 	dataFile.close();
 
-	// Новый триггер
+	// Новая модель
 	std::ostringstream newModel;
 	newModel << "\"" << name << "\":[{";
 
