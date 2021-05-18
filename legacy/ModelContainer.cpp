@@ -221,6 +221,9 @@ void ModelContainer::DeleteModel(std::string name)
 		if (model->get()->GetName() == name)
 		{
 			models.erase(model);
+			EngineFunctions::DeleteJsonObject(name, path);
+
+			break;
 		}
 	}
 }

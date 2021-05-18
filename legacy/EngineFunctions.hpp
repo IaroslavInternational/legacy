@@ -17,18 +17,20 @@ using namespace std::string_literals;
 // Специальные функции для движка
 namespace EngineFunctions
 {
-	// Установить новое значение для параметра в файле .json
-	// objectName - имя изменяемого объекта
-	// param - параметр для замены
-	// path - путь к файлу
-	// val - значение
-	// Applog - указатель на лог
 #if IS_ENGINE_MODE
+	/* 
+	Установить новое значение для параметра в файле .json
+	objectName - имя изменяемого объекта
+	param - параметр для замены
+	path - путь к файлу
+	val - значение
+	Applog - указатель на лог
+	*/
 	template<typename T>
-	void SetNewValue(std::string objectName, std::string param, T val, std::string path, AppLog* applog)
+	void static SetNewValue(std::string objectName, std::string param, T val, std::string path, AppLog* applog)
 #else
 	template<typename T>
-	void SetNewValue(std::string objectName, std::string param, T val, std::string path)
+	void static SetNewValue(std::string objectName, std::string param, T val, std::string path)
 #endif // IS_ENGINE_MODE
 	{
 		// Открытие файла
@@ -70,11 +72,49 @@ namespace EngineFunctions
 
 	// Соеденить два объекта в одну строку через пробел
 	template <typename T>
-	std::string AttachStrings(T str1, T str2) 
+	std::string static AttachStrings(T str1, T str2) 
 	{
 		std::ostringstream oss;
 		oss << str1 << " " << str2;
 
 		return oss.str();
+	}
+
+	// Удаление объекта из файла json
+	void static DeleteJsonObject(std::string objectName, std::string path)
+	{
+		// Открытие файла
+		std::ifstream dataFile(path);
+		if (!dataFile.is_open())
+		{
+			throw ("Не удаётся открыть файл с данными");
+		}
+
+		// Чтение файла
+		json j;
+		dataFile >> j;
+
+		// Закрытие файла
+		dataFile.close();
+
+		j[objectName] = "";
+
+		auto j_str = j.dump();
+
+		auto pos = j_str.find(objectName);
+
+		for (auto i = pos - 1; i < objectName.length() + 7; i++)
+		{
+			j_str[i] = '*';
+		}
+
+		j_str.erase(std::remove(j_str.begin(), j_str.end(), '*'), j_str.end());
+
+		// Запись в файл
+		std::ofstream ostr(path);
+		ostr << j_str;
+
+		// Закрытие файла
+		ostr.close();
 	}
 }

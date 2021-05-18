@@ -353,6 +353,9 @@ void CameraContainer::DeleteCamera(std::string name)
 		if (cam->get()->GetName() == name)
 		{
 			cameras.erase(cam);
+			EngineFunctions::DeleteJsonObject(name, path);
+
+			break;
 		}
 	}
 

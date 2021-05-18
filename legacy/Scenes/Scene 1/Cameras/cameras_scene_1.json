@@ -1,1 +1,16 @@
-{"main camera":[{"name":"main camera","pitch":-0.17305608093738556,"pos-x":-50.74981689453125,"pos-y":8.153074264526367,"pos-z":3.207024335861206,"proj-farZ":400.0,"proj-height":0.5625,"proj-nearZ":0.5299999713897705,"proj-width":1.0,"yaw":1.624375581741333}],"Camera 3":[{"name": "Camera 3","pos-x": 0,"pos-y" : 0,"pos-z" : 0,"proj-farZ" : 400,"proj-height" : 0.5625,"proj-nearZ" : 0.5,"proj-width" : 1,"pitch": 0,"yaw": 0}]}
+{
+  "main camera": [
+    {
+      "name": "main camera",
+      "pitch": -0.17305608093738556,
+      "pos-x": -50.74981689453125,
+      "pos-y": 8.153074264526367,
+      "pos-z": 3.207024335861206,
+      "proj-farZ": 400.0,
+      "proj-height": 0.5625,
+      "proj-nearZ": 0.5299999713897705,
+      "proj-width": 1.0,
+      "yaw": 1.624375581741333
+    }
+  ]
+}
