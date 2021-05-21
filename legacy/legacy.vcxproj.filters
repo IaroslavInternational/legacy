@@ -453,6 +453,9 @@
     <ClCompile Include="WindowsMessageMap.cpp">
       <Filter>Исходные файлы\Окна</Filter>
     </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -854,6 +857,9 @@
     <ClInclude Include="EngineFunctions.hpp">
       <Filter>Заголовочные файлы\Система\Утилиты</Filter>
     </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="legacy.rc">
@@ -903,6 +909,7 @@
       <Filter>Шейдеры\Заголовочные файлы</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Blur_PS.hlsl">

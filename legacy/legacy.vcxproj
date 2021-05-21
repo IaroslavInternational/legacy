@@ -119,6 +119,7 @@
     <ClCompile Include="imgui\imnodes.cpp" />
     <ClCompile Include="ModelContainer.cpp" />
     <ClCompile Include="NodeEditor.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="PointLightContainer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneDataReader.cpp" />
@@ -179,6 +180,7 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)\ShaderBins\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="LightVectorData.hlsli">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
@@ -346,6 +348,7 @@
     <ClInclude Include="LogCommands.h" />
     <ClInclude Include="ModelContainer.h" />
     <ClInclude Include="NodeEditor.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="PointLightContainer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneDataReader.h" />
