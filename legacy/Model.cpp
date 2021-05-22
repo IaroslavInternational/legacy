@@ -19,12 +19,10 @@ namespace dx = DirectX;
 Model::Model(std::string name, const std::string& path, Graphics& gfx,
 			 DirectX::XMFLOAT3 position,
 			 DirectX::XMFLOAT3 orientation,
-			 float scale)
+			 float scale, bool visibility)
 	:
-	name(name),
-	scale(scale),
-	position(position),
-	orientation(orientation)
+	VisibleObject(name, position, orientation, visibility),
+	scale(scale)
 {
 	Assimp::Importer imp;
 	auto pScene = imp.ReadFile(path.c_str(),
@@ -64,7 +62,7 @@ Model::~Model() noexcept
 
 void Model::LinkTechniques(Rgph::RenderGraph& rg)
 {
-	if (IsRendered)
+	if (visibility)
 	{
 		for (auto& pMesh : meshPtrs)
 		{
@@ -73,9 +71,9 @@ void Model::LinkTechniques(Rgph::RenderGraph& rg)
 	}
 }
 
-void Model::Submit(size_t channels) const noxnd
+void Model::Submit(size_t channels)
 {
-	if (IsRendered)
+	if (visibility)
 	{
 		pRoot->Submit(channels, dx::XMMatrixIdentity());
 	}
@@ -103,21 +101,6 @@ bool Model::IsCamConnceted()
 	return isCamAdded;
 }
 
-std::string Model::GetName()
-{
-	return name;
-}
-
-DirectX::XMFLOAT3 Model::GetPosition()
-{
-	return position;
-}
-
-DirectX::XMFLOAT3 Model::GetOrientation()
-{
-	return orientation;
-}
-
 #if IS_ENGINE_MODE
 void Model::SpawnDefaultControl()
 {
@@ -143,7 +126,7 @@ void Model::SpawnDefaultControl()
 		ImGui::Text("Размер");
 		dcheck(ImGui::SliderFloat("S", &scale, 0.0001f, 10.0f, "%.4f"), scaleDirty);
 
-		ImGui::Checkbox("Скрыть", &IsRendered);
+		ImGui::Checkbox("Скрыть", &visibility);
 		
 		if (isCamAdded)
 		{

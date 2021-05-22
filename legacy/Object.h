@@ -13,7 +13,7 @@ public:
 	void SetName(std::string name);
 	void SetPosition(DirectX::XMFLOAT3 position);
 	void SetOrientation(DirectX::XMFLOAT3 orientation);
-private:
+protected:
 	std::string name;
 	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT3 orientation;
