@@ -453,8 +453,11 @@
     <ClCompile Include="WindowsMessageMap.cpp">
       <Filter>Исходные файлы\Окна</Filter>
     </ClCompile>
+    <ClCompile Include="VisibleObject.cpp">
+      <Filter>Исходные файлы\Сцена\Объекты</Filter>
+    </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Исходные файлы\Сцена\Объекты</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -857,8 +860,11 @@
     <ClInclude Include="EngineFunctions.hpp">
       <Filter>Заголовочные файлы\Система\Утилиты</Filter>
     </ClInclude>
+    <ClInclude Include="VisibleObject.h">
+      <Filter>Заголовочные файлы\Сцена\Объекты</Filter>
+    </ClInclude>
     <ClInclude Include="Object.h">
-      <Filter>Заголовочные файлы</Filter>
+      <Filter>Заголовочные файлы\Сцена\Объекты</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
