@@ -96,11 +96,6 @@ void Model::SetRootTransform(DirectX::XMMATRIX tf) noexcept
 	pRoot->SetAppliedTransform(tf);
 }
 
-bool Model::IsCamConnceted()
-{
-	return isCamAdded;
-}
-
 #if IS_ENGINE_MODE
 void Model::SpawnDefaultControl()
 {
@@ -128,9 +123,9 @@ void Model::SpawnDefaultControl()
 
 		ImGui::Checkbox("Ñêðûòü", &visibility);
 		
-		if (isCamAdded)
+		if (CameraConnection)
 		{
-			cam->SetPos(DirectX::XMFLOAT3(position.x + offset_x, position.y + offset_y, position.z + offset_z));
+			cam->SetPos(DirectX::XMFLOAT3(position.x + offset.x, position.y + offset.y, position.z + offset.z));
 
 			ImGui::Separator();
 
@@ -158,21 +153,24 @@ void Model::SpawnDefaultControl()
 void Model::ConnectCamera(std::shared_ptr<Camera> cam, DirectX::XMFLOAT3 offset)
 {
 	this->cam = cam;
-	isCamAdded = true;
+	this->offset = offset;
 
-	offset_x = offset.x;
-	offset_y = offset.y;
-	offset_z = offset.z;
+	CameraConnection = true;
 }
 
 void Model::DisconnectCamera()
 {
-	if (isCamAdded)
+	if (CameraConnection)
 	{
 		cam.reset();
 		
-		isCamAdded = false;
+		CameraConnection = false;
 	}
+}
+
+bool Model::IsCameraConneñted()
+{
+	return CameraConnection;
 }
 
 std::unique_ptr<Node> Model::ParseNode(int& nextId, const aiNode& node, float scale) noexcept

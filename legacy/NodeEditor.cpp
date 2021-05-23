@@ -286,7 +286,7 @@ void NodeEditor::ShowLeftPanel(ImVec2 size)
                 int camId = link.start_attr >> 24;  // cam id
                 int modId = link.end_attr >> 8;     // mod id
 
-                if (!mcon.GetPtr2ModelByName(FindModNodeById(modId)->name)->get()->IsCamConnceted())
+                if (!mcon.GetPtr2ModelByName(FindModNodeById(modId)->name)->get()->IsCameraConneñted())
                 {
                     ConncetCam2Model(camId, modId);
 

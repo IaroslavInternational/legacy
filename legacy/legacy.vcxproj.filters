@@ -172,6 +172,12 @@
     <Filter Include="Шейдеры\Повершинные шейдеры">
       <UniqueIdentifier>{985d40fe-a202-4cd2-b96c-1a6ad14cb78e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\Сцена\Объекты\База объектов">
+      <UniqueIdentifier>{3b95941d-e3d0-4f2e-babb-6f8531263886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Сцена\Объекты\База объектов">
+      <UniqueIdentifier>{419528ed-173b-4fdf-82fd-365fabebdf11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -453,11 +459,11 @@
     <ClCompile Include="WindowsMessageMap.cpp">
       <Filter>Исходные файлы\Окна</Filter>
     </ClCompile>
-    <ClCompile Include="VisibleObject.cpp">
-      <Filter>Исходные файлы\Сцена\Объекты</Filter>
-    </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>Исходные файлы\Сцена\Объекты</Filter>
+      <Filter>Исходные файлы\Сцена\Объекты\База объектов</Filter>
+    </ClCompile>
+    <ClCompile Include="VisibleObject.cpp">
+      <Filter>Исходные файлы\Сцена\Объекты\База объектов</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -860,11 +866,11 @@
     <ClInclude Include="EngineFunctions.hpp">
       <Filter>Заголовочные файлы\Система\Утилиты</Filter>
     </ClInclude>
-    <ClInclude Include="VisibleObject.h">
-      <Filter>Заголовочные файлы\Сцена\Объекты</Filter>
-    </ClInclude>
     <ClInclude Include="Object.h">
-      <Filter>Заголовочные файлы\Сцена\Объекты</Filter>
+      <Filter>Заголовочные файлы\Сцена\Объекты\База объектов</Filter>
+    </ClInclude>
+    <ClInclude Include="VisibleObject.h">
+      <Filter>Заголовочные файлы\Сцена\Объекты\База объектов</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
