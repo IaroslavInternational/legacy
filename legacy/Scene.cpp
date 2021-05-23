@@ -150,7 +150,7 @@ std::pair<std::string, bool> Scene::IsOnTheSceneTrigger()
 
 void Scene::ResetPos()
 {
-	objects.cameras.GetActiveCamera().SetPos(dx::XMFLOAT3{ -13.5f,6.0f,3.5f });
+	objects.cameras.GetActiveCamera().SetPosition(dx::XMFLOAT3{ -13.5f,6.0f,3.5f });
 }
 
 #if IS_ENGINE_MODE

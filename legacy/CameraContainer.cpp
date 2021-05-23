@@ -68,7 +68,7 @@ CameraContainer::CameraContainer(std::string path, Graphics& gfx)
 			float pitch = obj.at("pitch");
 			float yaw = obj.at("yaw");
 
-			DirectX::XMFLOAT2 orientation = { pitch, yaw };
+			DirectX::XMFLOAT3 orientation = { pitch, yaw, 0.0f };
 
 			/*********************/
 
@@ -85,7 +85,7 @@ CameraContainer::CameraContainer(std::string path, Graphics& gfx)
 
 			/* Инициализация камеры */
 
-			cameras.emplace_back(std::make_shared<Camera>(gfx, name, position, orientation, prd));
+			cameras.emplace_back(std::make_shared<Camera>(name, gfx, position, orientation, prd));
 
 			/************************/
 		}
@@ -194,9 +194,8 @@ void CameraContainer::ShowLeftPanel()
 		{
 			applog->AddLog(SYSTEM_LOG, "Добавить камеру\n");
 
-			AddRuntimeCamera(std::make_shared<Camera>(gfx, EngineFunctions::AttachStrings(std::string("Camera"), std::to_string(cameras.size() + 1))));
+			AddRuntimeCamera(std::make_shared<Camera>(EngineFunctions::AttachStrings(std::string("Camera"), std::to_string(cameras.size() + 1)), gfx));
 		}
-
 	}
 
 	ImGui::End();

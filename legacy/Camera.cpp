@@ -7,15 +7,15 @@
 #include "EngineMath.h"
 #include "Graphics.h"
 
-namespace dx = DirectX;
-
-Camera::Camera(Graphics& gfx, std::string name,
-			   dx::XMFLOAT3 position,
-			   dx::XMFLOAT2 orientation,
-			   ProjectionData prd,
-			   bool tethered) noexcept
+Camera::Camera(std::string		 name,
+			   Graphics&		 gfx,
+			   DirectX::XMFLOAT3 position,
+			   DirectX::XMFLOAT3 orientation,
+			   ProjectionData	 prd,
+			   bool				 visibility,
+			   bool				 tethered) noexcept
 	:
-	name(std::move(name)),
+	VisibleObject(name, position, orientation, visibility),
 	homePosition(position),
 	homeOrientation(orientation),
 	proj(gfx, prd.width, prd.height, prd.nearZ, prd.farZ),
@@ -42,7 +42,7 @@ void Camera::LinkTechniques(Rgph::RenderGraph& rg)
 	proj.LinkTechniques(rg);
 }
 
-void Camera::Submit(size_t channels) const
+void Camera::Submit(size_t channels)
 {
 	if (enableCameraIndicator)
 	{
@@ -61,21 +61,65 @@ void Camera::BindToGraphics(Graphics& gfx) const
 	gfx.SetProjection(proj.GetMatrix());
 }
 
-DirectX::XMFLOAT3 Camera::GetPosition() const noexcept
+void Camera::Reset(Graphics& gfx) noexcept
 {
-	return position;
+	if (!tethered)
+	{
+		position = homePosition;
+
+		indicator.SetPos(position);
+		proj.SetPos(position);
+	}
+
+	orientation = homeOrientation;
+
+	const DirectX::XMFLOAT3 angles = { orientation.x, orientation.y, 0.0f };
+
+#if IS_ENGINE_MODE
+	indicator.SetRotation(angles);
+#endif // IS_ENGINE_MODE
+
+	proj.SetRotation(angles);
+	proj.Reset(gfx);
 }
 
-DirectX::XMFLOAT2 Camera::GetOrientation() const noexcept
+void Camera::Rotate(float dx, float dy) noexcept
 {
-	return orientation;
+	orientation.y = wrap_angle(orientation.y + dx * rotationSpeed);
+	orientation.x = std::clamp(orientation.x + dy * rotationSpeed, 0.995f * -PI / 2.0f, 0.995f * PI / 2.0f);
+
+	const DirectX::XMFLOAT3 angles = { orientation.x,orientation.y,0.0f };
+
+	indicator.SetRotation(angles);
+	proj.SetRotation(angles);
+}
+
+void Camera::Translate(DirectX::XMFLOAT3 translation) noexcept
+{
+	if (!tethered)
+	{
+		DirectX::XMStoreFloat3(&translation, DirectX::XMVector3Transform(
+			DirectX::XMLoadFloat3(&translation),
+			DirectX::XMMatrixRotationRollPitchYaw(orientation.x, orientation.y, 0.0f) *
+			DirectX::XMMatrixScaling(travelSpeed, travelSpeed, travelSpeed)
+		));
+
+		position = {
+			position.x + translation.x,
+			position.y + translation.y,
+			position.z + translation.z
+		};
+
+		indicator.SetPos(position);
+		proj.SetPos(position);
+	}
 }
 
 DirectX::XMMATRIX Camera::GetMatrix() const noexcept
 {
-	using namespace dx;
+	using namespace DirectX;
 
-	const dx::XMVECTOR forwardBaseVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	const XMVECTOR forwardBaseVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	// apply the camera rotations to a base vector
 	const auto lookVector = XMVector3Transform(forwardBaseVector,
 		XMMatrixRotationRollPitchYaw(orientation.x, orientation.y, 0.0f)
@@ -99,73 +143,14 @@ DirectX::XMMATRIX Camera::GetProjection() const noexcept
 	return proj.GetMatrix();
 }
 
-void Camera::Reset(Graphics& gfx) noexcept
+void Camera::SetPosition(DirectX::XMFLOAT3 position) noexcept
 {
-	if (!tethered)
-	{
-		position = homePosition;
-
-		indicator.SetPos(position);
-		proj.SetPos(position);
-	}
-
-	orientation = homeOrientation;
-
-	const dx::XMFLOAT3 angles = { orientation.x,orientation.y,0.0f };
+	this->position = position;
 
 #if IS_ENGINE_MODE
-	indicator.SetRotation(angles);
+	indicator.SetPos(position);
+	proj.SetPos(position);
 #endif // IS_ENGINE_MODE
-
-	proj.SetRotation(angles);
-	proj.Reset(gfx);
-}
-
-void Camera::Rotate(float dx, float dy) noexcept
-{
-	orientation.y = wrap_angle(orientation.y + dx * rotationSpeed);
-	orientation.x = std::clamp(orientation.x + dy * rotationSpeed, 0.995f * -PI / 2.0f, 0.995f * PI / 2.0f);
-
-	const dx::XMFLOAT3 angles = { orientation.x,orientation.y,0.0f };
-
-	indicator.SetRotation(angles);
-	proj.SetRotation(angles);
-}
-
-void Camera::Translate(DirectX::XMFLOAT3 translation) noexcept
-{
-	if (!tethered)
-	{
-		dx::XMStoreFloat3(&translation, dx::XMVector3Transform(
-			dx::XMLoadFloat3(&translation),
-			dx::XMMatrixRotationRollPitchYaw(orientation.x, orientation.y, 0.0f) *
-			dx::XMMatrixScaling(travelSpeed, travelSpeed, travelSpeed)
-		));
-
-		position = {
-			position.x + translation.x,
-			position.y + translation.y,
-			position.z + translation.z
-		};
-
-		indicator.SetPos(position);
-		proj.SetPos(position);
-	}
-}
-
-void Camera::SetPos(const DirectX::XMFLOAT3& pos) noexcept
-{
-	this->position = pos;
-
-#if IS_ENGINE_MODE
-	indicator.SetPos(pos);
-	proj.SetPos(pos);
-#endif // IS_ENGINE_MODE
-}
-
-std::string Camera::GetName() const noexcept
-{
-	return name;
 }
 
 #if IS_ENGINE_MODE
@@ -200,7 +185,7 @@ void Camera::SpawnDefaultControl(Graphics& gfx) noexcept
 
 	if (rotDirty)
 	{
-		const dx::XMFLOAT3 angles = { orientation.x, orientation.y, 0.0f };
+		const DirectX::XMFLOAT3 angles = { orientation.x, orientation.y, 0.0f };
 		indicator.SetRotation(angles);
 		proj.SetRotation(angles);
 	}

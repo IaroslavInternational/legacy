@@ -14,7 +14,7 @@ public:
 public:
 	// Получить имя объекта
 	std::string		  GetName() const;
-	
+
 	// Получить позицию объекта
 	DirectX::XMFLOAT3 GetPosition() const;
 	

@@ -1,11 +1,11 @@
 #pragma once
 
 #include "EngineConverter.h"
-
-#include <DirectXMath.h>
-#include <string>
+#include "VisibleObject.h"
 #include "Projection.h"
 #include "CameraIndicator.h"
+
+#include <DirectXMath.h>
 
 class Graphics;
 namespace Rgph
@@ -13,54 +13,96 @@ namespace Rgph
 	class RenderGraph;
 }
 
-class Camera
+// Класс для описания функционала камер. 
+class Camera : public VisibleObject
 {
 public:
-	Camera(Graphics& gfx, std::string name, 
-		   DirectX::XMFLOAT3 position =	   { 0.0f,0.0f,0.0f },
-		   DirectX::XMFLOAT2 orientation = { 0.0f,0.0f },
-		   ProjectionData prd =			   { 1.0f, 9.0f / 16.0f, 0.5f, 400.0f },
-		   bool tethered = false) noexcept;
+	// Конструктор модели требует следующие поля:
+	// name - имя камеры
+	// gfx - адрес графического ядра
+	// position - позиция камеры
+	// orientation - ориентация камеры
+	// prd - данные о проекции камеры
+	// visibility - видимость камеры
+	// tethered - режим ориентации камеры
+	Camera(std::string		 name,
+		   Graphics&		 gfx,
+		   DirectX::XMFLOAT3 position =	   { 0.0f, 0.0f, 0.0f },
+		   DirectX::XMFLOAT3 orientation = { 0.0f, 0.0f, 0.0f },
+		   ProjectionData	 prd =		   { 1.0f, 9.0f / 16.0f, 0.5f, 400.0f },
+		   bool				 visibility =  true,   
+		   bool				 tethered =	   false) noexcept;
 public:
 #if IS_ENGINE_MODE
-	void LinkTechniques(Rgph::RenderGraph& rg);				// Добавить к рендеру
-	void Submit(size_t channel) const;						// Добавить к каналу отрисовки
+	// Метод для присоединения модели к Render Graph
+	void			  LinkTechniques(Rgph::RenderGraph& rg);
+
+	// Метод для присоединения модели к каналу отрисовки
+	void			  Submit(size_t channel);		
 #endif // IS_ENGINE_MODE
-	void BindToGraphics(Graphics& gfx) const;				// Добавить камеру к цели рендера
-public:
-	DirectX::XMFLOAT3 GetPosition() const noexcept;			// Получить позицию
-	DirectX::XMFLOAT2 GetOrientation() const noexcept;		// Получить ориентацию
-	DirectX::XMMATRIX GetMatrix() const noexcept;			// Получить матрицу
-	ProjectionData GetProjectionData() const noexcept;		// Получить данные проекции
-	DirectX::XMMATRIX GetProjection() const noexcept;		// Получить проекцию
-	void Reset(Graphics& gfx) noexcept;						// Сбросить
-	void Rotate(float dx, float dy) noexcept;				// Вращать камеру
-	void Translate(DirectX::XMFLOAT3 translation) noexcept;	// Переместить камеру
-	void SetPos(const DirectX::XMFLOAT3& pos) noexcept;		// Установить позицию
-	std::string GetName() const noexcept;					// Получить имя камеры
-public:
+
+	// Метод для добавления камеры к цели рендера
+	void			  BindToGraphics(Graphics& gfx) const;				
+
+	// Сброс настроек камеры к начальным,
+	// gfx нужен для отображения индикатора и проекции
+	void			  Reset(Graphics& gfx) noexcept;
+
+	// Вращение камеры
+	void			  Rotate(float dx, float dy) noexcept;
+
+	// Перемещение камеры
+	void			  Translate(DirectX::XMFLOAT3 translation) noexcept;
+
+	// Получение матрицы камеры
+	DirectX::XMMATRIX GetMatrix() const noexcept;			
+
+	// Получение данных о проекции камеры
+	ProjectionData    GetProjectionData() const noexcept;	
+
+	// Получение данных о проекции камеры в виде матрицы
+	DirectX::XMMATRIX GetProjection() const noexcept;
+
+	// Перегруженный метод для установки позиции камеры, вклюячая её индиктор и проекцию
+	void			  SetPosition(DirectX::XMFLOAT3 position) noexcept;
+
 #if IS_ENGINE_MODE
-	void SpawnDefaultControl(Graphics& gfx) noexcept;		// Базовый интерфейс управления
+	// Отрисовать базовый интерфейс управления
+	void SpawnDefaultControl(Graphics& gfx) noexcept;
 #endif // IS_ENGINE_MODE
 private:
-	bool tethered;											//
+	// Режим ориентации камеры
+	bool tethered;					
 
-	std::string name;										// Имя камеры
+	// Исходная позиция камеры.
+	// Не путать с Object.position: представляет собой копию данных
+	// для сброса настроек
+	DirectX::XMFLOAT3 homePosition;					
 
-	DirectX::XMFLOAT3 homePosition;							// Исходная позиция
-	DirectX::XMFLOAT2 homeOrientation;						// Исходная ориентация
-	DirectX::XMFLOAT3 position;								// Позиция
-	DirectX::XMFLOAT2 orientation;							// Ориентация
+	// Исходная ориентация камеры.
+	// Не путать с Object.orientation: представляет собой копию данных
+	// для сброса настроек
+	DirectX::XMFLOAT3 homeOrientation;
 
-	float travelSpeed = 24.0f;								// Скорость перемещения
-	float rotationSpeed = 0.004f;							// Скорость вращения
+	// Скорость перемещения камеры по сцене
+	float travelSpeed = 24.0f;	
+
+	// Скорость вращения камеры на сцене
+	float rotationSpeed = 0.004f;
 private:
-	Projection proj;										// Проекция камеры
+	// Проекция камеры.
+	// Не путать с struct ProjectionData: описывает функционал проекции,
+	// а не набор данных для неё
+	Projection proj;
 
 #if IS_ENGINE_MODE
-	bool enableCameraIndicator = true;						// Разрешена ли отрисовка индикатора камеры
-	bool enableFrustumIndicator = false;					// Разрешена ли отрисовка проекции камеры
+	// Видимость индикатора камеры
+	bool enableCameraIndicator = true;		
 
-	CameraIndicator indicator;								// Индикатор камеры
+	// Видимость проекции камеры
+	bool enableFrustumIndicator = false;					
+
+	// Индикатор камеры
+	CameraIndicator indicator;
 #endif // IS_ENGINE_MODE
 };

@@ -16,7 +16,7 @@ PointLight::PointLight(Graphics& gfx, std::string name, PointLightCBuf data, flo
 {
 	Reset();
 
-	pCamera = std::make_shared<Camera>(gfx, name, cbData.pos);
+	pCamera = std::make_shared<Camera>(name, gfx, cbData.pos);
 }
 
 #if IS_ENGINE_MODE
@@ -65,7 +65,7 @@ void PointLight::SpawnDefaultControl() noexcept
 
 		if( dirtyPos )
 		{
-			pCamera->SetPos(cbData.pos);
+			pCamera->SetPosition(cbData.pos);
 		}
 		
 		ImGui::Text("Интенсивность и цвет");

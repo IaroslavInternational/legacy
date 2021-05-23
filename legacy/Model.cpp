@@ -16,10 +16,13 @@
 
 namespace dx = DirectX;
 
-Model::Model(std::string name, const std::string& path, Graphics& gfx,
-			 DirectX::XMFLOAT3 position,
-			 DirectX::XMFLOAT3 orientation,
-			 float scale, bool visibility)
+Model::Model(std::string		name, 
+			 const std::string& path,
+			 Graphics&			gfx,
+			 DirectX::XMFLOAT3  position,
+			 DirectX::XMFLOAT3  orientation,
+			 float				scale, 
+			 bool				visibility)
 	:
 	VisibleObject(name, position, orientation, visibility),
 	scale(scale)
@@ -125,7 +128,7 @@ void Model::SpawnDefaultControl()
 		
 		if (CameraConnection)
 		{
-			cam->SetPos(DirectX::XMFLOAT3(position.x + offset.x, position.y + offset.y, position.z + offset.z));
+			cam->SetPosition(DirectX::XMFLOAT3(position.x + offset.x, position.y + offset.y, position.z + offset.z));
 
 			ImGui::Separator();
 
