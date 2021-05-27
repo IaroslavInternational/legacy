@@ -2,37 +2,28 @@
   "Trigger 1": [
     {
       "name": "Trigger 1",
-      "pitch": 1.57,
-      "pos-lb": [
-        {
-          "pos-x": -10.0,
-          "pos-y": 0.0,
-          "pos-z": 32.0
-        }
-      ],
-      "pos-lt": [
-        {
-          "pos-x": -10.0,
-          "pos-y": 12.5,
-          "pos-z": 32.0
-        }
-      ],
-      "pos-rb": [
-        {
-          "pos-x": -10.0,
-          "pos-y": 0.0,
-          "pos-z": 15.4
-        }
-      ],
-      "pos-rt": [
-        {
-          "pos-x": -10.0,
-          "pos-y": 12.5,
-          "pos-z": 15.4
-        }
-      ],
-      "ptr": "Scene 1",
+      "width": 20.0,
+      "height": 10.0,
+      "pos-x": 0.0,
+      "pos-y": 0.0,
+      "pos-z": 0.0,
+      "ptr": "Scene 2",
       "roll": 0.0,
+      "pitch": 1.57,
+      "yaw": 0.0
+    }
+  ],
+  "Trigger 2": [
+    {
+      "name": "Trigger 2",
+      "width": 30.0,
+      "height": 10.0,
+      "pos-x": 10.0,
+      "pos-y": 0.0,
+      "pos-z": 0.0,
+      "ptr": "Scene 2",
+      "roll": 0.0,
+      "pitch": 1.57,
       "yaw": 0.0
     }
   ]

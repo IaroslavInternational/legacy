@@ -920,8 +920,7 @@
     <None Include="PShadow.hlsli">
       <Filter>Шейдеры\Заголовочные файлы</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
+    <None Include="UML-objects-hierarchy.cd" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Blur_PS.hlsl">

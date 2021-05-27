@@ -26,15 +26,10 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx, 
 	{
 		throw ("Не удаётся открыть файл с данными о триггерах сцен");
 	}
-	
-	dx::XMFLOAT3 pos_lt;
-	dx::XMFLOAT3 pos_rt;
-	dx::XMFLOAT3 pos_lb;
-	dx::XMFLOAT3 pos_rb;
 
-	float roll;
-	float pitch;
-	float yaw;
+	DirectX::XMFLOAT2 size;
+	DirectX::XMFLOAT3 position;
+	DirectX::XMFLOAT3 orientation;
 
 	json j;
 	dataFile >> j;
@@ -45,50 +40,42 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx, 
 
 		for (const auto& obj : j.at(d))
 		{
-			/* Запись позиции триггера */
+			/* Запись положения триггера */
 
-			for (const auto& pos : obj.at("pos-lt"))
-			{
-				pos_lt = { pos.at("pos-x"), pos.at("pos-y"), pos.at("pos-z") };
-			}
+			position.x = obj.at("pos-x");
+			position.y = obj.at("pos-y");
+			position.z = obj.at("pos-z");
 
-			for (const auto& pos : obj.at("pos-rt"))
-			{
-				pos_rt = { pos.at("pos-x"), pos.at("pos-y"), pos.at("pos-z") };
-			}
-
-			for (const auto& pos : obj.at("pos-lb"))
-			{
-				pos_lb = { pos.at("pos-x"), pos.at("pos-y"), pos.at("pos-z") };
-			}
-
-			for (const auto& pos : obj.at("pos-rb"))
-			{
-				pos_rb = { pos.at("pos-x"), pos.at("pos-y"), pos.at("pos-z") };
-			}
-
-
-			roll = obj.at("roll");
-			pitch = obj.at("pitch");
-			yaw = obj.at("yaw");
+			orientation.x = obj.at("roll");
+			orientation.y = obj.at("pitch");
+			orientation.z = obj.at("yaw");
 
 			/***************************/
 
-			/* Запись указателя триггера */
+			/* Запись размера триггера */
+			
+			size.x = obj.at("width");
+			size.y = obj.at("height");
 
-			std::string Ptr = obj.at("ptr");
+			/***************************/
 
-			std::string Name = obj.at("name");
+			/* Запись указателя и имени триггера */
 
-			/*****************************/
+			std::string ptr = obj.at("ptr");
+
+			std::string name = obj.at("name");
+
+			/*****************************/ 
 
 			trig_sc_container.emplace(
-				Ptr, 
+				ptr, 
 				std::make_unique<Trigger>
 				(
-					Name,
-					TriggerStruct(pos_lt, pos_rt, pos_lb, pos_rb, roll, pitch, yaw), 
-					gfx
+					name,
+					gfx,
+					size,
+					position,
+					orientation
 				)
 			);
 		}
@@ -269,22 +256,7 @@ void SceneTriggersContainer::ShowTrigInformation(Graphics& gfx, Rgph::RenderGrap
 			
 			if (ImGui::Button("Добавить", ImVec2(120, 0)))
 			{
-				dx::XMFLOAT3 lt = { new_w, new_h, new_w };
-				dx::XMFLOAT3 rt = { new_w, new_h, new_w / 2 };
-				dx::XMFLOAT3 lb = { new_w, 0.0f,  new_w };
-				dx::XMFLOAT3 rb = { new_w, 0.0f,  new_w / 2 };
-
-				TriggerStruct trs;
-				trs.PosTopLeft = lt;
-				trs.PosTopRight = rt;
-				trs.PosBottomLeft = lb;
-				trs.PosBottomRight = rb;
-
-				trs.Roll = 0.0f;
-				trs.Pitch = 1.57f;
-				trs.Yaw = 0.0f;
-
-				AddTrigger(gfx, std::string(name), std::string(goal), trs, rg);
+				//AddTrigger(gfx, std::string(name), std::string(goal), trs, rg);
 
 				IsAdd = true;
 
@@ -415,7 +387,7 @@ void SceneTriggersContainer::AddTrigger(Graphics& gfx, std::string name, std::st
 	// Закрытие файла
 	ostr.close();
 
-	trig_sc_container.emplace(ptr, std::make_unique<Trigger>(name, trs, gfx));
+	//trig_sc_container.emplace(ptr, std::make_unique<Trigger>(name, trs, gfx));
 
 	for (auto& [key, value] : trig_sc_container)
 	{

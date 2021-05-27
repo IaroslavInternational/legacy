@@ -1,36 +1,33 @@
 #pragma once
 
 #include "EngineConverter.h"
-
 #include "TriggerStruct.h"
+#include "BlurOutlineRenderGraph.h"
+#include "VisibleObject.h"
+
+#include <DirectXMath.h>
 
 #if IS_ENGINE_MODE
 #include "Plate.h"
 #endif // IS_ENGINE_MODE
 
-#include "BlurOutlineRenderGraph.h"
-
-#include <DirectXMath.h>
-
-namespace dx = DirectX;
-
 // Базовый класс для триггеров
-class Trigger
+class Trigger : public VisibleObject
 {
 public:
 #if IS_ENGINE_MODE
-	Trigger(std::string, TriggerStruct trs, Graphics& gfx);
-	Trigger(std::string, dx::XMFLOAT3 PosTopLeft, dx::XMFLOAT3 PosTopRight,
-		dx::XMFLOAT3 PosBottomLeft, dx::XMFLOAT3 PosBottomRight,
-		float roll, float pitch, float yaw, Graphics& gfx);
+	Trigger(std::string		  name, 
+			Graphics&		  gfx,
+			DirectX::XMFLOAT2 size,
+			DirectX::XMFLOAT3 position =	{ 0.0f, 0.0f, 0.0f },
+			DirectX::XMFLOAT3 orientation = { 0.0f, 1.57f, 0.0f },
+			bool			  visibility =  true);
 #else
 	Trigger(TriggerStruct& trs);
-	Trigger(dx::XMFLOAT3 PosTopLeft, dx::XMFLOAT3 PosTopRight,
-		dx::XMFLOAT3 PosBottomLeft, dx::XMFLOAT3 PosBottomRight,
+	Trigger(DirectX::XMFLOAT3 PosTopLeft, DirectX::XMFLOAT3 PosTopRight,
+		DirectX::XMFLOAT3 PosBottomLeft, DirectX::XMFLOAT3 PosBottomRight,
 		float roll, float pitch, float yaw);
 #endif // IS_ENGINE_MODE
-
-	~Trigger();
 
 #if IS_ENGINE_MODE
 	void LinkTechniques(Rgph::RenderGraph& rg);
@@ -40,49 +37,45 @@ public:
 	void SpawnControl();
 #endif // IS_ENGINE_MODE
 
-	// Установка позиции
-	void SetPosition(dx::XMFLOAT3 pos);
-
-	// Установка ориентации
-	void SetOrientation(dx::XMFLOAT3 orient);
-
 	// Установка начального положение
 	void SetDefault();
 
+	// Перегруженный метод для установки позиции триггера, вклюячая платформу
+	void SetPosition(DirectX::XMFLOAT3 position);
+
+	// Перегруженный метод для установки ориентации триггера, вклюячая платформу
+	void SetOrientation(DirectX::XMFLOAT3 orientation);
+
 	// Проверка на касание триггера через координаты
-	bool Check(dx::XMFLOAT3 ObjPos);
+	bool Check(DirectX::XMFLOAT3 ObjPos);
 
 	// Установка ширины триггера
 	void SetDeep(float TriggerDeep);
 
 	// Получение позиции триггера
 	const DirectX::XMFLOAT3* GetPosition() const;
-
-	std::string GetName();
 private:
 	// Глубина триггера по x
 	float deep = 1.0f;
-
-	std::string name;
 private:
 	struct
 	{
-		dx::XMFLOAT3 PosTopLeft;
-		dx::XMFLOAT3 PosTopRight;
-		dx::XMFLOAT3 PosBottomLeft;
-		dx::XMFLOAT3 PosBottomRight;
-	} position;
+		void UpdatePoints(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 size) noexcept
+		{
+			PosTopLeft = position;
+			PosTopRight = { position.x, position.y, position.z + size.x };
+			PosBottomLeft = { position.x, position.y - size.y, position.z };
+			PosBottomRight = { position.x, position.y - size.y, position.z + size.x };
+		}
 
-	dx::XMFLOAT3 orientation;
+		DirectX::XMFLOAT3 PosTopLeft;
+		DirectX::XMFLOAT3 PosTopRight;
+		DirectX::XMFLOAT3 PosBottomLeft;
+		DirectX::XMFLOAT3 PosBottomRight;
+	} full_position;
 
 #if IS_ENGINE_MODE
-	/* Визуальный контур триггера */
-
-	float platew;
-	float plateh;
-
-	Plate plate;
-	
-	/*********************/
+	// Визуальный контур триггера
+	Plate platform;
 #endif // IS_ENGINE_MODE
 };

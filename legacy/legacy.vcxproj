@@ -179,8 +179,7 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)\ShaderBins\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)\ShaderBins\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd">
+    <None Include="UML-objects-hierarchy.cd">
       <DeploymentContent>false</DeploymentContent>
     </None>
     <None Include="LightVectorData.hlsli">

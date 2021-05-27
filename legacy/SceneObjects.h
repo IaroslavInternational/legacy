@@ -46,7 +46,7 @@ public:
 
 	// Триггеры сцены
 	SceneTriggersContainer triggersScene;
-
+	
 	/*********************/
 
 #if IS_ENGINE_MODE
