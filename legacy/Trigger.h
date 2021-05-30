@@ -56,16 +56,16 @@ public:
 	const DirectX::XMFLOAT3* GetPosition() const;
 private:
 	// Глубина триггера по x
-	float deep = 1.0f;
+	float deep = 2.5f;
 private:
 	struct
 	{
 		void UpdatePoints(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 size) noexcept
 		{
-			PosTopLeft = position;
-			PosTopRight = { position.x, position.y, position.z + size.x };
-			PosBottomLeft = { position.x, position.y - size.y, position.z };
-			PosBottomRight = { position.x, position.y - size.y, position.z + size.x };
+			PosTopLeft =	 { position.x, position.y,			position.z };
+			PosTopRight =	 { position.x, position.y,			position.z - size.x };
+			PosBottomLeft =  { position.x, position.y - size.y, position.z };
+			PosBottomRight = { position.x, position.y - size.y, position.z - size.x };
 		}
 
 		DirectX::XMFLOAT3 PosTopLeft;
@@ -73,6 +73,8 @@ private:
 		DirectX::XMFLOAT3 PosBottomLeft;
 		DirectX::XMFLOAT3 PosBottomRight;
 	} full_position;
+
+	DirectX::XMFLOAT3 objpos = { 0.0f, 0.0f, 0.0f };
 
 #if IS_ENGINE_MODE
 	// Визуальный контур триггера

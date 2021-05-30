@@ -28,6 +28,11 @@ public:
 	// Установить ориентацию
 	void			  SetRotation(DirectX::XMFLOAT3 orientation) noexcept;
 
+	// Получить размер
+	// size.x - ширина,
+	// size.y - высота
+	DirectX::XMFLOAT2 GetSize() noexcept;
+
 	// Получить матрицу трансформации платформы
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 

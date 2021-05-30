@@ -1,6 +1,8 @@
 #include "Trigger.h"
 #include "imgui\imgui.h"
 
+#include <sstream>
+
 #if IS_ENGINE_MODE
 
 Trigger::Trigger(std::string	   name,
@@ -62,6 +64,10 @@ void Trigger::SpawnControl()
 		dcheck(ImGui::SliderFloat("Y", &position.y, -80.0f, 80.0f, "%.2f"), posDirty);
 		dcheck(ImGui::SliderFloat("Z", &position.z, -80.0f, 80.0f, "%.2f"), posDirty);
 
+		ImGui::Text("Глубина:");
+		ImGui::Text(std::to_string(deep).c_str());
+
+		full_position.UpdatePoints(position, platform.GetSize());
 		platform.SetPosition(position);
 	}
 }
@@ -78,6 +84,8 @@ void Trigger::SetOrientation(DirectX::XMFLOAT3 orientation )
 
 void Trigger::SetDefault()
 {
+	full_position.UpdatePoints(position, platform.GetSize());
+
 	platform.SetPosition(position);
 	platform.SetRotation(orientation);
 }
@@ -85,6 +93,7 @@ void Trigger::SetDefault()
 
 bool Trigger::Check(DirectX::XMFLOAT3 ObjPos)
 {
+	objpos = ObjPos;
 	return (ObjPos.x >=	   this->full_position.PosTopLeft.x
 			&& ObjPos.x <= this->full_position.PosTopLeft.x + deep) &&
 			ObjPos.y <=	   this->full_position.PosTopLeft.y &&

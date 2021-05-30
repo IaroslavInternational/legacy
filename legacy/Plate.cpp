@@ -83,6 +83,11 @@ void Plate::SetRotation(DirectX::XMFLOAT3 orientation) noexcept
 	this->orientation = orientation;
 }
 
+DirectX::XMFLOAT2 Plate::GetSize() noexcept
+{
+	return size;
+}
+
 DirectX::XMMATRIX Plate::GetTransformXM() const noexcept
 {
 	return DirectX::XMMatrixRotationRollPitchYaw(orientation.x, orientation.y, orientation.z) *
