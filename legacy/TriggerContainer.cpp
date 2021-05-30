@@ -1,4 +1,4 @@
-#include "SceneTriggersContainer.h"
+#include "TriggerContainer.h"
 
 #if IS_ENGINE_MODE
 #include "imgui\imgui.h"
@@ -9,19 +9,19 @@
 #include <filesystem>
 
 #include "json.hpp"
-
-using json = nlohmann::json;
-using namespace std::string_literals;
+#include "EngineFunctions.hpp"
 
 #if IS_ENGINE_MODE
-SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx, AppLog* aLog)
+TriggerContainer::TriggerContainer(std::string path, Graphics& gfx, Rgph::RenderGraph& rg, AppLog* aLog)
 	:
-	filePath(path),
-	applog(aLog)
+	path(path),
+	applog(aLog),
+	gfx(gfx),
+	rg(rg)
 {
 	applog->AddLog(TRIGGER_LOG, "Инициализация\n");
 
-	std::ifstream dataFile(filePath);
+	std::ifstream dataFile(path);
 	if (!dataFile.is_open())
 	{
 		throw ("Не удаётся открыть файл с данными о триггерах сцен");
@@ -67,7 +67,7 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx, 
 
 			/*****************************/ 
 
-			trig_sc_container.emplace(
+			triggers.emplace(
 				ptr, 
 				std::make_unique<Trigger>
 				(
@@ -84,20 +84,20 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path, Graphics& gfx, 
 	dataFile.close();
 }
 #else
-SceneTriggersContainer::SceneTriggersContainer(const char* path)
+TriggerContainer::TriggerContainer(std::string path)
 	:
-	filePath(path)
+	path(path)
 {
-	std::ifstream dataFile(filePath);
+	std::ifstream dataFile(path);
 	if (!dataFile.is_open())
 	{
 		throw ("Не удаётся открыть файл с данными о триггерах сцен");
 	}
 
-	dx::XMFLOAT3 pos_lt;
-	dx::XMFLOAT3 pos_rt;
-	dx::XMFLOAT3 pos_lb;
-	dx::XMFLOAT3 pos_rb;
+	DirectX::XMFLOAT3 pos_lt;
+	DirectX::XMFLOAT3 pos_rt;
+	DirectX::XMFLOAT3 pos_lb;
+	DirectX::XMFLOAT3 pos_rb;
 
 	float roll;
 	float pitch;
@@ -147,7 +147,7 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path)
 
 			/*****************************/
 
-			trig_sc_container.emplace(
+			triggers.emplace(
 				Ptr,
 				std::make_unique<Trigger>
 				(
@@ -162,13 +162,13 @@ SceneTriggersContainer::SceneTriggersContainer(const char* path)
 }
 #endif // IS_ENGINE_MODE
 
-SceneTriggersContainer::~SceneTriggersContainer()
+TriggerContainer::~TriggerContainer()
 {}
 
 #if IS_ENGINE_MODE
-void SceneTriggersContainer::LinkTechniques(Rgph::RenderGraph &rg)
+void TriggerContainer::LinkTechniques()
 {
-	for (auto it = trig_sc_container.begin(); it != trig_sc_container.end(); ++it)
+	for (auto it = triggers.begin(); it != triggers.end(); ++it)
 	{
 		it->second->LinkTechniques(rg);
 		it->second->SetDefault();
@@ -182,20 +182,20 @@ void SceneTriggersContainer::LinkTechniques(Rgph::RenderGraph &rg)
 	}
 }
 
-void SceneTriggersContainer::Submit(size_t channels)
+void TriggerContainer::Submit(size_t channels)
 {
-	for (auto it = trig_sc_container.begin(); it != trig_sc_container.end(); ++it)
+	for (auto it = triggers.begin(); it != triggers.end(); ++it)
 	{
 		it->second->Submit(channels);
 	}
 }
 #endif // IS_ENGINE_MODE
 
-std::pair<std::string, bool> SceneTriggersContainer::CheckTriggers(dx::XMFLOAT3 pos)
+std::pair<std::string, bool> TriggerContainer::Check(DirectX::XMFLOAT3 position)
 {
-	for (auto it = trig_sc_container.begin(); it != trig_sc_container.end(); it++)
+	for (auto it = triggers.begin(); it != triggers.end(); it++)
 	{
-		if (it->second->Check(pos))
+		if (it->second->Check(position))
 		{
 			auto HittedTriggerGoal = it->first;
 
@@ -214,7 +214,7 @@ std::pair<std::string, bool> SceneTriggersContainer::CheckTriggers(dx::XMFLOAT3 
 }
 
 #if IS_ENGINE_MODE
-void SceneTriggersContainer::ShowTrigInformation(Graphics& gfx, Rgph::RenderGraph& rg)
+void TriggerContainer::ShowLeftPanel()
 {
 	bool IsAdd = false;
 
@@ -224,7 +224,7 @@ void SceneTriggersContainer::ShowTrigInformation(Graphics& gfx, Rgph::RenderGrap
 		ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus))
 	{
-		for (auto& [key, value] : trig_sc_container)
+		for (auto& [key, value] : triggers)
 		{
 			char label[128];
 
@@ -251,8 +251,8 @@ void SceneTriggersContainer::ShowTrigInformation(Graphics& gfx, Rgph::RenderGrap
 
 			ImGui::InputText("Цель", goal, sizeof(goal));
 
-			ImGui::InputFloat("Ширина", &new_w, -30.0f, 30.0f, "%.2f");
-			ImGui::InputFloat("Высота", &new_h, -30.0f, 30.0f, "%.2f");
+			ImGui::InputFloat("Ширина", &new_w, 1.0f, 30.0f, "%.2f");
+			ImGui::InputFloat("Высота", &new_h, 1.0f, 30.0f, "%.2f");
 			
 			if (ImGui::Button("Добавить", ImVec2(120, 0)))
 			{
@@ -277,7 +277,7 @@ void SceneTriggersContainer::ShowTrigInformation(Graphics& gfx, Rgph::RenderGrap
 	ImGui::End();
 }
 
-void SceneTriggersContainer::ShowTrigSettings()
+void TriggerContainer::ShowRightPanel()
 {
 	if (ImGui::Begin("Информация", NULL,
 		ImGuiWindowFlags_NoMove |
@@ -285,7 +285,7 @@ void SceneTriggersContainer::ShowTrigSettings()
 		ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus))
 	{
-		for (const auto& [key, value] : trig_sc_container)
+		for (const auto& [key, value] : triggers)
 		{
 			if (value->GetName() == selected)
 			{
@@ -294,16 +294,6 @@ void SceneTriggersContainer::ShowTrigSettings()
 				value->SpawnControl();
 				
 				ImGui::NewLine();
-
-				ImGui::Text("Позиция");
-				ImGui::Text("Левый верхний угол: \n x = %.3f; y = %.3f; z = %.3f;",
-					pos[0].x, pos[0].y, pos[0].z);
-				ImGui::Text("Правый верхний угол: \n x = %.3f; y = %.3f; z = %.3f;",
-					pos[1].x, pos[1].y, pos[1].z);
-				ImGui::Text("Левый нижний угол: \n x = %.3f; y = %.3f; z = %.3f;",
-					pos[2].x, pos[2].y, pos[2].z);
-				ImGui::Text("Правый нижний угол: \n x = %.3f; y = %.3f; z = %.3f;",
-					pos[3].x, pos[3].y, pos[3].z);
 
 				ImGui::Separator();
 				ImGui::Text("Триггер указывает на: %s", key);
@@ -318,13 +308,12 @@ void SceneTriggersContainer::ShowTrigSettings()
 	ImGui::End();
 }
 
-void SceneTriggersContainer::AddTrigger(Graphics& gfx, std::string name, std::string ptr, TriggerStruct& trs,
-	Rgph::RenderGraph& rg)
+void TriggerContainer::AddTrigger(std::string name, std::string ptr)
 {
 	using std::to_string;
 
 	// Открытие файла с триггерами
-	std::ifstream dataFile(filePath);
+	std::ifstream dataFile(path);
 	if (!dataFile.is_open())
 	{
 		throw ("Не удаётся открыть файл с данными о триггерах сцен");
@@ -338,11 +327,11 @@ void SceneTriggersContainer::AddTrigger(Graphics& gfx, std::string name, std::st
 	dataFile.close();
 
 	// Число триггеров в файле + 1
-	int triggerIndex = trig_sc_container.size() + 1;
+	int triggerIndex = triggers.size() + 1;
 
 	// Новый триггер
 	std::ostringstream newTrigger;
-	newTrigger << "\"Trigger " << triggerIndex;
+	/*newTrigger << "\"Trigger " << triggerIndex;
 	
 	newTrigger << "\": [{\"name\": \"" + name + "\",";
 
@@ -370,7 +359,7 @@ void SceneTriggersContainer::AddTrigger(Graphics& gfx, std::string name, std::st
 
 	newTrigger << "\"roll\": " << trs.Roll << ",";
 	newTrigger << "\"pitch\": " << trs.Pitch << ",";
-	newTrigger << "\"yaw\": " << trs.Yaw << "}]";
+	newTrigger << "\"yaw\": " << trs.Yaw << "}]";*/
 
 	// Подготовка к вставке в файл
 	std::string json_str = j.dump();
@@ -381,7 +370,7 @@ void SceneTriggersContainer::AddTrigger(Graphics& gfx, std::string name, std::st
 	json_str.at(pos_of_par2 + 1) = ',';
 
 	// Запись в файл нового триггера
-	std::ofstream ostr(filePath);
+	std::ofstream ostr(path);
 	ostr << json_str << newTrigger.str() << '}';
 
 	// Закрытие файла
@@ -389,7 +378,7 @@ void SceneTriggersContainer::AddTrigger(Graphics& gfx, std::string name, std::st
 
 	//trig_sc_container.emplace(ptr, std::make_unique<Trigger>(name, trs, gfx));
 
-	for (auto& [key, value] : trig_sc_container)
+	for (auto& [key, value] : triggers)
 	{
 		if (value->GetName() == name)
 		{

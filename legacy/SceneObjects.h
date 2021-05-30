@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ModelContainer.h"
-#include "SceneTriggersContainer.h"
+#include "TriggerContainer.h"
 #include "CameraContainer.h"
 #include "PointLightContainer.h"
 
@@ -45,7 +45,7 @@ public:
 	ModelContainer models;
 
 	// Триггеры сцены
-	SceneTriggersContainer triggersScene;
+	TriggerContainer triggers;
 	
 	/*********************/
 

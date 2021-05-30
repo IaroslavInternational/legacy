@@ -330,9 +330,6 @@
     <ClCompile Include="imgui\ImGuiFileDialog.cpp">
       <Filter>imgui\dialog</Filter>
     </ClCompile>
-    <ClCompile Include="SceneTriggersContainer.cpp">
-      <Filter>Исходные файлы\Сцена\Объекты\Триггер</Filter>
-    </ClCompile>
     <ClCompile Include="Trigger.cpp">
       <Filter>Исходные файлы\Сцена\Объекты\Триггер</Filter>
     </ClCompile>
@@ -464,6 +461,9 @@
     </ClCompile>
     <ClCompile Include="VisibleObject.cpp">
       <Filter>Исходные файлы\Сцена\Объекты\База объектов</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerContainer.cpp">
+      <Filter>Исходные файлы\Сцена\Объекты\Триггер</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -737,9 +737,6 @@
     <ClInclude Include="EngineConverter.h">
       <Filter>Заголовочные файлы\Система\Макросы</Filter>
     </ClInclude>
-    <ClInclude Include="SceneTriggersContainer.h">
-      <Filter>Заголовочные файлы\Сцена\Объекты\Триггер</Filter>
-    </ClInclude>
     <ClInclude Include="Trigger.h">
       <Filter>Заголовочные файлы\Сцена\Объекты\Триггер</Filter>
     </ClInclude>
@@ -871,6 +868,9 @@
     </ClInclude>
     <ClInclude Include="VisibleObject.h">
       <Filter>Заголовочные файлы\Сцена\Объекты\База объектов</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerContainer.h">
+      <Filter>Заголовочные файлы\Сцена\Объекты\Триггер</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -145,7 +145,7 @@ void Scene::Render(float dt)
 
 std::pair<std::string, bool> Scene::IsOnTheSceneTrigger()
 {
-	return objects.triggersScene.CheckTriggers(objects.cameras.GetActiveCamera().GetPosition());
+	return objects.triggers.Check(objects.cameras.GetActiveCamera().GetPosition());
 }
 
 void Scene::ResetPos()
@@ -329,7 +329,7 @@ void Scene::ShowLeftSide()
 	}
 	else if (ShowTriggersList)
 	{
-		objects.triggersScene.ShowTrigInformation(wnd->Gfx(), rg);
+		objects.triggers.ShowLeftPanel();
 	}
 	else if (ShowPLightsList)
 	{
@@ -379,7 +379,7 @@ void Scene::ShowRightSide()
 	}
 	else if (ShowTriggersSettings)
 	{
-		objects.triggersScene.ShowTrigSettings();
+		objects.triggers.ShowRightPanel();
 
 		ImGui::SetNextWindowPos({ round(io.DisplaySize.x - RightPanelW), MenuHeight }, 0, RightPanelPivot);
 		ImGui::SetNextWindowSize({ io.DisplaySize.x * 0.15f, io.DisplaySize.y * 0.15f }, ImGuiCond_FirstUseEver);
