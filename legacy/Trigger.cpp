@@ -1,5 +1,7 @@
 #include "Trigger.h"
 #include "imgui\imgui.h"
+#include "EngineXM.h"
+#include "Channels.h"
 
 #include <sstream>
 
@@ -13,6 +15,7 @@ Trigger::Trigger(std::string	   name,
 				 bool			   visibility)
 	:
 	VisibleObject(name, position, orientation, visibility),
+	size(size),
 	platform(gfx, size, position, orientation)
 {
 	full_position.UpdatePoints(position, size);
@@ -54,6 +57,8 @@ void Trigger::SpawnControl()
 {
 	bool rotDirty = false;
 	bool posDirty = false;
+	bool szDirty = false;
+	bool dDirty = false;
 
 	const auto dcheck = [](bool d, bool& carry) { carry = carry || d; };
 
@@ -64,8 +69,14 @@ void Trigger::SpawnControl()
 		dcheck(ImGui::SliderFloat("Y", &position.y, -80.0f, 80.0f, "%.2f"), posDirty);
 		dcheck(ImGui::SliderFloat("Z", &position.z, -80.0f, 80.0f, "%.2f"), posDirty);
 
+		ImGui::Text("Размер");
+		dcheck(ImGui::SliderFloat("Ширина", &size.x, 1.0f, 80.0f, "%.2f"), szDirty);
+		dcheck(ImGui::SliderFloat("Высота", &size.y, 1.0f, 80.0f, "%.2f"), szDirty);
+
 		ImGui::Text("Глубина:");
-		ImGui::Text(std::to_string(deep).c_str());
+		dcheck(ImGui::SliderFloat("", &deep, 1.0f, 5.0f, "%.2f"), dDirty);
+
+		platform.UpdateSize(size);
 
 		full_position.UpdatePoints(position, platform.GetSize());
 		platform.SetPosition(position);

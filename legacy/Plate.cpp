@@ -16,12 +16,72 @@ Plate::Plate(Graphics&		   gfx,
 	size(size),
 	position(position),
 	orientation(orientation),
-	pmc( { color } )
+	gfx(gfx),
+	pmc( { color } ),
+	model(Plane::Make(size.x, size.y))
+{
+	CreatePlate();
+}
+
+void Plate::SetSize(DirectX::XMFLOAT2 size)
+{
+	this->size = size;
+}
+
+void Plate::SetPosition(DirectX::XMFLOAT3 position) noexcept
+{
+	this->position = position;
+	this->position.y -= size.y / 2;
+	this->position.z -= size.x / 2;
+}
+
+void Plate::SetRotation(DirectX::XMFLOAT3 orientation) noexcept
+{
+	this->orientation = orientation;
+}
+
+void Plate::UpdateSize(DirectX::XMFLOAT2 size)
+{
+	model = Plane::Make(size.x, size.y);
+	CreatePlate();
+}
+
+DirectX::XMFLOAT2 Plate::GetSize() const noexcept
+{
+	return size;
+}
+
+DirectX::XMFLOAT2* Plate::GetSizePtr() noexcept
+{
+	return &size;
+}
+
+DirectX::XMMATRIX Plate::GetTransformXM() const noexcept
+{
+	return DirectX::XMMatrixRotationRollPitchYaw(orientation.x, orientation.y, orientation.z) *
+		   DirectX::XMMatrixTranslation(position.x, position.y, position.z);
+}
+
+void Plate::SpawnControlWindow(Graphics& gfx, const std::string& name) noexcept
+{
+	if( ImGui::Begin( name.c_str() ) )
+	{
+		ImGui::Text( "Position" );
+		ImGui::SliderFloat( "X",&position.x,-80.0f,80.0f,"%.1f" );
+		ImGui::SliderFloat( "Y",&position.y,-80.0f,80.0f,"%.1f" );
+		ImGui::SliderFloat( "Z",&position.z,-80.0f,80.0f,"%.1f" );
+		ImGui::Text( "Orientation" );
+		ImGui::SliderAngle( "Roll", &orientation.z,-180.0f,180.0f );
+		ImGui::SliderAngle( "Pitch",&orientation.y,-180.0f,180.0f );
+		ImGui::SliderAngle( "Yaw",  &orientation.z,-180.0f,180.0f );
+	}
+	ImGui::End();
+}
+
+void Plate::CreatePlate()
 {
 	using namespace Bind;
 
-	auto model = Plane::Make(size.x, size.y);
-	
 	const auto geometryTag = "$plane." + std::to_string(size.x) + "/" + std::to_string(size.y);
 	pVertices = VertexBuffer::Resolve(gfx, geometryTag, model.vertices);
 	pIndices = IndexBuffer::Resolve(gfx, geometryTag, model.indices);
@@ -64,48 +124,4 @@ Plate::Plate(Graphics&		   gfx,
 			AddTechnique(std::move(outline));
 		}
 	}
-}
-
-void Plate::SetSize(DirectX::XMFLOAT2 size)
-{
-	this->size = size;
-}
-
-void Plate::SetPosition(DirectX::XMFLOAT3 position) noexcept
-{
-	this->position = position;
-	this->position.y -= size.y / 2;
-	this->position.z -= size.x / 2;
-}
-
-void Plate::SetRotation(DirectX::XMFLOAT3 orientation) noexcept
-{
-	this->orientation = orientation;
-}
-
-DirectX::XMFLOAT2 Plate::GetSize() noexcept
-{
-	return size;
-}
-
-DirectX::XMMATRIX Plate::GetTransformXM() const noexcept
-{
-	return DirectX::XMMatrixRotationRollPitchYaw(orientation.x, orientation.y, orientation.z) *
-		   DirectX::XMMatrixTranslation(position.x, position.y, position.z);
-}
-
-void Plate::SpawnControlWindow(Graphics& gfx, const std::string& name) noexcept
-{
-	if( ImGui::Begin( name.c_str() ) )
-	{
-		ImGui::Text( "Position" );
-		ImGui::SliderFloat( "X",&position.x,-80.0f,80.0f,"%.1f" );
-		ImGui::SliderFloat( "Y",&position.y,-80.0f,80.0f,"%.1f" );
-		ImGui::SliderFloat( "Z",&position.z,-80.0f,80.0f,"%.1f" );
-		ImGui::Text( "Orientation" );
-		ImGui::SliderAngle( "Roll", &orientation.z,-180.0f,180.0f );
-		ImGui::SliderAngle( "Pitch",&orientation.y,-180.0f,180.0f );
-		ImGui::SliderAngle( "Yaw",  &orientation.z,-180.0f,180.0f );
-	}
-	ImGui::End();
 }

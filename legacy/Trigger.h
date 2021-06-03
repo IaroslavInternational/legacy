@@ -79,5 +79,7 @@ private:
 #if IS_ENGINE_MODE
 	// Визуальный контур триггера
 	Plate platform;
+
+	DirectX::XMFLOAT2 size;
 #endif // IS_ENGINE_MODE
 };

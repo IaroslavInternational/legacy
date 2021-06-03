@@ -37,7 +37,7 @@ Model::Model(std::string		name,
 		aiAnimBehaviour_REPEAT
 	);
 
-	if( pScene == nullptr )
+	if (pScene == nullptr)
 	{
 		throw ModelException(__LINE__, __FILE__, imp.GetErrorString());
 	}
@@ -125,7 +125,7 @@ void Model::SpawnDefaultControl()
 		dcheck(ImGui::SliderFloat("S", &scale, 0.0001f, 10.0f, "%.4f"), scaleDirty);
 
 		ImGui::Checkbox("Скрыть", &visibility);
-		
+
 		if (CameraConnection)
 		{
 			cam->SetPosition(DirectX::XMFLOAT3(position.x + offset.x, position.y + offset.y, position.z + offset.z));

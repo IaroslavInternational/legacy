@@ -12,6 +12,7 @@ class ModelWindow;
 struct aiMesh;
 struct aiMaterial;
 struct aiNode;
+struct aiAnimation;
 
 namespace Rgph
 {
@@ -72,7 +73,7 @@ private:
 	std::unique_ptr<Node> pRoot;							
 
 	// ”казатели на меши
-	std::vector<std::unique_ptr<Mesh>> meshPtrs;			
+	std::vector<std::unique_ptr<Mesh>> meshPtrs;	
 
 	// ћножитель размера
 	float scale = 1.0f;	

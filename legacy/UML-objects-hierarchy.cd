@@ -30,13 +30,6 @@
   </Class>
   <Class Name="Trigger" Collapsed="true">
     <Position X="7" Y="3.5" Width="1.5" />
-    <NestedTypes>
-      <Struct Name="Trigger::__unnamed_struct_00e1_1" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Trigger.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Struct>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAAAAgAAGCAAhAIAAAAIAAAAAAAghEAAAAAAQgAAAA=</HashCode>
       <FileName>Trigger.h</FileName>
